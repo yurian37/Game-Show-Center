@@ -246,8 +246,33 @@ export default function OnGameHost({ selectedGames = [], gameMode = '1vs1', init
 
     console.log("Submitting Master Match Request to Java Backend:", masterPackage);
 
+    const apiUrl = (import.meta.env.VITE_API_URL || 'http://localhost:8080').replace(/\/+$/, '');
+
+    const launchArena = (responseData = null) => {
+      const updatedSelectedGames = selectedGames.map(game => {
+        const setupData = gamesSetup[game.name];
+        const serializeFn = gamesRegistry[game.name]?.serialize;
+        const serializedSetup = serializeFn ? serializeFn(setupData) : setupData;
+        return {
+          ...game,
+          setupData: setupData,
+          setup: setupData || game.setup,
+          serializedSetup: serializedSetup
+        };
+      });
+
+      onNavigate('arena', {
+        gameMode,
+        selectedGames: updatedSelectedGames,
+        profiles: sanitizedProfiles,
+        gamesSetup,
+        scorePresets: scorePresets || initialPlayers?.scorePresets,
+        responseData
+      });
+    };
+
     try {
-      const response = await fetch('http://localhost:8080/api/match/compile', {
+      const response = await fetch(`${apiUrl}/api/match/compile`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(masterPackage)
@@ -262,32 +287,11 @@ export default function OnGameHost({ selectedGames = [], gameMode = '1vs1', init
         return;
       }
 
-      // Build updated selectedGames array containing the customized setupData
-      const updatedSelectedGames = selectedGames.map(game => {
-        const setupData = gamesSetup[game.name];
-        const serializeFn = gamesRegistry[game.name]?.serialize;
-        const serializedSetup = serializeFn ? serializeFn(setupData) : setupData;
-        return {
-          ...game,
-          setupData: setupData,
-          setup: setupData || game.setup,
-          serializedSetup: serializedSetup
-        };
-      });
-
-      // HTTP 200 OK: Launch central Arena Stage with profiles and game data!
-      onNavigate('arena', {
-        gameMode,
-        selectedGames: updatedSelectedGames,
-        profiles: sanitizedProfiles,
-        gamesSetup,
-        scorePresets: scorePresets || initialPlayers?.scorePresets,
-        responseData
-      });
-      
+      launchArena(responseData);
     } catch (error) {
-      console.error("Error submitting match package:", error);
-      setValidationError(`⚠️ ERROR: ${error.message || 'Could not connect to Java server on port 8080.'}`);
+      console.warn("Backend server not reachable, proceeding with browser-only client match:", error);
+      // In web production mode without backend, allow standalone client-side match
+      launchArena({ status: 'client_fallback' });
     }
   };
 
