@@ -7,8 +7,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import javafx.collections.ListChangeListener;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.TextInputControl;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Window;
@@ -620,6 +622,48 @@ public class ThemeManager {
         if (node instanceof Labeled labeled) {
             labeled.setTextOverrun(javafx.scene.control.OverrunStyle.CLIP);
             labeled.setEllipsisString("");
+            if (labeled instanceof Label label) {
+                label.setWrapText(true);
+            }
+            if (scale > 1.0) {
+                if (labeled.getMinHeight() > 0 && labeled.getMinHeight() != Region.USE_COMPUTED_SIZE) {
+                    Double baseMinH = (Double) labeled.getProperties().get("gsc_base_min_h");
+                    if (baseMinH == null) {
+                        baseMinH = labeled.getMinHeight();
+                        labeled.getProperties().put("gsc_base_min_h", baseMinH);
+                    }
+                    labeled.setMinHeight(Math.ceil(baseMinH * scale));
+                }
+                if (labeled.getPrefHeight() > 0 && labeled.getPrefHeight() != Region.USE_COMPUTED_SIZE) {
+                    Double basePrefH = (Double) labeled.getProperties().get("gsc_base_pref_h");
+                    if (basePrefH == null) {
+                        basePrefH = labeled.getPrefHeight();
+                        labeled.getProperties().put("gsc_base_pref_h", basePrefH);
+                    }
+                    labeled.setPrefHeight(Math.ceil(basePrefH * scale));
+                }
+            } else if (Math.abs(scale - 1.0) < 0.01) {
+                Double baseMinH = (Double) labeled.getProperties().get("gsc_base_min_h");
+                if (baseMinH != null) labeled.setMinHeight(baseMinH);
+                Double basePrefH = (Double) labeled.getProperties().get("gsc_base_pref_h");
+                if (basePrefH != null) labeled.setPrefHeight(basePrefH);
+            }
+        }
+
+        if (node instanceof Region region && !(node instanceof Labeled)) {
+            if (scale > 1.0) {
+                if (region.getMinHeight() > 0 && region.getMinHeight() != Region.USE_COMPUTED_SIZE) {
+                    Double baseMinH = (Double) region.getProperties().get("gsc_reg_base_min_h");
+                    if (baseMinH == null) {
+                        baseMinH = region.getMinHeight();
+                        region.getProperties().put("gsc_reg_base_min_h", baseMinH);
+                    }
+                    region.setMinHeight(Math.ceil(baseMinH * scale));
+                }
+            } else if (Math.abs(scale - 1.0) < 0.01) {
+                Double baseMinH = (Double) region.getProperties().get("gsc_reg_base_min_h");
+                if (baseMinH != null) region.setMinHeight(baseMinH);
+            }
         }
 
         String currentStyle = node.getStyle();

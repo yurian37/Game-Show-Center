@@ -357,10 +357,12 @@ public class ArenaStageFxView extends ScrollPane {
         overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.82);");
         overlay.setAlignment(Pos.CENTER);
 
-        // Compact Square Dimensions (350x350)
+        // Compact Square Dimensions with dynamic font scaling
         VBox modalCard = new VBox(16);
-        modalCard.setPrefSize(350, 350);
-        modalCard.setMaxSize(350, 350);
+        double scale = ThemeManager.getFontScale();
+        modalCard.setPrefWidth(Math.max(350, 350 * scale));
+        modalCard.setMaxWidth(Math.max(480, 480 * scale));
+        modalCard.setMinHeight(Region.USE_COMPUTED_SIZE);
         modalCard.setAlignment(Pos.CENTER);
         modalCard.setPadding(new Insets(24));
         modalCard.setStyle(String.format(
@@ -496,8 +498,11 @@ public class ArenaStageFxView extends ScrollPane {
             : null;
 
         VBox modalCard = new VBox(16);
-        modalCard.setPrefSize(560, 500);
-        modalCard.setMaxSize(560, 520);
+        double scale = ThemeManager.getFontScale();
+        modalCard.setPrefWidth(Math.max(560, 560 * scale));
+        modalCard.setMaxWidth(Math.max(700, 700 * scale));
+        modalCard.setMinHeight(Region.USE_COMPUTED_SIZE);
+        modalCard.setMaxHeight(javafx.stage.Screen.getPrimary().getVisualBounds().getHeight() * 0.90);
         modalCard.setAlignment(Pos.TOP_CENTER);
         modalCard.setPadding(new Insets(24));
         modalCard.setStyle(String.format(

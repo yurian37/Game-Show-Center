@@ -69,6 +69,16 @@ public class RequirementVerification {
         ThemeManager.setFontScale(5.0); // Above max
         assert ThemeManager.getFontScale() <= 2.0 : "Font scale should be clamped to maximum 2.0";
 
+        // Check 130% scaling (User requirement)
+        ThemeManager.setFontScale(1.30);
+        assert Math.abs(ThemeManager.getFontScale() - 1.30) < 0.001 : "Font scale should be 1.30";
+        assert ThemeManager.getScaledFontSize(12) == 16 : "Scaled 12px at 1.30 should be 16";
+        assert ThemeManager.getScaledFontSize(20) == 26 : "Scaled 20px at 1.30 should be 26";
+
+        Label testLbl = new Label("Testing 130% word wrap");
+        ThemeManager.applyTextScale(testLbl, 1.30);
+        assert testLbl.isWrapText() : "Label should have wrapText set to true when scaled";
+
         // Reset to normal
         ThemeManager.setFontScale(1.0);
         System.out.println("-> Accessibility Font Scaling test passed!");

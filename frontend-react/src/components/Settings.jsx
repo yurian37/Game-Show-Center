@@ -689,18 +689,32 @@ export default function Settings({ onNavigate }) {
       {/* TAB 2 CONTENT: PREMIUM PLAN */}
       {activeTab === 'premium' && (
         <div className="space-y-6">
+          {/* MAINTENANCE ALERT BANNER */}
+          <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-4 flex items-center gap-3 text-amber-300 text-xs font-bold">
+            <span className="text-xl">🚧</span>
+            <div>
+              <p className="font-black uppercase tracking-wider">En Mantenimiento</p>
+              <p className="text-slate-400 font-normal mt-0.5">Las descargas y pasarelas de pago del Plan Premium se encuentran temporalmente en mantenimiento. Vuelve a consultar pronto.</p>
+            </div>
+          </div>
+
           {/* OPTION A */}
           <div className="bg-gradient-to-br from-[#1b2238] to-[#1e1a3a] p-6 rounded-2xl border border-purple-500/20 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="flex-1">
-              <h3 className="text-lg font-bold text-purple-300 mb-1">A) Download Offline Standalone App (5 Games Included)</h3>
+              <div className="flex items-center gap-2 mb-1">
+                <h3 className="text-lg font-bold text-purple-300">A) Download Offline Standalone App (5 Games Included)</h3>
+                <span className="text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/40 px-2 py-0.5 rounded-full font-black uppercase">
+                  En Mantenimiento
+                </span>
+              </div>
               <p className="text-slate-400 text-xs leading-relaxed max-w-xl">
                 Get the full offline standalone system packaged in a <strong>.zip</strong> archive. Includes the independent desktop application, folder structure, and the 5 core mini-games (Zero Margin, Hangman, TicTacToe, Roulette, Trivia Quiz) with local resources.
               </p>
               <button
-                onClick={() => setIsPaymentModalOpen(true)}
-                className="mt-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-black py-3 px-6 rounded-xl uppercase tracking-wider shadow-lg transition-all active:scale-95 cursor-pointer flex items-center gap-2"
+                onClick={() => alert("🚧 En Mantenimiento: Las descargas y pagos del Plan Premium se encuentran temporalmente en mantenimiento. Vuelve a consultar pronto.")}
+                className="mt-4 bg-gradient-to-r from-amber-600/80 to-purple-600/80 hover:from-amber-600 hover:to-purple-600 text-white text-xs font-black py-3 px-6 rounded-xl uppercase tracking-wider shadow-lg transition-all active:scale-95 cursor-pointer flex items-center gap-2"
               >
-                📥 Download Standalone App + 5 Games (.zip)
+                🚧 En Mantenimiento (Descargas no disponibles)
               </button>
             </div>
             <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-4 text-center shrink-0 min-w-[130px]">
@@ -712,15 +726,20 @@ export default function Settings({ onNavigate }) {
           {/* OPTION B */}
           <div className="bg-gradient-to-br from-[#1b2238] to-[#251b30] p-6 rounded-2xl border border-pink-500/20 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="flex-1">
-              <h3 className="text-lg font-bold text-pink-300 mb-1">B) Add Additional Premium Modules</h3>
+              <div className="flex items-center gap-2 mb-1">
+                <h3 className="text-lg font-bold text-pink-300">B) Add Additional Premium Modules</h3>
+                <span className="text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/40 px-2 py-0.5 rounded-full font-black uppercase">
+                  En Mantenimiento
+                </span>
+              </div>
               <p className="text-slate-400 text-xs leading-relaxed max-w-xl">
                 Expand your mini-game library with individual premium modules. Each module downloads into its own folder ready to drop into your catalog.
               </p>
               <button
-                onClick={() => alert("⭐ Coming soon: You will be able to purchase and download individual Premium game modules ($1.00 per game).")}
-                className="mt-4 bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-500 hover:to-rose-500 text-white text-xs font-black py-3 px-6 rounded-xl uppercase tracking-wider shadow-lg transition-all active:scale-95 cursor-pointer flex items-center gap-2"
+                onClick={() => alert("🚧 En Mantenimiento: La descarga de módulos individuales Premium se encuentra temporalmente en mantenimiento.")}
+                className="mt-4 bg-gradient-to-r from-amber-600/80 to-rose-600/80 hover:from-amber-600 hover:to-rose-600 text-white text-xs font-black py-3 px-6 rounded-xl uppercase tracking-wider shadow-lg transition-all active:scale-95 cursor-pointer flex items-center gap-2"
               >
-                ⭐ Get Premium Modules ($1.00 / game)
+                🚧 En Mantenimiento: Módulos Premium
               </button>
             </div>
             <div className="bg-pink-500/10 border border-pink-500/30 rounded-xl p-4 text-center shrink-0 min-w-[130px]">
@@ -728,13 +747,6 @@ export default function Settings({ onNavigate }) {
               <span className="text-2xl font-black text-pink-400">$1.00</span>
             </div>
           </div>
-          
-          {/* PAYMENT / PROMO CHECKOUT MODAL */}
-          <PaymentModal
-            isOpen={isPaymentModalOpen}
-            onClose={() => setIsPaymentModalOpen(false)}
-            onDownloadSuccess={() => window.open('http://localhost:8080/api/download/offline-template', '_blank')}
-          />
         </div>
       )}
     </div>

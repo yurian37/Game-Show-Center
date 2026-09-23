@@ -209,9 +209,10 @@ public class GeoLocationFxStage extends VBox {
     private void buildWaitingBox() {
         waitingBox = new VBox(16);
         waitingBox.setAlignment(Pos.CENTER);
-        waitingBox.setPrefSize(680, 380);
-        waitingBox.setMaxSize(680, 380);
-        waitingBox.setMinSize(680, 380);
+        double scale = ThemeManager.getFontScale();
+        waitingBox.setPrefWidth(Math.max(680, 680 * scale));
+        waitingBox.setMaxWidth(Double.MAX_VALUE);
+        waitingBox.setMinHeight(Region.USE_COMPUTED_SIZE);
         waitingBox.setPadding(new Insets(24));
         waitingBox.setStyle(String.format(
                 "-fx-background-color: %s; -fx-border-color: rgba(99, 102, 241, 0.4); -fx-border-width: 2px; -fx-border-radius: 24px; -fx-background-radius: 24px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.7), 20, 0, 0, 8);",
@@ -338,9 +339,10 @@ public class GeoLocationFxStage extends VBox {
     private void buildMatchFinishedBox() {
         matchFinishedBox = new VBox(16);
         matchFinishedBox.setAlignment(Pos.CENTER);
-        matchFinishedBox.setPrefSize(680, 380);
-        matchFinishedBox.setMaxSize(680, 380);
-        matchFinishedBox.setMinSize(680, 380);
+        double scale = ThemeManager.getFontScale();
+        matchFinishedBox.setPrefWidth(Math.max(680, 680 * scale));
+        matchFinishedBox.setMaxWidth(Double.MAX_VALUE);
+        matchFinishedBox.setMinHeight(Region.USE_COMPUTED_SIZE);
         matchFinishedBox.setPadding(new Insets(24));
         matchFinishedBox.setStyle(String.format(
                 "-fx-background-color: %s; -fx-border-color: #f59e0b; -fx-border-width: 2px; -fx-border-radius: 24px; -fx-background-radius: 24px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 24, 0, 0, 8);",

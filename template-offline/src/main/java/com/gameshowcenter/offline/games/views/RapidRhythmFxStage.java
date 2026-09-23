@@ -351,9 +351,10 @@ public class RapidRhythmFxStage extends VBox {
     private void buildMatchFinishedBox() {
         matchFinishedBox = new VBox(16);
         matchFinishedBox.setAlignment(Pos.CENTER);
-        matchFinishedBox.setPrefSize(680, 380);
-        matchFinishedBox.setMaxSize(680, 380);
-        matchFinishedBox.setMinSize(680, 380);
+        double scale = ThemeManager.getFontScale();
+        matchFinishedBox.setPrefWidth(Math.max(680, 680 * scale));
+        matchFinishedBox.setMaxWidth(Double.MAX_VALUE);
+        matchFinishedBox.setMinHeight(Region.USE_COMPUTED_SIZE);
         matchFinishedBox.setPadding(new Insets(24));
         matchFinishedBox.setStyle(String.format(
                 "-fx-background-color: %s; -fx-border-color: #f59e0b; -fx-border-width: 2px; -fx-border-radius: 24px; -fx-background-radius: 24px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 24, 0, 0, 8);",

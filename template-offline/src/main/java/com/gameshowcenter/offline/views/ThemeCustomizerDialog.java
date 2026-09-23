@@ -12,9 +12,11 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.geometry.Rectangle2D;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -32,12 +34,11 @@ public class ThemeCustomizerDialog {
         dialog.initOwner(parentStage);
         dialog.initModality(Modality.APPLICATION_MODAL);
         dialog.setTitle(I18n.get("theme.dialog.title"));
-        dialog.setMinWidth(800);
-        dialog.setMinHeight(680);
-
-        VBox mainLayout = new VBox(18);
-        mainLayout.setPadding(new Insets(24));
-        mainLayout.setStyle("-fx-background-color: #0b0e17;");
+        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+        dialog.setMinWidth(750);
+        dialog.setMinHeight(520);
+        dialog.setMaxWidth(Math.min(1050, screenBounds.getWidth() * 0.95));
+        dialog.setMaxHeight(Math.min(760, screenBounds.getHeight() * 0.90));
 
         // Header
         Label titleLabel = new Label(I18n.get("theme.header.title"));
@@ -47,7 +48,15 @@ public class ThemeCustomizerDialog {
         subtitleLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #94a3b8;");
         subtitleLabel.setWrapText(true);
 
-        VBox headerBox = new VBox(4, titleLabel, subtitleLabel);
+        VBox titleBox = new VBox(4, titleLabel, subtitleLabel);
+        HBox.setHgrow(titleBox, Priority.ALWAYS);
+
+        Button topCloseBtn = new Button("✕");
+        topCloseBtn.setStyle("-fx-background-color: #1e293b; -fx-text-fill: #94a3b8; -fx-font-weight: 900; -fx-font-size: 14px; -fx-background-radius: 8px; -fx-cursor: hand; -fx-padding: 6px 12px;");
+        topCloseBtn.setOnAction(e -> dialog.close());
+
+        HBox headerBox = new HBox(12, titleBox, topCloseBtn);
+        headerBox.setAlignment(Pos.CENTER_LEFT);
 
         // TabPane for organized settings
         TabPane tabPane = new TabPane();
@@ -295,7 +304,10 @@ public class ThemeCustomizerDialog {
         saveSection.getChildren().addAll(saveTitle, saveBox);
 
         customBox.getChildren().addAll(bgSection, new Separator(), boxesSection, new Separator(), saveSection);
-        customTab.setContent(customBox);
+        ScrollPane customScroll = new ScrollPane(customBox);
+        customScroll.setFitToWidth(true);
+        customScroll.setStyle("-fx-background-color: transparent; -fx-background: transparent;");
+        customTab.setContent(customScroll);
 
         // TAB 3: ACCESSIBILITY & FONT SCALING
         Tab accessibilityTab = new Tab(I18n.get("theme.tab.accessibility", "👁️ Accesibilidad"));
@@ -371,6 +383,10 @@ public class ThemeCustomizerDialog {
             scaleBadge.setText(Math.round(clamped * 100) + "%");
             if (dialog.getScene() != null) {
                 ThemeManager.applyTextScale(dialog.getScene().getRoot(), clamped);
+                Rectangle2D scrBounds = Screen.getPrimary().getVisualBounds();
+                if (dialog.getHeight() > scrBounds.getHeight() * 0.90) {
+                    dialog.setHeight(scrBounds.getHeight() * 0.90);
+                }
             }
             if (onApplyCallback != null) onApplyCallback.run();
         };
@@ -404,7 +420,10 @@ public class ThemeCustomizerDialog {
             new Separator(),
             previewBox
         );
-        accessibilityTab.setContent(accessBox);
+        ScrollPane accessScroll = new ScrollPane(accessBox);
+        accessScroll.setFitToWidth(true);
+        accessScroll.setStyle("-fx-background-color: transparent; -fx-background: transparent;");
+        accessibilityTab.setContent(accessScroll);
 
         // TAB 4: AI IMAGE SOURCES CONFIGURATION (5 fixed repos, max 10 local folders, max 2 school URLs, internet toggle)
         Tab aiSourcesTab = createAiSourcesTab(parentStage, dialog);
@@ -444,10 +463,16 @@ public class ThemeCustomizerDialog {
 
         footer.getChildren().addAll(resetBtn, closeBtn);
 
-        mainLayout.getChildren().addAll(headerBox, tabPane, footer);
-        VBox.setVgrow(tabPane, Priority.ALWAYS);
+        BorderPane rootLayout = new BorderPane();
+        rootLayout.setPadding(new Insets(20));
+        rootLayout.setStyle("-fx-background-color: #0b0e17;");
+        rootLayout.setTop(headerBox);
+        BorderPane.setMargin(headerBox, new Insets(0, 0, 14, 0));
+        rootLayout.setCenter(tabPane);
+        rootLayout.setBottom(footer);
+        BorderPane.setMargin(footer, new Insets(14, 0, 0, 0));
 
-        Scene scene = new Scene(mainLayout);
+        Scene scene = new Scene(rootLayout, 850, Math.min(680, screenBounds.getHeight() * 0.88));
         scene.setFill(Color.web("#0b0e17"));
         
         // Link Master Stylesheet so TabPane and other controls use dark modern styling
@@ -457,7 +482,7 @@ public class ThemeCustomizerDialog {
         }
 
         // Apply initial accessibility scale to dialog
-        ThemeManager.applyTextScale(mainLayout, ThemeManager.getFontScale());
+        ThemeManager.applyTextScale(rootLayout, ThemeManager.getFontScale());
 
         dialog.setScene(scene);
         dialog.show();

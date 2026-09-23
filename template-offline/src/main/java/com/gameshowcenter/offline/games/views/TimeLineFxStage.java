@@ -2,6 +2,7 @@ package com.gameshowcenter.offline.games.views;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gameshowcenter.offline.model.Competitor;
+import com.gameshowcenter.offline.theme.ThemeManager;
 import javafx.animation.ScaleTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -280,12 +281,18 @@ public class TimeLineFxStage extends VBox {
 
     private static final double CARD_WIDTH = 185.0;
 
+    private double getScaledCardWidth() {
+        return Math.max(CARD_WIDTH, CARD_WIDTH * ThemeManager.getFontScale());
+    }
+
     private double computeUniformCardHeight() {
-        double contentWidth = CARD_WIDTH - 24; // 12px padding each side
+        double scale = ThemeManager.getFontScale();
+        double currentCardWidth = getScaledCardWidth();
+        double contentWidth = currentCardWidth - 24; // 12px padding each side
         double maxTextHeight = 0;
 
-        javafx.scene.text.Font titleFont = javafx.scene.text.Font.font("System", javafx.scene.text.FontWeight.BOLD, 12);
-        javafx.scene.text.Font descFont = javafx.scene.text.Font.font("System", 11);
+        javafx.scene.text.Font titleFont = javafx.scene.text.Font.font("System", javafx.scene.text.FontWeight.BOLD, 12 * scale);
+        javafx.scene.text.Font descFont = javafx.scene.text.Font.font("System", 11 * scale);
 
         List<Milestone> poolToCheck = new ArrayList<>(allEvents);
         poolToCheck.addAll(timeline);
@@ -307,9 +314,9 @@ public class TimeLineFxStage extends VBox {
             }
         }
 
-        // Top tag row (~28px) + padding (24px) + spacing (16px) + text + extra margin (20px)
-        double needed = 28 + 24 + 16 + maxTextHeight + 20;
-        return Math.max(175.0, Math.ceil(needed));
+        // Top tag row (~28px) + padding (24px) + spacing (16px) + text + extra margin (20px * scale)
+        double needed = (28 * scale) + 24 + 16 + maxTextHeight + (20 * scale);
+        return Math.max(175.0 * scale, Math.ceil(needed));
     }
 
     private void renderTimeline() {
@@ -335,9 +342,10 @@ public class TimeLineFxStage extends VBox {
         VBox card = new VBox(6);
         card.setAlignment(Pos.TOP_LEFT);
         card.setPadding(new Insets(12));
-        card.setPrefSize(CARD_WIDTH, height);
-        card.setMinSize(CARD_WIDTH, height);
-        card.setMaxSize(CARD_WIDTH, height);
+        double cardW = getScaledCardWidth();
+        card.setPrefSize(cardW, height);
+        card.setMinSize(cardW, height);
+        card.setMaxSize(cardW, height);
 
         boolean isNewlyPlaced = m.id != null && m.id.equals(lastPlacedId);
 
@@ -396,10 +404,12 @@ public class TimeLineFxStage extends VBox {
 
     private Button createSlotButton(int slotIndex, String labelText, double height) {
         Button btn = new Button("+ \n" + labelText);
-        double btnHeight = Math.max(140.0, height - 12);
-        btn.setPrefSize(92, btnHeight);
-        btn.setMinSize(92, btnHeight);
-        btn.setMaxSize(92, btnHeight);
+        double scale = ThemeManager.getFontScale();
+        double slotWidth = Math.max(92.0, 92.0 * scale);
+        double btnHeight = Math.max(140.0 * scale, height - 12);
+        btn.setPrefSize(slotWidth, btnHeight);
+        btn.setMinSize(slotWidth, btnHeight);
+        btn.setMaxSize(slotWidth, btnHeight);
         btn.setStyle("-fx-background-color: rgba(245, 158, 11, 0.06); -fx-border-color: rgba(245, 158, 11, 0.4); -fx-border-style: dashed; -fx-border-width: 2px; -fx-border-radius: 12px; -fx-background-radius: 12px; -fx-text-fill: #f59e0b; -fx-font-weight: 900; -fx-font-size: 11px; -fx-cursor: hand; -fx-text-alignment: center;");
         btn.setTextOverrun(javafx.scene.control.OverrunStyle.CLIP);
         btn.setEllipsisString("");

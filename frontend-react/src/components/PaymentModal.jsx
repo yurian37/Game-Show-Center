@@ -27,38 +27,15 @@ export default function PaymentModal({ isOpen, onClose, onDownloadSuccess }) {
   const handleValidatePromoCode = async (e) => {
     e.preventDefault();
     if (!promoCode.trim()) return;
-
-    const inputHash = await computeSha256(promoCode);
-    const isDirectMatch = promoCode.trim().toLowerCase() === "yinyang";
-
-    if (inputHash === ENCRYPTED_VIP_HASH || isDirectMatch) {
-      setPromoStatus({ type: 'success', text: '✅ VIP Code Accepted! Downloading standalone package...' });
-      setTimeout(() => {
-        onDownloadSuccess();
-        onClose();
-      }, 1200);
-    } else {
-      setPromoStatus({ type: 'error', text: '❌ Invalid or expired activation code.' });
-    }
+    setPromoStatus({ type: 'error', text: '🚧 En Mantenimiento: Las descargas y validaciones se encuentran temporalmente en mantenimiento.' });
   };
 
   const handleSimulatedPayment = () => {
-    setPaymentStatus({ type: 'success', text: `✅ Payment sent successfully to ${PAYPAL_RECEIVER_EMAIL}! Starting download...` });
-    setTimeout(() => {
-      onDownloadSuccess();
-      onClose();
-    }, 1500);
+    setPaymentStatus({ type: 'error', text: '🚧 En Mantenimiento: Las descargas se encuentran temporalmente en mantenimiento.' });
   };
 
   const handleOpenPayPalLink = () => {
-    // Official PayPal link to send $5 USD directly to pvalencianocr@hotmail.com
-    window.open(`https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${encodeURIComponent(PAYPAL_RECEIVER_EMAIL)}&item_name=Game+Show+Center+Offline+Package&amount=5.00&currency_code=USD`, '_blank');
-    
-    setPaymentStatus({ type: 'info', text: '🌐 PayPal checkout opened. Once payment completes, your download will start automatically.' });
-    setTimeout(() => {
-      onDownloadSuccess();
-      onClose();
-    }, 3000);
+    setPaymentStatus({ type: 'error', text: '🚧 En Mantenimiento: Los pagos y descargas se encuentran temporalmente en mantenimiento.' });
   };
 
   return (

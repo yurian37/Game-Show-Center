@@ -239,15 +239,23 @@ public class TopicTakedownFxStage extends VBox {
         boardGrid.setAlignment(Pos.TOP_CENTER);
         questionButtons.clear();
 
-        double maxCatHeaderH = 64.0;
-        javafx.scene.text.Font catFont = javafx.scene.text.Font.font("System", javafx.scene.text.FontWeight.BOLD, 13);
+        double fontScale = Math.max(0.70, ThemeManager.getFontScale());
+        double baseFontSize = 13.0 * fontScale;
+        javafx.scene.text.Font catFont = javafx.scene.text.Font.font("System", javafx.scene.text.FontWeight.BOLD, baseFontSize);
+
+        // Determine max category header height based on text and font scale
+        double maxCatHeaderH = 72.0 * fontScale;
         for (CategoryModel cat : categories) {
             javafx.scene.text.Text t = new javafx.scene.text.Text(cat.name != null ? cat.name : "");
             t.setFont(catFont);
-            t.setWrappingWidth(140);
-            double h = t.getLayoutBounds().getHeight() + 32;
+            t.setWrappingWidth(140.0 * fontScale);
+            double h = t.getLayoutBounds().getHeight() + (36.0 * fontScale);
             if (h > maxCatHeaderH) maxCatHeaderH = h;
         }
+
+        // Determine uniform question button height across all rows and columns
+        double maxQBtnH = Math.max(68.0, 62.0 * fontScale);
+        int catCount = Math.max(1, categories.size());
 
         for (int c = 0; c < categories.size(); c++) {
             CategoryModel cat = categories.get(c);
@@ -257,12 +265,19 @@ public class TopicTakedownFxStage extends VBox {
             colBox.getStyleClass().add("sponsor-card");
             HBox.setHgrow(colBox, Priority.ALWAYS);
 
-            // Category Header Card
+            // Equal column width across all columns
+            colBox.minWidthProperty().bind(boardGrid.widthProperty().subtract(12 * (catCount - 1) + 24).divide(catCount));
+            colBox.prefWidthProperty().bind(boardGrid.widthProperty().subtract(12 * (catCount - 1) + 24).divide(catCount));
+            colBox.maxWidthProperty().bind(boardGrid.widthProperty().subtract(12 * (catCount - 1) + 24).divide(catCount));
+
+            // Category Header Card (Row 0: Uniform exact max height across all columns)
             VBox headerCard = new VBox();
             headerCard.setAlignment(Pos.CENTER);
             headerCard.setPadding(new Insets(12, 8, 12, 8));
             headerCard.setMinHeight(maxCatHeaderH);
             headerCard.setPrefHeight(maxCatHeaderH);
+            headerCard.setMaxHeight(maxCatHeaderH);
+            headerCard.setMaxWidth(Double.MAX_VALUE);
             headerCard.setStyle("-fx-background-color: linear-gradient(to bottom right, #312E81, #4C1D95); -fx-background-radius: 12; -fx-border-color: rgba(165,180,252,0.3); -fx-border-radius: 12;");
 
             Label catNameLabel = new Label(cat.name);
@@ -274,7 +289,7 @@ public class TopicTakedownFxStage extends VBox {
             headerCard.getChildren().add(catNameLabel);
             colBox.getChildren().add(headerCard);
 
-            // Questions Buttons (Item A of Prompt: visible question number per category)
+            // Questions Buttons (Rows 1..N: Uniform exact max height and width across all boxes)
             for (int q = 0; q < questionsPerCategory; q++) {
                 final int catIdx = c;
                 final int qIdx = q;
@@ -282,10 +297,13 @@ public class TopicTakedownFxStage extends VBox {
 
                 Button qBtn = new Button();
                 qBtn.setMaxWidth(Double.MAX_VALUE);
-                qBtn.setPrefHeight(56);
+                qBtn.setMinHeight(maxQBtnH);
+                qBtn.setPrefHeight(maxQBtnH);
+                qBtn.setMaxHeight(maxQBtnH);
                 qBtn.setTextOverrun(javafx.scene.control.OverrunStyle.CLIP);
                 qBtn.setEllipsisString("");
                 qBtn.setFocusTraversable(false);
+                VBox.setVgrow(qBtn, Priority.ALWAYS);
 
                 // Visible question number
                 VBox btnContent = new VBox(2);
@@ -408,14 +426,16 @@ public class TopicTakedownFxStage extends VBox {
 
         revealAnswerBtn = new Button(I18n.get("game.common.reveal_answer"));
         revealAnswerBtn.getStyleClass().add("btn-accent-amber");
-        revealAnswerBtn.setPrefWidth(180);
-        revealAnswerBtn.setPrefHeight(42);
+        revealAnswerBtn.setMinWidth(180);
+        revealAnswerBtn.setMinHeight(44);
+        revealAnswerBtn.setPrefHeight(Region.USE_COMPUTED_SIZE);
         revealAnswerBtn.setOnAction(e -> revealAnswer());
 
         backToBoardBtn = new Button(I18n.get("game.topic.btn_back"));
         backToBoardBtn.getStyleClass().add("btn-secondary");
-        backToBoardBtn.setPrefWidth(140);
-        backToBoardBtn.setPrefHeight(42);
+        backToBoardBtn.setMinWidth(140);
+        backToBoardBtn.setMinHeight(44);
+        backToBoardBtn.setPrefHeight(Region.USE_COMPUTED_SIZE);
         backToBoardBtn.setOnAction(e -> backToBoard());
 
         actionsBox.getChildren().addAll(revealAnswerBtn, backToBoardBtn);
