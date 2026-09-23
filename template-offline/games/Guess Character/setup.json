@@ -1,0 +1,8 @@
+{
+  "game" : "Guess_Character",
+  "rounds_per_player" : 3,
+  "enable_timer" : true,
+  "timer_seconds" : 30,
+  "media_pool" : [ "games/Guess Character/images/ai_elden_ring_1_95470563.jpg", "games/Guess Character/images/ai_the_last_of_us_part_ii_1_95613078.jpg", "games/Guess Character/images/ai_ghost_of_tsushima_1_95984326.jpg", "games/Guess Character/images/ai_spider-man_miles_morales_1_96025929.jpg", "games/Guess Character/images/ai_cyberpunk_2077_1_96065982.jpg", "games/Guess Character/images/ai_red_dead_redemption_2_1_96095977.jpg", "games/Guess Character/images/ai_half-life_alyx_1_96125000.jpg", "games/Guess Character/images/ai_resident_evil_village_1_96155234.jpg", "games/Guess Character/images/ai_horizon_forbidden_west_1_96187106.jpg", "games/Guess Character/images/ai_the_legend_of_zelda_breat_1_96226806.jpg" ],
+  "copyright_warnings" : [ "games/Guess Character/images/ai_horizon_forbidden_west_1_96187106.jpg", "games/Guess Character/images/ai_the_last_of_us_part_ii_1_95613078.jpg", "games/Guess Character/images/ai_spider-man_miles_morales_1_96025929.jpg" ]
+}

@@ -1,0 +1,9 @@
+{
+  "enabled": true,
+  "game": "Topic Takedown",
+  "generation_type": "hierarchical_categories",
+  "system_prompt_categories": "You are a game show designer for Topic Takedown. Generate distinct category names related to the given topic. Respond ONLY with a valid JSON array of category name strings.",
+  "user_prompt_template_categories": "Generate exactly {cat_count} category names related to '{prompt}'.",
+  "system_prompt_questions": "Generate exactly 4 trivia questions for category '{category}', graded from difficulty 1 (easiest) to 4 (hardest). Respond ONLY with a valid JSON array of objects with 'difficulty' (integer 1-4), 'question', and 'answer'.",
+  "user_prompt_template_questions": "Questions for category: {category}."
+}

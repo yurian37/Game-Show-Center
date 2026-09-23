@@ -1,0 +1,95 @@
+{
+  "game": "TimeLine",
+  "events": [
+    {
+      "id": "ev_1",
+      "title": "Invención de la Rueda",
+      "year": -3500,
+      "description": "Aparecen los primeros vestigios del uso de ruedas en Mesopotamia para alfarería y transporte."
+    },
+    {
+      "id": "ev_2",
+      "title": "Gran Pirámide de Guiza",
+      "year": -2560,
+      "description": "Construida bajo el mandato del faraón Keops como una de las Siete Maravillas del Mundo Antiguo."
+    },
+    {
+      "id": "ev_3",
+      "title": "Fundación de Roma",
+      "year": -753,
+      "description": "Fecha legendaria de la fundación de la ciudad por los gemelos Rómulo y Remo."
+    },
+    {
+      "id": "ev_4",
+      "title": "Invención del Papel",
+      "year": 105,
+      "description": "Cai Lun perfecciona en China la técnica de fabricación de papel a partir de corteza vegetal."
+    },
+    {
+      "id": "ev_5",
+      "title": "Imprenta de Tipos Móviles",
+      "year": 1440,
+      "description": "Johannes Gutenberg revoluciona la difusión del conocimiento con la imprenta moderna."
+    },
+    {
+      "id": "ev_6",
+      "title": "Llegada de Colón a América",
+      "year": 1492,
+      "description": "Expedición europea liderada por Cristóbal Colón llega a las islas del Caribe."
+    },
+    {
+      "id": "ev_7",
+      "title": "Principia de Isaac Newton",
+      "year": 1687,
+      "description": "Publicación de las leyes del movimiento y la ley de la gravitación universal."
+    },
+    {
+      "id": "ev_8",
+      "title": "Primera Locomotora de Vapor",
+      "year": 1804,
+      "description": "Richard Trevithick hace rodar la primera locomotora de vapor sobre rieles en Gales."
+    },
+    {
+      "id": "ev_9",
+      "title": "Tabla Periódica de Mendeléyev",
+      "year": 1869,
+      "description": "Dmitri Mendeléyev organiza los elementos químicos según sus masas atómicas y propiedades periódicas."
+    },
+    {
+      "id": "ev_10",
+      "title": "Primer Vuelo a Motor de los Hermanos Wright",
+      "year": 1903,
+      "description": "Orville y Wilbur Wright logran el primer vuelo controlado y sostenido en Kitty Hawk."
+    },
+    {
+      "id": "ev_11",
+      "title": "Descubrimiento de la Penicilina",
+      "year": 1928,
+      "description": "Alexander Fleming descubre por casualidad el moho penicillium, inaugurando la era de los antibióticos."
+    },
+    {
+      "id": "ev_12",
+      "title": "Apolo 11: Llegada a la Luna",
+      "year": 1969,
+      "description": "Neil Armstrong y Buzz Aldrin se convierten en los primeros seres humanos en caminar sobre la Luna."
+    },
+    {
+      "id": "ev_13",
+      "title": "Invención de la World Wide Web",
+      "year": 1989,
+      "description": "Tim Berners-Lee presenta la propuesta de la WWW en el CERN para compartir información globalmente."
+    },
+    {
+      "id": "ev_14",
+      "title": "Proyecto Genoma Humano Completado",
+      "year": 2003,
+      "description": "Científicos de todo el mundo concluyen la secuenciación del 99% del genoma humano con alta precisión."
+    },
+    {
+      "id": "ev_15",
+      "title": "Primeras Imágenes del Telescopio James Webb",
+      "year": 2022,
+      "description": "La NASA revela las imágenes infrarrojas más profundas y nítidas del universo lejano jamás captadas."
+    }
+  ]
+}

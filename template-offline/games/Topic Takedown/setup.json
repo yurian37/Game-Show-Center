@@ -1,0 +1,176 @@
+{
+  "game" : "Topic_Takedown",
+  "numCategories" : 6,
+  "num_categories" : 6,
+  "questionsPerCategory" : 4,
+  "questions_per_category" : 4,
+  "categories" : [ {
+    "categoryName" : "Temas de Actualidad",
+    "category_name" : "Temas de Actualidad",
+    "questions" : [ {
+      "difficulty" : 1,
+      "question" : "¿Cuál es el nombre del satélite de la NASA que fue lanzado recientemente para estudiar el clima espacial y la actividad solar?",
+      "answer" : "Parker Solar Probe",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 2,
+      "question" : "¿Qué país fue el primero en aprobar una ley que prohíbe el uso de plásticos de un solo uso en 2024?",
+      "answer" : "Kenia",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 3,
+      "question" : "¿Qué organización y activista recibieron el Premio Nobel de la Paz en 2023?",
+      "answer" : "El Premio Nobel de la Paz de 2023 fue otorgado a la organización 'Mujeres de la Primavera Árabe' y a la activista 'Nadia Murad'.",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 4,
+      "question" : "¿Cuál es el nombre del nuevo tratado internacional propuesto por la Unión Europea para regular la inteligencia artificial y establecer estándares éticos globales?",
+      "answer" : "AI Act",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    } ]
+  }, {
+    "categoryName" : "Ciencia y Tecnología",
+    "category_name" : "Ciencia y Tecnología",
+    "questions" : [ {
+      "difficulty" : 1,
+      "question" : "¿Cuál es el planeta más cercano al Sol?",
+      "answer" : "Mercurio",
+      "imageUrl" : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSU3X4kjG-Ay-mtMszuAFnJlfkmWpIPOzVvTnyZaVa_Ow&s=10",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 2,
+      "question" : "¿Qué elemento químico tiene el símbolo 'O' en la tabla periódica?",
+      "answer" : "Oxígeno",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 3,
+      "question" : "¿Quién formuló la teoría de la relatividad?",
+      "answer" : "Albert Einstein",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 4,
+      "question" : "¿Cuál es el nombre del algoritmo de aprendizaje automático que utiliza redes neuronales profundas para el reconocimiento de voz?",
+      "answer" : "Deep Learning",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    } ]
+  }, {
+    "categoryName" : "Historia y Cultura",
+    "category_name" : "Historia y Cultura",
+    "questions" : [ {
+      "difficulty" : 1,
+      "question" : "¿Cuál es el río más largo del mundo?",
+      "answer" : "El río Amazonas",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 2,
+      "question" : "¿En qué año llegó Cristóbal Colón a América?",
+      "answer" : "1492",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 3,
+      "question" : "¿Quién pintó la Mona Lisa?",
+      "answer" : "Leonardo da Vinci",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 4,
+      "question" : "¿Qué tratado puso fin a la Primera Guerra Mundial?",
+      "answer" : "El Tratado de Versalles",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    } ]
+  }, {
+    "categoryName" : "Deportes y Entretenimiento",
+    "category_name" : "Deportes y Entretenimiento",
+    "questions" : [ {
+      "difficulty" : 1,
+      "question" : "¿Cuál es el deporte olímpico que se juega con una pelota y una red, donde dos equipos de cinco jugadores intentan anotar puntos?",
+      "answer" : "Voleibol",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 2,
+      "question" : "¿Quién es el actor que interpreta al personaje de James Bond en la película 'Casino Royale' de 2006?",
+      "answer" : "Daniel Craig",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 3,
+      "question" : "¿En qué año ganó la selección española de fútbol la Eurocopa?",
+      "answer" : "2008",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 4,
+      "question" : "¿Quién compuso la banda sonora de la película 'El Padrino' y ganó el Premio Óscar por ello?",
+      "answer" : "Nino Rota",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    } ]
+  }, {
+    "categoryName" : "Geografía y Viajes",
+    "category_name" : "Geografía y Viajes",
+    "questions" : [ {
+      "difficulty" : 1,
+      "question" : "¿Cuál es el río más largo del mundo?",
+      "answer" : "El río Amazonas.",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 2,
+      "question" : "¿Cuál es la capital de Australia?",
+      "answer" : "Canberra.",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 3,
+      "question" : "Pregunta 3 de Geografía y Viajes?",
+      "answer" : "Respuesta",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 4,
+      "question" : "Pregunta 4 de Geografía y Viajes?",
+      "answer" : "Respuesta",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    } ]
+  }, {
+    "categoryName" : "Arte y Literatura",
+    "category_name" : "Arte y Literatura",
+    "questions" : [ {
+      "difficulty" : 1,
+      "question" : "¿Quién es el autor de la obra literaria 'Don Quijote de la Mancha'?",
+      "answer" : "Miguel de Cervantes",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 2,
+      "question" : "¿En qué año fue pintada la obra 'La noche estrellada' de Vincent van Gogh?",
+      "answer" : "1889",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 3,
+      "question" : "¿Qué movimiento artístico del siglo XX se caracteriza por el uso de formas geométricas simples y colores planos?",
+      "answer" : "Cubismo",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 4,
+      "question" : "¿Cuál es el nombre del poema épico escrito por Dante Alighieri que narra el viaje del poeta a través del Infierno, el Purgatorio y el Paraíso?",
+      "answer" : "La Divina Comedia",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    } ]
+  } ]
+}

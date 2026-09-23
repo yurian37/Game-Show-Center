@@ -1,0 +1,174 @@
+================================================================================
+                     GAME SHOW CENTER - BUSINESS PLAN
+            ESTRATEGIA DE NEGOCIO, PLATAFORMA WEB Y MODELOS EDUCATIVOS
+                               YUYI STUDIOS
+================================================================================
+
+FECHA: Septiembre 2026
+VERSIÓN: 1.1 (Actualización con IA Local y Módulo RAG)
+DOCUMENTO: Business Plan / Plan de Negocios Oficial
+
+--------------------------------------------------------------------------------
+1. RESUMEN EJECUTIVO Y PROPUESTA DE VALOR
+--------------------------------------------------------------------------------
+Game Show Center es una plataforma integral de entretenimiento gamificado y
+educativo diseñada para transformar cualquier salón de clases, auditorio, evento
+corporativo o reunión social en un auténtico set de concurso televisivo.
+
+El proyecto combina tres fortalezas tecnológicas diferenciales:
+1. Una Plataforma Web moderna y reactiva (React + Tailwind CSS) que funciona como
+   vitrina digital, espacio publicitario, centro de demostración online y portal
+   de comercio electrónico para descargas y venta de contenido.
+2. Un Entorno de Escritorio Offline de alto rendimiento (JavaFX nativo empaquetado
+   en ejecutable autónomo), diseñado para operar sin necesidad de conexión
+   a internet, con latencia cero, máxima estabilidad y personalización gráfica total.
+3. Un Motor de Inteligencia Artificial Local con Tecnología RAG (Retrieval-Augmented
+   Generation): Permite la generación automática de cuestionarios, juegos de palabras
+   y retos dinámicos contextualizados mediante la carga de documentos PDF propios
+   (libros escolares, temarios, reglamentos corporativos), operando de forma 100%
+   offline sin costos de API por consumo y con absoluta privacidad de datos.
+
+Nuestra propuesta de valor radica en democratizar las dinámicas de preguntas, retos
+y concursos interactivos con una experiencia visual de calidad broadcast, adaptada
+tanto para el entretenimiento masivo como para el aprendizaje curricular en
+instituciones educativas primarias, secundarias, técnicas y universitarias.
+
+
+--------------------------------------------------------------------------------
+2. LA PLATAFORMA WEB: PROPAGANDA, DESCARGAS Y MONETIZACIÓN B2C
+--------------------------------------------------------------------------------
+La página web oficial de Game Show Center cumple un rol estratégico triple dentro
+del embudo de conversión del negocio:
+
+A. Propaganda y Vitrina de Juegos en Vivo:
+   - Permite a cualquier usuario explorar el catálogo de minijuegos (Topic Takedown,
+     Trivia Quiz, Hangman, Roulette, GeoLocation, Snap Solve, Zero Margin, etc.).
+   - Muestra demostraciones interactivas en vivo (Play/Setup) para que los usuarios
+     experimenten la emoción de los juegos antes de adquirirlos.
+
+B. Espacios Publicitarios (Sponsors & Google AdSense):
+   - Integración nativa de bloques publicitarios en marcos laterales ("Sponsor Space")
+     y banners superiores/inferiores.
+   - Venta directa de espacios de patrocinio para marcas educativas, tiendas de
+     tecnología o eventos, complementado con redes programáticas (Google AdSense).
+
+C. Portal de Descarga y Pasarela de Comercio Electrónico:
+   - Descarga directa de la Plantilla Base Offline (Template Offline) lista para
+     ejecutarse en sistemas Windows mediante un instalador o archivo .ZIP.
+   - Marketplace de Juegos de Extensión: Venta de paquetes modulares de juegos
+     adicionales que los usuarios pueden integrar inmediatamente a su ejecutable.
+   - Pasarelas de pago automatizadas: Integración de PayPal, tarjetas de crédito/débito
+     y sistema de canje mediante Códigos Promocionales VIP (claves criptográficas
+     gestionadas por la administración).
+
+
+--------------------------------------------------------------------------------
+3. MODELO B2B / B2G: PAQUETES PARA ESCUELAS Y COLEGIOS (K-12)
+--------------------------------------------------------------------------------
+En el sector de educación primaria y secundaria, los docentes se enfrentan a dos
+grandes desafíos: la pérdida de atención de los estudiantes y la inestabilidad de
+las conexiones a internet en las aulas de clase. Game Show Center Offline resuelve
+ambos problemas de raíz.
+
+A. Ventajas del Entorno Offline y RAG para Colegios:
+   - 100% Funcional sin Internet: Los profesores no dependen del ancho de banda de la
+     escuela ni sufren caídas de red durante una clase o feria científica.
+   - Generación Curricular Asistida por IA (RAG Local): Los docentes pueden cargar
+     sus libros de texto en PDF (hasta 10 documentos por partida) para que el asistente
+     de IA genere preguntas y desafíos directamente basados en su temario oficial,
+     garantizando pertinencia pedagógica inmediata sin esfuerzo manual.
+   - Seguridad y Privacidad Absoluta para Menores: Cero transmisión de datos a la nube
+     (cumplimiento estricto de normativas COPPA, FERPA y RGPD). No se crean cuentas
+     ni se exponen datos de los estudiantes.
+   - Formato Concurso Atractivo: Los modos 1vs1, Por Equipos y Todos Contra Todos
+     fomentan la sana competencia, el trabajo colaborativo y la retención pedagógica.
+
+B. Esquema de Suscripción Anual con Fecha de Caducidad (Licenciamiento Controlado):
+   - Oferta de Licencias Anuales Institucionales: Paquetes por aula, por docente o
+     por institución completa (Campus License K-12).
+   - Sistema de Licenciamiento Seguro (.lic):
+     * Cada instalación genera una firma única asociada al Hardware ID (HWID) del equipo.
+     * La clave de activación incorpora una fecha de expiración o caducidad anual.
+     * Al cumplirse el ciclo anual (ej. año lectivo escolar), el software solicita la
+       renovación de la clave, garantizando un flujo de ingresos recurrente y predecible.
+   - Paquetes de Contenido Temático Curricular:
+     * El plan anual incluye bancos de preguntas estructurados por materias (Ciencias,
+       Matemáticas, Historia, Geografía, Idiomas) y niveles escolares.
+     * Facilidad para que los profesores editen, exporten e importen sus propios
+       cuestionarios en formato JSON a través del botón de Setup sin conocimientos técnicos.
+
+
+--------------------------------------------------------------------------------
+4. MODELO ACADÉMICO Y CORPORATIVO: UNIVERSIDADES Y CAPACITACIÓN LABORAL
+--------------------------------------------------------------------------------
+A. Universidades y Facultades de Ingeniería ("Dev Learning Kit"):
+   - Los planes de estudio universitarios a menudo enseñan conceptos teóricos
+     desconectados de proyectos reales y atractivos.
+   - Game Show Center se ofrece como un Laboratorio de Código Abierto/Educativo
+     donde los estudiantes aprenden la sinergia de tres tecnologías de alta demanda:
+     * Frontend con React + Vite: Arquitectura de componentes, Custom Hooks, gestión
+       de estados dinámicos, renderizado condicional y diseño responsivo.
+     * Backend & Core con Java (Spring Boot + JavaFX): Patrones de diseño empresariales
+       (Service Provider, Dynamic ClassLoader, DTOs), serialización JSON con Jackson
+       e internacionalización (i18n).
+     * Inteligencia Artificial Aplicada: Inferencia local con modelos GGUF cuantizados,
+       procesamiento de texto con Python, arquitectura RAG (extracción PDF con pypdf)
+       y evaluación de imágenes multimodales.
+   - Paquete Universitario "Dev Learning Kit": Código fuente modular, laboratorios de
+     creación de minijuegos independientes y derechos de uso en salas de cómputo.
+
+B. Segmento Corporativo y Onboarding Empresarial:
+   - Las empresas pueden cargar sus manuales de inducción, normativas de seguridad
+     laboral (HSE) o manuales de producto en PDF.
+   - La IA genera trivias y dinámicas de integración para eventos corporativos y
+     jornadas de capacitación con confidencialidad total (protección de propiedad
+     intelectual sin fugas a servicios de IA en la nube).
+
+
+--------------------------------------------------------------------------------
+5. ESTRUCTURA DE INGRESOS Y MONETIZACIÓN
+--------------------------------------------------------------------------------
+El modelo de monetización se diversifica en 4 fuentes clave de ingresos:
+
+1. Ingresos Publicitarios en Web (Tráfico Abierto):
+   - Google AdSense + Redes de Display en banners integrados.
+   - Venta directa de espacios de patrocinio en los bordes del área de juego.
+
+2. Venta Directa a Consumidores Finales (B2C):
+   - Descarga de la versión Offline básica: $9.99 USD (pago único por equipo).
+   - Paquetes de Juegos de Extensión (DLCs temáticos): $3.99 a $5.99 USD por juego extra.
+
+3. Planes Anuales Escolares (B2B Institucional K-12):
+   - Plan Aula Individual: $49.00 USD / año (hasta 3 equipos del docente).
+   - Plan Escuela / Colegio Completo: $199.00 a $399.00 USD / año (equipos ilimitados
+     dentro del centro educativo, soporte técnico y banco de preguntas curriculares).
+
+4. Licencias Académicas y Corporativas (B2B Superior & Enterprise):
+   - Paquete Universitario de Ingeniería: $499.00 a $999.00 USD / año. Incluye código
+     fuente formativo, guías didácticas para docentes, talleres de desarrollo de
+     plugins y derechos de laboratorio para las salas de cómputo de la facultad.
+   - Licencia Corporativa de Capacitación: $599.00 USD / año por sede, con soporte
+     para carga de manuales internos RAG y personalización de marca.
+
+
+--------------------------------------------------------------------------------
+6. PLAN DE ACCIÓN Y ROADMAP DE CRECIMIENTO
+--------------------------------------------------------------------------------
+- Fase 1 (Lanzamiento & Tráfico):
+  Publicación de la plataforma web optimizada con juegos demostrativos, sistema de
+  anuncios activos y descarga del instalador offline autónomo con IA local.
+
+- Fase 2 (Alianzas Escolares Piloto):
+  Presentación del software a escuelas locales y colegios privados ofreciendo pruebas
+  gratuitas de 30 días con caducidad programada y demostraciones del motor RAG,
+  cerrando los primeros contratos anuales.
+
+- Fase 3 (Convenios Universitarios y Corporativos):
+  Presentación del "Dev Learning Kit" en facultades de informática y módulos de
+  capacitación confidencial en empresas.
+
+- Fase 4 (Marketplace Comunitario de Minijuegos):
+  Apertura de la tienda de extensiones donde desarrolladores externos (estudiantes y
+  programadores) puedan publicar sus propios juegos para Game Show Center, generando
+  un reparto de ingresos (rev-share).
+================================================================================

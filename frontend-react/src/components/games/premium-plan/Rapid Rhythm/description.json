@@ -1,0 +1,60 @@
+{
+  "index": 3,
+  "name": "Rapid Rhythm",
+  "description": "Listen closely to audio clues, identify the mystery songs, and reveal the answers: test your musical ear and speed.",
+  "author": "Yuyi Studios",
+  "available": ["1vs1", "team", "freeforall"],
+  "instructions": [
+    "An audio clue from the configured music playlist is ready to play.",
+    "Click the 'Play' button to listen to the mystery song clip or soundtrack.",
+    "Contestants buzz in or announce their guess for song title, artist, or movie theme.",
+    "Click 'Reveal Answer' to uncover the verified song information.",
+    "Click 'Next Track ➔' to move to the next audio clue until all tracks are finished."
+  ],
+  "translations": {
+    "en": {
+      "name": "Rapid Rhythm",
+      "description": "Listen closely to audio clues, identify the mystery songs, and reveal the answers: test your musical ear and speed.",
+      "instructions": [
+        "An audio clue from the configured music playlist is ready to play.",
+        "Click the 'Play' button to listen to the mystery song clip or soundtrack.",
+        "Contestants buzz in or announce their guess for song title, artist, or movie theme.",
+        "Click 'Reveal Answer' to uncover the verified song information.",
+        "Click 'Next Track ➔' to move to the next audio clue until all tracks are finished."
+      ]
+    },
+    "es": {
+      "name": "Rapid Rhythm",
+      "description": "Escucha atentamente los clips de audio, adivina la canción y revela la respuesta correcta: pon a prueba tu oído musical.",
+      "instructions": [
+        "Se prepara una pista de audio del lote musical configurado.",
+        "Pulsa el botón 'Reproducir' para escuchar el fragmento o pista musical.",
+        "Los concursantes intentan adivinar el título, artista o tema de película.",
+        "Haz clic en 'Revelar Respuesta' para mostrar la solución oficial de la canción.",
+        "Haz clic en 'Siguiente Pista ➔' para avanzar al siguiente clip hasta terminar la lista."
+      ]
+    },
+    "fr": {
+      "name": "Rapid Rhythm",
+      "description": "Écoutez attentivement les extraits audio, devinez le titre et révélez la réponse : testez votre culture musicale.",
+      "instructions": [
+        "Un extrait audio issu de la liste de lecture configurée est prêt.",
+        "Cliquez sur 'Lecture' pour écouter le clip musical mystère.",
+        "Les participants tentent de deviner le titre du morceau, l'artiste ou le film.",
+        "Cliquez sur 'Révéler la réponse' pour afficher les informations officielles du titre.",
+        "Cliquez sur 'Piste suivante ➔' pour enchaîner jusqu'à la fin de la manche."
+      ]
+    },
+    "pt": {
+      "name": "Rapid Rhythm",
+      "description": "Ouça atentamente os trechos de áudio, adivinhe as músicas e revele a resposta certa: teste seu ouvido musical.",
+      "instructions": [
+        "Uma faixa de áudio da lista configurada fica pronta para execução.",
+        "Clique em 'Play' para ouvir o trecho da música ou trilha sonora.",
+        "Os competidores tentam adivinhar o título da canção, artista ou tema.",
+        "Clique em 'Revelar Resposta' para exibir a solução oficial da música.",
+        "Clique em 'Próxima Faixa ➔' para passar para o próximo áudio até o fim da lista."
+      ]
+    }
+  }
+}

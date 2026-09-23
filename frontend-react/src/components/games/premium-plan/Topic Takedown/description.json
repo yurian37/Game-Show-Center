@@ -1,0 +1,60 @@
+{
+  "index": 5,
+  "name": "Topic Takedown",
+  "description": "Conquer the board category by category: answer specific themed questions correctly to completely dominate and clear out the topics.",
+  "author": "Yuyi Studios",
+  "available": ["1vs1", "team", "freeforall"],
+  "instructions": [
+    "The board is organized in columns of categories with numbered question cards.",
+    "Click an available numbered card to open and inspect the question prompt.",
+    "Participants can guess the answer. Click 'Reveal Answer' to uncover the solution.",
+    "Once revealed, that question is permanently completed and locked for the round.",
+    "Clear all categories to complete the match!"
+  ],
+  "translations": {
+    "en": {
+      "name": "Topic Takedown",
+      "description": "Conquer the board category by category: answer specific themed questions correctly to completely dominate and clear out the topics.",
+      "instructions": [
+        "The board is organized in columns of categories with numbered question cards.",
+        "Click an available numbered card to open and inspect the question prompt.",
+        "Participants can guess the answer. Click 'Reveal Answer' to uncover the solution.",
+        "Once revealed, that question is permanently completed and locked for the round.",
+        "Clear all categories to complete the match!"
+      ]
+    },
+    "es": {
+      "name": "Topic Takedown",
+      "description": "Conquista el tablero categoría por categoría: responde preguntas temáticas para dominar y despejar los temas.",
+      "instructions": [
+        "El tablero está organizado en columnas por categoría con tarjetas de preguntas numeradas.",
+        "Haz clic en cualquier tarjeta disponible para abrir el enunciado de la pregunta.",
+        "Los participantes intentan responder. Pulsa 'Revelar Respuesta' para mostrar la solución oficial.",
+        "Una vez revelada la respuesta, la tarjeta queda bloqueada permanentemente para esa ronda.",
+        "¡Despeja todas las preguntas del tablero para completar la partida!"
+      ]
+    },
+    "fr": {
+      "name": "Topic Takedown",
+      "description": "Conquérez le plateau catégorie par catégorie : répondez aux questions thématiques pour éliminer les sujets.",
+      "instructions": [
+        "Le plateau est organisé en colonnes de catégories avec des cartes numérotées.",
+        "Cliquez sur une carte disponible pour afficher l'énoncé de la question.",
+        "Les participants tentent de répondre. Cliquez sur 'Révéler la réponse' pour afficher la solution.",
+        "Une fois révélée, la carte est verrouillée définitivement pour cette manche.",
+        "Videz toutes les catégories pour remporter la partie !"
+      ]
+    },
+    "pt": {
+      "name": "Topic Takedown",
+      "description": "Conquiste o tabuleiro categoria por categoria: responda perguntas temáticas para eliminar os tópicos.",
+      "instructions": [
+        "O tabuleiro é organizado em colunas de categorias com cartas numeradas.",
+        "Clique em uma carta disponível para abrir o enunciado da pergunta.",
+        "Os participantes tentam adivinhar. Clique em 'Revelar Resposta' para exibir a solução.",
+        "Uma vez revelada, a carta fica bloqueada permanentemente nesta rodada.",
+        "Elimine todas as perguntas do tabuleiro para finalizar o jogo!"
+      ]
+    }
+  }
+}

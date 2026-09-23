@@ -1,0 +1,358 @@
+================================================================================
+              GAME SHOW CENTER OFFLINE - MANUAL DEL PROGRAMADOR
+      GUÍA TÉCNICA DE ARQUITECTURA, EXTENSIÓN, IA LOCAL (RAG) Y MINIJUEGOS
+                                YUYI STUDIOS
+================================================================================
+
+FECHA: Septiembre 2026
+VERSIÓN DEL ENTORNO: 0.9.1 Standalone Runtime & Developer SDK
+TECNOLOGÍA CORE: Java 21+ / JavaFX 22 / Jackson JSON / Dynamic ClassLoader / Local AI (GGUF / RAG / Vision)
+
+
+--------------------------------------------------------------------------------
+1. INTRODUCCIÓN Y DESARROLLO SIN NECESIDAD DEL EJECUTABLE (.EXE)
+--------------------------------------------------------------------------------
+En Game Show Center, los programadores de nuevas unidades y minijuegos NO necesitan
+poseer ni compilar el archivo ejecutable de producción (`GameShowCenter.exe`).
+
+El sistema está diseñado con una arquitectura modular desacoplada que permite dos
+flujos de trabajo completos de desarrollo:
+
+A. Flujo de Desarrollo Directo con Maven (Recomendado para programadores del proyecto):
+   - Si tienes acceso al código fuente o plantilla del proyecto:
+     1. Abre una terminal en la carpeta `template-offline/`.
+     2. Ejecuta el comando de desarrollo:
+        * En Windows:   `.\mvnw.cmd javafx:run`
+        * En Linux/Mac: `./mvnw javafx:run`
+     3. La aplicación completa se compilará y ejecutará en caliente, escaneando
+        automáticamente cualquier carpeta de juego dentro de `games/` o
+        `template-offline/games/`.
+   - Clave Maestra de Activación para Pruebas de Desarrollo:
+     Si el entorno solicita activación de licencia durante el desarrollo, ingresa la
+     siguiente Clave Maestra de Desarrollador (Master Key):
+     `YUYI-STUDIO-PRO-2026`
+     Esta clave activa instantáneamente todas las funciones Pro de forma offline.
+
+B. Flujo de Desarrollo Modular Externo (Plugin Autónomo):
+   - Si eres un desarrollador externo creando un minijuego independiente para distribuir
+     a usuarios finales:
+     1. Solo necesitas Java 17+ o 21+ y las dependencias estándar de JavaFX y Jackson
+        (disponibles en Maven Central).
+     2. Desarrollas tu clase visual (Stage) y tu editor opcional (SetupEditor) en tu
+        propio IDE (IntelliJ IDEA, Eclipse, VS Code, NetBeans).
+     3. Compilas tu código y generas un archivo `.jar` (ej. `mi-juego.jar`) o copias
+        los archivos `.class` a una subcarpeta `classes/`.
+     4. Al entregar tu juego, el usuario final solo coloca tu carpeta en `games/` y el
+        motor de `GamePluginClassLoader` cargará tu código de forma automática.
+
+
+--------------------------------------------------------------------------------
+2. ESTRUCTURA DE ARCHIVOS DE UN MINIJUEGO
+--------------------------------------------------------------------------------
+Para que el motor de Game Show Center reconozca y ejecute un nuevo minijuego, se
+debe crear una subcarpeta dentro de `games/`:
+
+Ruta: `games/<Nombre_Del_Juego>/`
+
+Dentro de dicha carpeta, se definen los siguientes archivos:
+
+1. `description.json` (Obligatorio):
+   Manifiesto que define el nombre, autor, clases Java a instanciar, compatibilidad de
+   modos de juego (1vs1, team, FREE_FOR_ALL) e instrucciones en varios idiomas.
+
+2. `setup.json` (Obligatorio o Altamente Recomendado):
+   Estructura de datos inicial del juego (banco de preguntas, respuestas, tiempos,
+   palabras, ponderaciones o parámetros numéricos).
+
+3. Código Java Compilado del Juego (Elige UNA de las modalidades):
+   - Modalidad A (Recomendada para Plugins): Archivo `.jar` (ej. `game.jar` o `mi-juego.jar`)
+     colocado directamente en la carpeta del juego. `GamePluginClassLoader` lo añade
+     automáticamente a su ClassPath aislado.
+   - Modalidad B (Desarrollo Rápido): Subcarpeta `classes/` conteniendo la estructura
+     de paquetes compilada (ej: `classes/com/miempresa/juego/MiStage.class`).
+   - Modalidad C (Código en el Core): Clase compilada dentro del proyecto base
+     (al usar `.\mvnw.cmd javafx:run`).
+
+4. `ai_prompt.json` (Opcional - Integración con Inteligencia Artificial Local):
+   Define las plantillas de prompts y el esquema de generación de contenido automático
+   mediante el modelo local de IA y la base documental RAG (ver Sección 6).
+
+5. Archivos de Reglas Multilenguaje (Opcionales):
+   `instructions.json` o archivos planos (`instructions_es.txt`, `instructions_en.txt`, etc.).
+
+6. Subcarpeta `images/` (Opcional - Juegos multimedia):
+   Almacena imágenes locales precargadas o generadas/descargadas por el asistente de IA
+   (ej. Snap Solve, GeoLocation, Guess Character).
+
+
+--------------------------------------------------------------------------------
+3. ESPECIFICACIÓN DEL ARCHIVO `description.json`
+--------------------------------------------------------------------------------
+Ejemplo completo y válido de `description.json`:
+```json
+{
+  "index": 12,
+  "name": "Super Math Challenge",
+  "author": "Facultad de Ingenieria",
+  "description": "Resuelve calculos mentales rapidos antes de que se agote el tiempo.",
+  "stageClass": "com.universidad.games.MathChallengeStage",
+  "editorClass": "com.universidad.games.MathChallengeSetupEditor",
+  "available": ["1vs1", "team", "FREE_FOR_ALL"],
+  "instructions": [
+    "Aparecera una operacion matematica en la pantalla central.",
+    "El participante activo tiene 10 segundos para dar su respuesta verbal.",
+    "Pulsa 'Verificar' para comprobar si el resultado coincide.",
+    "Otorga los puntos con la botonera inferior si la solucion es correcta."
+  ],
+  "translations": {
+    "en": {
+      "name": "Super Math Challenge",
+      "description": "Solve rapid mental calculations before time runs out.",
+      "instructions": [
+        "A mathematical operation will appear on the central board.",
+        "The active player has 10 seconds to submit an answer.",
+        "Click 'Verify' to reveal the solution.",
+        "Award points using the bottom scoreboard if correct."
+      ]
+    },
+    "es": {
+      "name": "Super Desafio Matematico",
+      "description": "Resuelve calculos mentales rapidos antes de que se agote el tiempo.",
+      "instructions": [
+        "Aparecera una operacion matematica en la pantalla central.",
+        "El participante activo tiene 10 segundos para dar su respuesta verbal.",
+        "Pulsa 'Verificar' para comprobar si el resultado coincide.",
+        "Otorga los puntos con la botonera inferior si la solucion es correcta."
+      ]
+    },
+    "fr": {
+      "name": "Super Defi Mathematique",
+      "description": "Resolvez des calculs mentaux rapides avant la fin du chronometre.",
+      "instructions": [
+        "Une operation mathematique apparait au centre de l ecran.",
+        "Le joueur a 10 secondes pour repondre.",
+        "Cliquez sur 'Verifier' pour afficher la reponse officielle."
+      ]
+    },
+    "pt": {
+      "name": "Super Desafio Matematico",
+      "description": "Resolva calculos mentais rapidos antes que o tempo se esgote.",
+      "instructions": [
+        "Uma operacao matematica aparecera no painel central.",
+        "O jogador tem 10 segundos para responder.",
+        "Clique em 'Verificar' para exibir o resultado correto."
+      ]
+    }
+  }
+}
+```
+
+Propiedades clave:
+- `stageClass` (string - FQN): Clase JavaFX principal del juego.
+- `editorClass` (string - FQN, opcional): Clase editora que implementa `IGameSetupEditor`.
+- `available` (array): Modos de competencia soportados (`"1vs1"`, `"team"`, `"FREE_FOR_ALL"`).
+
+
+--------------------------------------------------------------------------------
+4. REQUERIMIENTOS DE CÓDIGO JAVA (CONTRATOS E INTERFACES)
+--------------------------------------------------------------------------------
+
+A. Contrato de la Vista Principal (`stageClass`):
+   1. Debe heredar de `javafx.scene.layout.Region` (por ejemplo: `VBox`, `StackPane`,
+      `BorderPane` o `Pane`).
+   2. Debe ser pública (`public class`) y proveer al menos uno de los siguientes
+      constructores públicos:
+
+      Constructor A (Recomendado con callback de ganador - 3 argumentos):
+      ```java
+      public MiJuegoStage(
+          List<com.gameshowcenter.offline.model.Competitor> profiles,
+          com.fasterxml.jackson.databind.JsonNode setupData,
+          java.util.function.Consumer<com.gameshowcenter.offline.model.Competitor> winnerListener
+      )
+      ```
+
+      Constructor B (Simplificado - 2 argumentos):
+      ```java
+      public MiJuegoStage(
+          List<com.gameshowcenter.offline.model.Competitor> profiles,
+          com.fasterxml.jackson.databind.JsonNode setupData
+      )
+      ```
+
+   3. Objetos disponibles en los parámetros:
+      - `profiles`: Lista de participantes activos (`Competitor`). Métodos:
+        * `getId()`: Identificador interno ("Player #1", "Team #1", etc.).
+        * `getName()`: Nombre asignado por el usuario en los ajustes.
+        * `getAvatarPath()`: Ruta al archivo de imagen seleccionado por el usuario.
+      - `setupData`: Estructura JSON cargada desde `setup.json`.
+      - `winnerListener`: Consumidor opcional. Invocar `winnerListener.accept(competidor)`
+        si el juego finaliza con un ganador decretado de forma autónoma.
+
+   4. Buenas Prácticas de Ciclo de Vida y Eventos (Evitar Fugas):
+      - Si tu escenario registra listeners de teclado o filtros globales en la ventana
+        (`Scene.addEventFilter(KeyEvent.KEY_PRESSED, ...)`), debes vincular su
+        desregistro a la propiedad de escena o removerlos cuando el nodo sea retirado:
+        ```java
+        sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (oldScene != null && myKeyFilter != null) {
+                oldScene.removeEventFilter(KeyEvent.KEY_PRESSED, myKeyFilter);
+            }
+        });
+        ```
+
+B. Contrato del Editor de Ajustes (`editorClass`):
+   Si tu juego ofrece personalización visual en el botón "Ajustes" (Setup), debe
+   implementar la interfaz:
+   `com.gameshowcenter.offline.games.IGameSetupEditor`
+
+   Código exacto de la interfaz:
+   ```java
+   package com.gameshowcenter.offline.games;
+
+   import com.fasterxml.jackson.databind.JsonNode;
+   import com.gameshowcenter.offline.model.Competitor;
+   import com.gameshowcenter.offline.themes.Palette;
+   import javafx.scene.Node;
+   import java.util.List;
+
+   public interface IGameSetupEditor {
+       // Construye el panel visual que se muestra dentro de la ventana modal de ajustes
+       Node createEditorPanel(JsonNode currentSetup, List<Competitor> profiles, Palette palette);
+
+       // Valida los datos antes de iniciar la partida. Retorna null si todo es correcto,
+       // o un mensaje explicativo internacionalizado si falta contenido
+       String validateSetupData(JsonNode setupData, List<Competitor> profiles);
+
+       // Retorna el JsonNode con los datos actualizados tras la edición del usuario
+       // ATENCIÓN: El método se llama exactamente getUpdatedSetup()
+       JsonNode getUpdatedSetup();
+   }
+   ```
+
+
+--------------------------------------------------------------------------------
+5. ESTÁNDARES VISUALES, GLIFOS Y AJUSTES GLOBALES
+--------------------------------------------------------------------------------
+
+A. Compatibilidad de Glifos en Windows (Prevención de Cajas Vacías `[]`):
+   Debido a limitaciones del renderizador tipográfico DirectWrite en Windows 10/11
+   con fuentes del sistema no especializadas en emojis multicolores, todos los
+   componentes gráficos del sistema deben utilizar glifos Unicode estándar y seguros:
+   - Navegación / Flechas: `←`, `►`, `◄` (evitar `🠔` U+1F814).
+   - Manijas de arrastre: `⋮⋮` (evitar braille grip `⠿`).
+   - Pantalla completa: `🖥️` (evitar `⛶` U+26F6).
+   - Monedas y fichas: `🟡` (evitar `🪙` U+1FA99).
+   - Banderas de idioma: Icono universal `🌐` en selectores desplegables.
+   - Limpieza / Restablecer: `✨` (evitar escoba `🧹`).
+   - Bloques y cuadrículas: `▦` (evitar ladrillo `🧱`).
+   - Ajustes Globales: `⚙️`.
+
+B. Arquitectura de Ajustes Globales (`ThemeCustomizerDialog`):
+   El botón superior `⚙️` ("Ajustes Globales") unifica la configuración del sistema:
+   1. Pestaña de Paletas de Color: Personalización en vivo de fondos, acentos y fuentes.
+   2. Pestaña de Base de Conocimiento RAG: Gestión de documentos PDF de referencia
+      para alimentar los modelos locales de Inteligencia Artificial.
+
+
+--------------------------------------------------------------------------------
+6. ARQUITECTURA DE IA LOCAL (GGUF) Y MÓDULO RAG (DOCUMENTOS PDF)
+--------------------------------------------------------------------------------
+Game Show Center cuenta con un subsistema de generación de contenidos asistido por IA
+completamente offline. Funciona mediante un motor de inferencia local en Python
+(`ai_worker.py`) que ejecuta modelos cuantizados GGUF (por ejemplo: `Qwen2.5-0.5B-Instruct-Q4_K_M.gguf`
+o modelos compatibles en la carpeta `models/`).
+
+A. Módulo RAG (Retrieval-Augmented Generation) con Documentos PDF:
+   El sistema permite enriquecer el contexto del modelo con documentos reales del usuario:
+   - Configuración centralizada: Administrada por `RagDocumentsConfigManager.java`.
+   - Almacenamiento: Las rutas de hasta 10 documentos PDF se guardan en `preferences.json`
+     bajo la clave `"rag_documents"`.
+   - Extracción de texto (`extract_rag_context` en `ai_worker.py`):
+     * Utiliza la librería `pypdf` para parsear los PDFs en milisegundos.
+     * Inyecta los extractos más relevantes como contexto de conocimiento en el
+       `system_prompt` de la IA.
+     * Inyecta contexto temático en el Juez Visual Multimodal (`_do_verify_image_with_vision`)
+       para validar la pertinencia de imágenes descargadas o generadas con base en el
+       contenido de los libros o manuales cargados.
+
+B. Modos de Generación: Agregar (Append) vs Sobreescribir con Anti-Duplicados:
+   - Al invocar la IA desde la interfaz Java (`SettingsFxView.java`), el sistema analiza
+     el contenido actual del juego (preguntas, palabras, lugares, etc.).
+   - Modo "Agregar (Conserva actuales)":
+     * La interfaz muestra un panel destacado con badges/chips de los elementos existentes:
+       `📋 Elementos actuales (la IA evitará duplicados o similares): [X items]`.
+     * `AIService.java` envía la lista `existing_items` a la configuración de ejecución.
+     * `ai_worker.py` inyecta una directiva estricta en el prompt:
+       `CRITICAL ANTI-DUPLICATION RULE: You must NEVER repeat or generate similar items to: [...]`.
+     * El worker filtra activamente los resultados mediante sets de deduplicación en memoria
+       (`seen_locs`, `seen_words_set`, `seen_existing_q`, etc.), garantizando que sólo
+       se agreguen elementos novedosos.
+
+C. Tipos de Generación Soportados en `ai_prompt.json`:
+   1. `generation_type`:
+      - `"qa_list"`: Preguntas con opciones, respuesta correcta y explicación (Trivia Quiz, Topic Takedown).
+      - `"word_list"`: Palabras clave en mayúsculas con pista descriptiva (Hangman).
+      - `"hierarchical_categories"`: Categorías temáticas con subelementos asociados.
+      - `"single_image_entities"`: Entidades con término de búsqueda visual (Snap Solve).
+      - `"multi_image_entities"`: Entidades con múltiples referencias visuales (GeoLocation, Guess Character).
+
+   2. Parámetros dinámicos en `user_prompt_template`:
+      - `{prompt}`: Instrucción o tema solicitado.
+      - `{count}`: Cantidad total de elementos requeridos.
+      - `{cand_count}`: Opciones o distractores por elemento.
+      - `{lang}`: Idioma de destino (`es`, `en`, `fr`, `pt`).
+
+D. Ejemplo de `ai_prompt.json` con Soporte RAG:
+```json
+{
+  "generation_type": "qa_list",
+  "system_prompt": "You are an expert game show question writer. Respond ONLY with a valid JSON array of objects. When reference document context is provided, prioritize formulating factual questions based strictly on that material.",
+  "user_prompt_template": "Generate {count} questions about '{prompt}' in {lang}. Each item must have 'question', 'options' (array of 4 strings), 'correct_answer', and 'explanation'.",
+  "default_count": 10,
+  "fallback_pool": "setup.json"
+}
+```
+
+E. Ejecución Manual y Pruebas del Worker:
+   ```bash
+   python ai_worker.py --game "Trivia Quiz" --prompt "Historia Universal" --count 5 --lang es
+   ```
+
+F. Resiliencia y Fallback:
+   Si el equipo no cumple los requisitos de hardware (CPU/RAM/GPU) o Python no está
+   presente, el sistema activa un fallback transparente cargando los datos base de
+   `setup.json`, asegurando que la partida nunca falle.
+
+
+--------------------------------------------------------------------------------
+7. INTERNACIONALIZACIÓN (i18n)
+--------------------------------------------------------------------------------
+Game Show Center soporta 4 idiomas oficiales: Español (`es`), Inglés (`en`),
+Francés (`fr`) y Portugués (`pt`).
+
+Los textos dinámicos de los editores y validadores de minijuegos deben recurrir a
+la clase `com.gameshowcenter.offline.i18n.I18n`:
+```java
+String msg = I18n.get("game.editor.validation.pool_insufficient", count, minRequired);
+```
+Las cadenas maestras se definen en `src/main/resources/i18n/messages_*.properties`.
+
+
+--------------------------------------------------------------------------------
+8. GUÍA PASO A PASO PARA COMPILAR Y PROBAR TU JUEGO
+--------------------------------------------------------------------------------
+1. Crea la carpeta `games/MiNuevoJuego/`.
+2. Añade `description.json` con metadatos y la clase visual (`stageClass`).
+3. Añade `setup.json` con el contenido predeterminado.
+4. (Opcional) Añade `ai_prompt.json` si tu juego utilizará la IA local / RAG.
+5. Coloca el código compilado:
+   - Desarrollo interno: añade tus clases a `src/main/java/` y corre `.\mvnw.cmd javafx:run`.
+   - Desarrollo externo: compila y copia `MiNuevoJuego.jar` a la carpeta del juego.
+6. En la pantalla de Ajustes:
+   - Verifica la aparición de la tarjeta en el catálogo.
+   - Pulsa "Ajustes" para comprobar la interfaz de tu editor (`IGameSetupEditor`).
+   - Si usas IA, prueba los modos "Agregar" y "Sobreescribir" y corrobora la deduplicación.
+7. En la Arena:
+   - Verifica la interacción con el marcador, teclado y botón de instrucciones.
+================================================================================

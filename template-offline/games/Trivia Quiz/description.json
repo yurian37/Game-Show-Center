@@ -1,0 +1,62 @@
+{
+  "index": 4,
+  "name": "Trivia Quiz",
+  "description": "Customizable trivia question show: host reveals questions and correct answers for players across various topics.",
+  "author": "Yuyi Studios",
+  "stageClass": "com.gameshowcenter.offline.games.views.TriviaQuizFxStage",
+  "editorClass": "com.gameshowcenter.offline.games.editors.TriviaQuizSetupEditor",
+  "available": ["1vs1", "team", "freeforall"],
+  "instructions": [
+    "The host selects and displays a trivia question from the configured question deck.",
+    "Contestants listen to the prompt and announce their answers or buzz in.",
+    "Click 'Reveal Answer' to display the officially verified correct answer.",
+    "Points are assigned to the contestant or team with the correct answer.",
+    "Click 'Next Question ➔' to advance through the quiz until all cards are cleared."
+  ],
+  "translations": {
+    "en": {
+      "name": "Trivia Quiz",
+      "description": "Customizable trivia question show: host reveals questions and correct answers for players across various topics.",
+      "instructions": [
+        "The host selects and displays a trivia question from the configured question deck.",
+        "Contestants listen to the prompt and announce their answers or buzz in.",
+        "Click 'Reveal Answer' to display the officially verified correct answer.",
+        "Points are assigned to the contestant or team with the correct answer.",
+        "Click 'Next Question ➔' to advance through the quiz until all cards are cleared."
+      ]
+    },
+    "es": {
+      "name": "Concurso Trivia",
+      "description": "Show de preguntas de trivia personalizable: el presentador revela preguntas y respuestas correctas para los jugadores.",
+      "instructions": [
+        "El presentador selecciona y muestra una pregunta del banco de trivias configurado.",
+        "Los concursantes escuchan el enunciado y responden según el formato de la ronda.",
+        "Haz clic en 'Revelar Respuesta' para mostrar la respuesta oficial en pantalla.",
+        "Se asignan los puntos correspondientes al jugador o equipo que haya acertado.",
+        "Haz clic en 'Siguiente Pregunta ➔' para avanzar en el concurso hasta completar el mazo."
+      ]
+    },
+    "fr": {
+      "name": "Quiz Trivia",
+      "description": "Jeu-concours de questions personnalisable : l'animateur dévoile les questions et les bonnes réponses aux joueurs.",
+      "instructions": [
+        "L'animateur sélectionne et affiche une question parmi le jeu de cartes configuré.",
+        "Les participants écoutent l'énoncé et annoncent leurs réponses.",
+        "Cliquez sur 'Révéler la réponse' pour faire apparaître la bonne réponse à l'écran.",
+        "Attribuez les points au joueur ou à l'équipe qui a trouvé la bonne réponse.",
+        "Cliquez sur 'Question suivante ➔' pour poursuivre jusqu'à l'épuisement des questions."
+      ]
+    },
+    "pt": {
+      "name": "Quiz de Trivia",
+      "description": "Show de perguntas personalizável: o apresentador revela perguntas e respostas corretas para os jogadores.",
+      "instructions": [
+        "O apresentador seleciona e exibe uma pergunta do banco de temas configurado.",
+        "Os participantes ouvem o enunciado e respondem de acordo com as regras.",
+        "Clique em 'Revelar Resposta' para exibir a solução oficial na tela.",
+        "Atribua a pontuação ao competidor ou equipe que tiver acertado a resposta.",
+        "Clique em 'Próxima Pergunta ➔' para avançar até completar todas as cartas."
+      ]
+    }
+  }
+}

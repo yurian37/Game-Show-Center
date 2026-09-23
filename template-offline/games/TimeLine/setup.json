@@ -1,0 +1,29 @@
+{
+  "game" : "TimeLine",
+  "events" : [ {
+    "id" : "ev_1",
+    "title" : "Guerra de Troya",
+    "year" : -1194,
+    "description" : "Se cree que comenzó el asedio de la ciudad de Troya, un conflicto mítico que marcó el inicio de la era de las grandes guerras antiguas."
+  }, {
+    "id" : "ev_2",
+    "title" : "Guerra de los Diez Años",
+    "year" : 1618,
+    "description" : "Iniciada en Europa, esta larga contienda entre las potencias católicas y protestantes redefinió el mapa político del continente."
+  }, {
+    "id" : "ev_3",
+    "title" : "Guerra de los Treinta Años",
+    "year" : 1618,
+    "description" : "Comenzó en Alemania como un conflicto religioso que rápidamente se transformó en una devastadora guerra europea de poder."
+  }, {
+    "id" : "ev_4",
+    "title" : "Guerra de Independencia de los Estados Unidos",
+    "year" : 1775,
+    "description" : "Los colonos americanos lograron su independencia de Gran Bretaña tras una guerra que duró ocho años."
+  }, {
+    "id" : "ev_5",
+    "title" : "Primera Guerra Mundial",
+    "year" : 1914,
+    "description" : "El estallido de este conflicto global marcó el fin de la era imperial y el comienzo de la modernidad bélica industrial."
+  } ]
+}

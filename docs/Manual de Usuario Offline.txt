@@ -1,0 +1,226 @@
+================================================================================
+                GAME SHOW CENTER OFFLINE - MANUAL DE USUARIO
+         GUÍA GENERAL DE OPERACIÓN, CONFIGURACIÓN Y CONTROL DEL SISTEMA
+                                YUYI STUDIOS
+================================================================================
+
+FECHA: Septiembre 2026
+VERSIÓN DEL SOFTWARE: 0.9.1 Standalone Desktop
+SISTEMA OPERATIVO: Windows 10 / 11 (64-bit)
+
+NOTA IMPORTANTE:
+Este manual está diseñado para ser completamente amigable y accesible, incluso
+para usuarios con poca experiencia en computación. Explica de manera sencilla
+cómo navegar por el sistema, preparar una partida, personalizar las reglas,
+usar la Inteligencia Artificial con tus propios documentos y conducir el evento
+en vivo sin complicaciones técnicas.
+
+
+================================================================================
+1. PANTALLA PRINCIPAL (INICIO)
+================================================================================
+Al abrir la aplicación, aparece la pantalla de bienvenida (Inicio), diseñada
+como el punto de partida visual del evento:
+
+- Encabezado: Presenta el logotipo oficial de Game Show Center y el título del programa.
+- Tarjetas informativas: Explican las características principales: funcionamiento
+  100% sin conexión a internet, flexibilidad para jugar en grupos o duelos individuales,
+  y un escenario interactivo adaptado para proyectores o pantallas grandes.
+- Botón "Comenzar" / "Start Game": Te lleva directamente a la pantalla de
+  preparación de la partida (Ajustes).
+
+
+================================================================================
+2. BARRA SUPERIOR Y AJUSTES GLOBALES
+================================================================================
+En la parte superior de la ventana encontrarás siempre a mano los siguientes controles:
+
+1. Logotipo y Título: Identificador visual y botón de retorno al inicio.
+2. Selector de Idioma (🌐):
+   Menú desplegable para cambiar en cualquier momento entre 4 idiomas oficiales:
+   - Español
+   - English
+   - Français
+   - Português
+   Todo el texto de la pantalla, las explicaciones de ayuda y los botones se adaptan
+   al instante sin necesidad de reiniciar el programa.
+3. Botón de Pantalla Completa (🖥️):
+   Amplía la ventana para ocupar toda la pantalla (ideal para proyectores o televisores).
+   También puedes presionar la tecla F11 en tu teclado.
+4. Botón de Ajustes Globales (⚙️):
+   Abre una ventana con dos herramientas fundamentales:
+   - Pestaña de Colores y Temas: Personaliza la apariencia gráfica del juego con
+     paletas de colores vibrantes para combinar con tu escuela, empresa o evento.
+   - Pestaña de Documentos Adicionales (RAG): Te permite cargar tus propios
+     archivos PDF para alimentar a la Inteligencia Artificial (ver Sección 9).
+
+
+================================================================================
+3. PANTALLA DE AJUSTES (PREPARACIÓN DE LA PARTIDA)
+================================================================================
+Esta pantalla es tu mesa de preparación antes de que comience el espectáculo:
+
+A. Botones de Acción Superior:
+   - 📥 Cargar partida guardada:
+     Te permite abrir una partida que hayas guardado previamente en tu computadora.
+     Al hacer clic, se abre una ventana donde eliges tu archivo y se restauran
+     automáticamente los nombres de los jugadores, los equipos, los botones de puntos
+     y los juegos elegidos. ¡No tienes que volver a escribir todo desde cero!
+   - 💾 Guardar partida en archivo:
+     Guarda todo lo que preparaste en un archivo de respaldo en tu equipo. Es ideal
+     si organizas varias clases, eventos o torneos diferentes y quieres tenerlos listos.
+   - 🔄 Restablecer ajustes:
+     Vuelve todos los nombres, opciones y selecciones a sus valores iniciales si deseas
+     comenzar una partida totalmente nueva.
+
+B. Memoria Automática (Sin esfuerzo):
+   Cada vez que cambias un nombre, seleccionas un juego o ajustas una opción, el sistema
+   lo recuerda automáticamente. Si cierras el programa y lo vuelves a abrir, tu última
+   partida seguirá esperándote tal como la dejaste.
+
+
+================================================================================
+4. MODOS DE JUEGO Y PARTICIPANTES
+================================================================================
+En el bloque "Modo de Juego" defines cómo competirán las personas:
+
+1. Modo 1 contra 1 (Duelo Directo):
+   - Enfrentamiento entre 2 competidores individuales ("Jugador 1" y "Jugador 2").
+2. Modo Por Equipos:
+   - Competencia entre bandos o grupos. Puedes elegir fácilmente con una lista
+     desplegable si habrá 2, 3, 4 o más equipos.
+3. Modo Todos contra Todos:
+   - Batalla abierta individual donde compiten de 3 a 8 participantes al mismo tiempo.
+
+Personalización de Perfiles:
+- Escribir nombres: En cada casilla puedes escribir el nombre real, apodo o nombre
+  de fantasía del equipo (por ejemplo: "Los Leones", "Equipo Azul", "Sofía").
+- Foto o Avatar: Haciendo clic en "Elegir Avatar" puedes seleccionar una imagen
+  o fotografía desde tu computadora (.png o .jpg). La foto aparecerá en pantalla
+  gigante durante el juego y en el podio de premiación final.
+- Textos de ayuda: Debajo de cada opción encontrarás pequeñas frases guía que te
+  recuerdan qué hace cada botón para que nunca te sientas perdido.
+
+
+================================================================================
+5. BOTONES DE PUNTUACIÓN RÁPIDA (MARCADOR)
+================================================================================
+Durante la partida, no necesitas usar calculadora ni escribir números a mano. La
+aplicación cuenta con una botonera táctil configurable:
+
+- Botones activos: Etiquetas con números (como +10, +20, +50, -10, -20). Al hacer
+  un clic sobre ellas en vivo, se suman o restan esos puntos al jugador seleccionado.
+- Crear un nuevo botón: Si tu juego da 15 puntos por respuesta correcta, simplemente
+  escribes "15" en la casilla y presionas "Añadir".
+- Botones de adición rápida: Accesos directos convenientes (+5, +25, +100, -5, etc.)
+  para sumar botones comunes con un solo clic.
+- Eliminar un botón: Si no usas un valor, haz clic en la pequeña "✕" sobre la etiqueta.
+- Restablecer botones (✨): Vuelve a los valores clásicos recomendados (+10, +20, +50, -10, -20).
+
+
+================================================================================
+6. BANCOS DE IMÁGENES Y FUENTES MULTIMEDIA
+================================================================================
+En la sección de fuentes de imágenes puedes elegir de dónde tomará la aplicación
+las fotografías e ilustraciones para los juegos que las utilicen:
+
+- Wikipedia / Wikimedia: Acceso a millones de imágenes educativas públicas y seguras.
+- Bancos de imágenes libres (Freerange Stock): Fotografías de alta calidad sin costo.
+- Carpetas de tu computadora: Puedes pulsar "Elegir Carpeta" y seleccionar una carpeta
+  de tu propio equipo donde tengas guardadas tus fotos familiares, escolares o corporativas.
+
+
+================================================================================
+7. SELECCIÓN DE MINIJUEGOS Y NÚMERO DE ORDEN (#)
+================================================================================
+El catálogo muestra todos los minijuegos disponibles:
+
+A. Cómo elegir los juegos:
+   - Haz clic sobre cualquier tarjeta de juego para incluirlo en tu partida.
+   - Si un juego no está disponible para el modo que elegiste (por ejemplo, un juego
+     diseñado exclusivamente para 2 personas si elegiste modo por equipos), el sistema
+     te lo mostrará claramente atenuado para evitar cualquier error accidental.
+
+B. El Número de Orden (#1, #2, #3...):
+   - Al seleccionar un juego, aparecerá un círculo numerado indicando en qué orden
+     se jugará durante el show.
+   - Si deseleccionas uno, los demás se reacomodan automáticamente para que la
+     secuencia siempre sea continua y ordenada.
+
+
+================================================================================
+8. EL BOTÓN "AJUSTES" DE CADA JUEGO (CONFIGURACIÓN INDIVIDUAL)
+================================================================================
+Cada tarjeta de juego tiene su propio botón "Ajustes" (o "Setup"):
+
+- ¿Para qué sirve?: Te permite personalizar los contenidos de ese juego antes de
+  empezar. Por ejemplo: cambiar las palabras secretas, las preguntas de trivia,
+  el tiempo del temporizador o las categorías.
+- Asistente Inteligente y Avisos Claros:
+  Al presionar "Comenzar Juego", el sistema revisa de inmediato que todos los juegos
+  seleccionados tengan suficiente contenido para todos tus jugadores. Si por ejemplo
+  elegiste 4 jugadores pero solo pusiste 2 preguntas, aparecerá una ventana con un
+  mensaje claro y comprensible explicando exactamente qué falta para que la partida
+  sea un éxito total.
+
+
+================================================================================
+9. INTELIGENCIA ARTIFICIAL OFFLINE Y TUS PROPIOS DOCUMENTOS PDF (RAG)
+================================================================================
+Game Show Center incluye un Asistente de Inteligencia Artificial que funciona en tu
+computadora sin necesidad de internet ni suscripciones externas:
+
+A. Cargar tus Documentos de Estudio o Trabajo (PDFs):
+   1. Haz clic en el botón de Ajustes Globales (⚙️) en la barra superior.
+   2. Ve a la pestaña "📄 Documentos Adicionales (RAG)".
+   3. Haz clic en "Buscar PDF" y selecciona hasta 10 archivos PDF desde tu equipo
+      (por ejemplo: el libro escolar de Historia, el reglamento de la empresa,
+      artículos científicos o resúmenes de tu materia).
+   4. Los documentos quedarán guardados y la Inteligencia Artificial los consultará
+      automáticamente cada vez que invente contenido para tus juegos.
+
+B. Generar Contenido con la IA:
+   1. En la pantalla de Ajustes, pulsa el botón "IA" en el juego que desees (ej. Trivia Quiz,
+      Hangman, GeoLocation, etc.).
+   2. Escribe el tema que deseas (ej. "Revolución Industrial", "Seguridad Laboral", "Biología").
+   3. Elige el modo de generación:
+      - "Agregar (Conserva actuales)": Mantiene las preguntas o palabras que ya tenías
+        en el juego y le pide a la IA que cree elementos adicionales.
+        ¡Muy importante!: La ventana te mostrará la lista de "📋 Elementos actuales"
+        y la IA se asegurará de NO repetir preguntas o palabras que ya existan.
+      - "Sobreescribir": Borra el contenido actual del juego y crea un conjunto
+        totalmente nuevo desde cero.
+   4. Pulsa "Generar": El sistema creará el cuestionario o palabras y las integrará
+      al instante en el juego.
+
+
+================================================================================
+10. LA ARENA EN VIVO (EL SHOW)
+================================================================================
+La Arena es la pantalla principal donde transcurre la competencia:
+
+1. FILA SUPERIOR: MARCADOR DE COMPETIDORES
+   - Muestra las fotos, nombres y puntos en números grandes y legibles.
+   - Haz clic sobre cualquier competidor para marcarlo como el jugador activo.
+
+2. ÁREA CENTRAL: EL MINIJUEGO
+   - Aquí se juega la actividad en pantalla completa.
+   - Cuentas con un botón "📖 Instrucciones" que puedes abrir en cualquier momento
+     si alguien tiene dudas sobre cómo jugar la ronda.
+   - Botones "◄ Previo" y "Siguiente ►" para avanzar fluidamente de un juego a otro.
+
+3. FILA INFERIOR: MESA DE CONTROL
+   - Haz clic en tus botones de puntos (+10, +20, etc.) para calificar al jugador activo.
+   - Cuando termine la última ronda, presiona el botón "Finalizar Torneo" para ir al podio.
+
+
+================================================================================
+11. PODIO DE VICTORIA Y CIERRE
+================================================================================
+Al finalizar la competencia:
+- El sistema calcula los totales y presenta el Podio de Premiación con música festiva.
+- El ganador o equipo campeón aparece destacado en grande con corona dorada y aplausos.
+- Se muestra la tabla con los puestos y puntajes de todos los participantes.
+- Tienes las opciones "Jugar de Nuevo" (para una revancha inmediata sin tener que
+  volver a configurar nada) o "Menú Principal" para volver a la pantalla de bienvenida.
+================================================================================

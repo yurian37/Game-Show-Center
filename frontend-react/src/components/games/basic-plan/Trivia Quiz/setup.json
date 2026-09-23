@@ -1,0 +1,18 @@
+{
+  "game": "Trivia_Quiz",
+  "rounds_per_player": 3,
+  "question_pool": [
+    { "question": "What is the capital of France?", "answer": "Paris" },
+    { "question": "Which planet is known as the Red Planet?", "answer": "Mars" },
+    { "question": "What is the largest ocean on Earth?", "answer": "Pacific Ocean" },
+    { "question": "Who painted the Mona Lisa?", "answer": "Leonardo da Vinci" },
+    { "question": "What element has the chemical symbol 'O'?", "answer": "Oxygen" },
+    { "question": "Which animal is the largest mammal in the world?", "answer": "Blue Whale" },
+    { "question": "What is the hardest natural substance on Earth?", "answer": "Diamond" },
+    { "question": "In which country can you find the Pyramids of Giza?", "answer": "Egypt" },
+    { "question": "What is the studio that developed Game Show Center?", "answer": "YuyiStudio" },
+    { "question": "How many continents are there on Earth?", "answer": "7" },
+    { "question": "What is the fastest land animal in the world?", "answer": "Cheetah" },
+    { "question": "Which gas do plants absorb during photosynthesis?", "answer": "Carbon Dioxide" }
+  ]
+}

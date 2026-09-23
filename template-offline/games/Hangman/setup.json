@@ -1,0 +1,8 @@
+{
+  "game" : "Hangman",
+  "lives_per_round" : 6,
+  "livesPerRound" : 6,
+  "roundsPerPlayer" : 3,
+  "wordPool" : [ "NATACION", "ADULTOS", "MAYORES", "AGUA", "PISCINA", "BRAZO", "PIERNA", "RESPIRAR", "FLOTAR", "ZAMBULLIDA", "CARRERA", "ENTRENAMIENTO", "CLASE", "INSTRUCTOR", "NADAR", "AGUAS", "OLIMPO", "TREN", "PULSO", "CORAZON" ],
+  "word_pool" : [ "NATACION", "ADULTOS", "MAYORES", "AGUA", "PISCINA", "BRAZO", "PIERNA", "RESPIRAR", "FLOTAR", "ZAMBULLIDA", "CARRERA", "ENTRENAMIENTO", "CLASE", "INSTRUCTOR", "NADAR", "AGUAS", "OLIMPO", "TREN", "PULSO", "CORAZON" ]
+}

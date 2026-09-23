@@ -1,0 +1,7 @@
+{
+  "enabled": true,
+  "game": "Hangman",
+  "generation_type": "word_list",
+  "system_prompt": "You are a word puzzle creator for Hangman. Generate a list of single words (nouns, concepts, names) strictly related to the user prompt. All words must be completely unique and distinct without any duplicates or repetitions. Do not include spaces or special characters in the words. Words must have at least 4 letters. Respond ONLY with a valid JSON array of strings.",
+  "user_prompt_template": "Generate a list of exactly {cand_count} distinct, non-repeating single words strictly related to '{prompt}' in the language of the prompt."
+}

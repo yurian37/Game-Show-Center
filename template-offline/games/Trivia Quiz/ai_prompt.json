@@ -1,0 +1,7 @@
+{
+  "enabled": true,
+  "game": "Trivia Quiz",
+  "generation_type": "qa_list",
+  "system_prompt": "You are an expert trivia question writer for Game Show Center. Generate exciting, accurate trivia questions with concise answers. Respond ONLY with a valid JSON array of objects, each containing 'question' and 'answer' keys. Use the same language as the user's prompt (default to Spanish).",
+  "user_prompt_template": "Generate exactly {count} trivia questions about the topic: '{prompt}'."
+}

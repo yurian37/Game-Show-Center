@@ -1,0 +1,60 @@
+{
+  "index": 1,
+  "name": "TimeLine",
+  "description": "Educational chronological sequencing game: place historical milestones, scientific discoveries, and world events in their correct order on the timeline.",
+  "author": "Yuyi Studios",
+  "available": ["1vs1", "team", "freeforall"],
+  "instructions": [
+    "A chronological timeline is established with initial anchor milestones.",
+    "On each turn, the active player or team is presented with a mystery event card with its year hidden.",
+    "Analyze the clue, title, and category to deduce where the event fits chronologically.",
+    "Click the target placement slot between existing milestones to lock in your guess.",
+    "The true year is revealed! Correct placements award points and expand the timeline; highest score wins!"
+  ],
+  "translations": {
+    "en": {
+      "name": "TimeLine",
+      "description": "Educational chronological sequencing game: place historical milestones, scientific discoveries, and world events in their correct order on the timeline.",
+      "instructions": [
+        "A chronological timeline is established with initial anchor milestones.",
+        "On each turn, the active player or team is presented with a mystery event card with its year hidden.",
+        "Analyze the clue, title, and category to deduce where the event fits chronologically.",
+        "Click the target placement slot between existing milestones to lock in your guess.",
+        "The true year is revealed! Correct placements award points and expand the timeline; highest score wins!"
+      ]
+    },
+    "es": {
+      "name": "Línea de Tiempo",
+      "description": "Juego educativo de orden cronológico: coloca hitos históricos, descubrimientos científicos y sucesos mundiales en su lugar exacto de la historia.",
+      "instructions": [
+        "Se establece una línea de tiempo horizontal con hitos de referencia iniciales.",
+        "En cada turno, el jugador o equipo activo recibe una tarjeta de evento misterioso con el año oculto.",
+        "Analiza el título, la categoría y la pista histórica para deducir su posición cronológica.",
+        "Haz clic en la ranura de inserción entre los eventos existentes para colocar tu tarjeta.",
+        "¡El año real se revela! Los aciertos otorgan puntos y enriquecen la línea de tiempo; ¡gana quien sume más puntos!"
+      ]
+    },
+    "fr": {
+      "name": "Frise Chronologique",
+      "description": "Jeu éducatif de chronologie : placez des jalons historiques, des découvertes scientifiques et des événements majeurs au bon endroit sur la frise.",
+      "instructions": [
+        "Une frise chronologique est établie avec des repères initiaux.",
+        "À chaque tour, le joueur ou l'équipe active reçoit une carte d'événement mystère dont l'année est masquée.",
+        "Analysez l'indice, le titre et la catégorie pour déduire où l'événement s'insère.",
+        "Cliquez sur l'emplacement cible entre les jalons existants pour valider votre choix.",
+        "L'année exacte est révélée ! Les bons placements rapportent des points ; le meilleur score l'emporte !"
+      ]
+    },
+    "pt": {
+      "name": "Linha do Tempo",
+      "description": "Jogo educativo de sequenciamento cronológico: posicione marcos históricos, descobertas científicas e eventos globais na ordem correta da história.",
+      "instructions": [
+        "Uma linha do tempo horizontal é iniciada com marcos de referência.",
+        "Em cada rodada, o participante ou equipe recebe uma carta de evento misterioso com o ano oculto.",
+        "Analise a pista, o título e a categoria para deduzir a posição cronológica exata.",
+        "Clique no espaço de inserção entre os eventos existentes para posicionar a carta.",
+        "O ano real é revelado! Acertos garantem pontos e expandem a linha; vence quem acumular mais pontos!"
+      ]
+    }
+  }
+}

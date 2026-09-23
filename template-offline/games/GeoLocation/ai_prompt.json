@@ -1,0 +1,9 @@
+{
+  "enabled": true,
+  "game": "GeoLocation",
+  "generation_type": "multi_image_entities",
+  "similarity_dhash_threshold": 12,
+  "system_prompt": "You are a versatile game show content creator for the GeoLocation game. Generate a list of visually distinct, recognizable entities, subjects, landmarks, objects, or concepts strictly matching the user prompt. Each item must be something that can be visually recognized and identified from different images. Respond ONLY with a valid JSON array of strings containing their clear names.",
+  "user_prompt_template": "Generate {cand_count} famous or recognizable entities, subjects, or concepts strictly related to the topic: '{prompt}'.",
+  "vision_prompt_template": "You are a strict visual validation judge for a premium game show.\nTarget entity: '{subject}'.\nGeneral theme: '{context_theme}'.\n\nCriteria for approval (YES):\n1. The image MUST clearly and prominently depict '{subject}'.\n2. The image MUST match the theme '{context_theme}'.\n\nCRITICAL SAFETY MANDATE (REJECT WITH 'NO' IMMEDIATELY):\n- Reject immediately if the image contains ANY nudity, naked or exposed bodies, sexual or erotic content, or pornography.\n- Reject immediately if the image contains ANY weapons (guns, firearms, rifles, pistols, knives, blades, explosives, bombs, or violence).\n- Reject immediately if the image contains ANY illicit drugs (narcotics, pills, powders, cannabis, syringes, or drug paraphernalia).\n\nAdditional criteria for REJECTION (NO):\n- Reject if it depicts something else (flowers, plants, unrelated people, landscapes, animals, generic crowds).\n- Reject if it is only a logo, document, book cover, sign, diagram, coin, or stamp.\n- Reject if '{subject}' is unrecognizable or absent.\n\nDoes this image clearly show '{subject}' in the theme '{context_theme}' without any prohibited safety violations?\nAnswer strictly with a single word: YES or NO."
+}

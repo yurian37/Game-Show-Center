@@ -1,0 +1,60 @@
+{
+  "index": 4,
+  "name": "Trivia Quiz",
+  "description": "Showcase your knowledge across diverse topics, answer correctly and climb the leaderboard.",
+  "author": "Yuyi Studios",
+  "available": ["1vs1", "team", "freeforall"],
+  "instructions": [
+    "A question is presented to the participants.",
+    "Players attempt to give the correct answer before time runs out.",
+    "The host reveals the official answer using 'Show Answer'.",
+    "Points are awarded to the player who answered accurately.",
+    "Proceed to the next question until the round completes."
+  ],
+  "translations": {
+    "en": {
+      "name": "Trivia Quiz",
+      "description": "Showcase your knowledge across diverse topics, answer correctly and climb the leaderboard.",
+      "instructions": [
+        "A question is presented to the participants.",
+        "Players attempt to give the correct answer before time runs out.",
+        "The host reveals the official answer using 'Show Answer'.",
+        "Points are awarded to the player who answered accurately.",
+        "Proceed to the next question until the round completes."
+      ]
+    },
+    "es": {
+      "name": "Concurso Trivia",
+      "description": "Demuestra tu conocimiento en diversos temas, responde acertadamente y lidera el marcador.",
+      "instructions": [
+        "Se presenta una pregunta a los concursantes.",
+        "Los jugadores intentan dar la respuesta correcta.",
+        "El presentador revela la solución oficial pulsando 'Ver Respuesta'.",
+        "Se asignan los puntos al jugador correspondiente en el marcador.",
+        "Avanza a la siguiente pregunta hasta concluir la ronda."
+      ]
+    },
+    "fr": {
+      "name": "Quiz Trivia",
+      "description": "Montrez vos connaissances, répondez correctement et grimpez au classement.",
+      "instructions": [
+        "Une question est affichée aux candidats.",
+        "Les joueurs tentent de trouver la bonne réponse.",
+        "L'animateur dévoile la réponse avec 'Afficher la réponse'.",
+        "Attribuez les points au joueur victorieux.",
+        "Passez à la question suivante pour finir la manche."
+      ]
+    },
+    "pt": {
+      "name": "Quiz de Trivia",
+      "description": "Demonstre seu conhecimento, responda corretamente e lidere o placar.",
+      "instructions": [
+        "Uma pergunta é apresentada aos participantes.",
+        "Os jogadores tentam responder corretamente.",
+        "O apresentador revela a resposta clicando em 'Ver Resposta'.",
+        "Atribua os pontos ao jogador vencedor.",
+        "Avance para a próxima pergunta até o final da rodada."
+      ]
+    }
+  }
+}

@@ -1,0 +1,3 @@
+.\mvnw.cmd javafx:run
+npm run dev
+.\mvnw.cmd spring-boot:run

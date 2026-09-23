@@ -1,0 +1,25 @@
+{
+  "game" : "GeoLocation",
+  "rounds_per_player" : 1,
+  "images_per_round" : 2,
+  "locations" : [ {
+    "location_name" : "Eiffel Tower, France",
+    "images" : [ "games/GeoLocation/images/ai_eiffel_tower_france_1_20572079.jpg", "games/GeoLocation/images/ai_eiffel_tower_france_2_20581230.jpg" ]
+  }, {
+    "location_name" : "Great Wall of China, China",
+    "images" : [ "games/GeoLocation/images/ai_great_wall_of_china_china_1_20614453.jpg", "games/GeoLocation/images/ai_great_wall_of_china_china_2_20623335.jpg" ]
+  }, {
+    "location_name" : "Taj Mahal, India",
+    "images" : [ "games/GeoLocation/images/ai_taj_mahal_india_1_20678861.jpg", "games/GeoLocation/images/ai_taj_mahal_india_2_20696792.jpg" ]
+  }, {
+    "location_name" : "Colosseum, Italy",
+    "images" : [ "games/GeoLocation/images/ai_colosseum_italy_1_20723339.jpg", "games/GeoLocation/images/ai_colosseum_italy_2_20732254.jpg" ]
+  }, {
+    "location_name" : "Sydney Opera House, Australia",
+    "images" : [ "games/GeoLocation/images/ai_sydney_opera_house_austra_1_20758559.jpg", "games/GeoLocation/images/ai_sydney_opera_house_austra_2_20767612.jpg" ]
+  }, {
+    "location_name" : "Christ the Redeemer, Brazil",
+    "images" : [ "games/GeoLocation/images/ai_christ_the_redeemer_brazi_1_20800774.jpg", "games/GeoLocation/images/ai_christ_the_redeemer_brazi_2_20811858.jpg" ]
+  } ],
+  "copyright_warnings" : [ "games/GeoLocation/images/ai_great_wall_of_china_china_1_20614453.jpg", "games/GeoLocation/images/ai_christ_the_redeemer_brazi_1_20800774.jpg", "games/GeoLocation/images/ai_colosseum_italy_1_20723339.jpg", "games/GeoLocation/images/ai_eiffel_tower_france_2_20581230.jpg", "games/GeoLocation/images/ai_christ_the_redeemer_brazi_2_20811858.jpg", "games/GeoLocation/images/ai_eiffel_tower_france_1_20572079.jpg", "games/GeoLocation/images/ai_taj_mahal_india_1_20678861.jpg", "games/GeoLocation/images/ai_colosseum_italy_2_20732254.jpg", "games/GeoLocation/images/ai_great_wall_of_china_china_2_20623335.jpg", "games/GeoLocation/images/ai_sydney_opera_house_austra_2_20767612.jpg", "games/GeoLocation/images/ai_sydney_opera_house_austra_1_20758559.jpg" ]
+}

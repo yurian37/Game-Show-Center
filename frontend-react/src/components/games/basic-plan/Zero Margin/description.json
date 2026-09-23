@@ -1,0 +1,60 @@
+{
+  "index": 5,
+  "name": "Zero Margin",
+  "description": "Test your focus and timing: watch the running stopwatch and stop it at the exact target time with less margin for error.",
+  "author": "Yuyi Studios",
+  "available": ["1vs1", "team", "freeforall"],
+  "instructions": [
+    "A target time (in seconds and milliseconds) is designated for the round.",
+    "The digital chronometer is started and begins counting milliseconds with high precision.",
+    "The active contestant must hit the 'STOP' button as close to the exact target time as possible.",
+    "The system calculates the contestant's margin of error (absolute difference in milliseconds).",
+    "The player with the lowest margin of error (closest to zero margin) wins the highest score!"
+  ],
+  "translations": {
+    "en": {
+      "name": "Zero Margin",
+      "description": "Test your focus and timing: watch the running stopwatch and stop it at the exact target time with less margin for error.",
+      "instructions": [
+        "A target time (in seconds and milliseconds) is designated for the round.",
+        "The digital chronometer is started and begins counting milliseconds with high precision.",
+        "The active contestant must hit the 'STOP' button as close to the exact target time as possible.",
+        "The system calculates the contestant's margin of error (absolute difference in milliseconds).",
+        "The player with the lowest margin of error (closest to zero margin) wins the highest score!"
+      ]
+    },
+    "es": {
+      "name": "Margen Cero",
+      "description": "Prueba tu concentración y precisión: observa el cronómetro y detenlo en el tiempo exacto con el menor margen de error.",
+      "instructions": [
+        "Se define un tiempo objetivo específico (en segundos y milisegundos) para la ronda.",
+        "El cronómetro digital se inicia y comienza a correr con alta precisión de milisegundos.",
+        "El concursante activo debe presionar el botón 'DETENER' lo más cerca posible del tiempo objetivo.",
+        "El sistema calcula automáticamente el margen de error (diferencia en milisegundos).",
+        "¡El participante con menor margen de error (más cercano a cero) obtiene la mayor puntuación!"
+      ]
+    },
+    "fr": {
+      "name": "Marge Zéro",
+      "description": "Testez votre concentration et votre précision : observez le chronomètre et arrêtez-le au temps exact avec la plus faible marge d'erreur.",
+      "instructions": [
+        "Un temps cible précis (en secondes et millisecondes) est fixé pour la manche.",
+        "Le chronomètre digital se lance et défile avec une précision à la milliseconde.",
+        "Le joueur actif doit appuyer sur le bouton 'ARRÊTER' au plus près du temps cible.",
+        "Le système calcule automatiquement la marge d'erreur (écart absolu en millisecondes).",
+        "Le joueur ayant la plus faible marge d'erreur (le plus proche de zéro) remporte le meilleur score !"
+      ]
+    },
+    "pt": {
+      "name": "Margem Zero",
+      "description": "Teste sua concentração e reflexos: observe o cronômetro e pare no tempo exato com a menor margem de erro.",
+      "instructions": [
+        "Um tempo alvo específico (em segundos e milissegundos) é estabelecido para a rodada.",
+        "O cronômetro digital é iniciado e corre com precisão de milissegundos.",
+        "O competidor ativo deve pressionar o botão 'PARAR' o mais próximo possível do tempo alvo.",
+        "O sistema calcula automaticamente a margem de erro (diferença em milissegundos).",
+        "O participante com a menor margem de erro (mais próximo de zero) fatura a maior pontuação!"
+      ]
+    }
+  }
+}

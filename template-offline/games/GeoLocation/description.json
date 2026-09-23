@@ -1,0 +1,62 @@
+{
+  "index": 6,
+  "name": "GeoLocation",
+  "description": "Each image is a new opportunity to discover the mystery location: examine geography, landmarks, and clues to pinpoint the exact place.",
+  "author": "Yuyi Studios",
+  "stageClass": "com.gameshowcenter.offline.games.views.GeoLocationFxStage",
+  "editorClass": "com.gameshowcenter.offline.games.editors.GeoLocationSetupEditor",
+  "available": ["1vs1", "team", "freeforall"],
+  "instructions": [
+    "An image depicting a mystery geographic location, monument, or landscape is presented.",
+    "Contestants examine visual clues such as architecture, road signs, vegetation, and geography.",
+    "Each contestant or team submits their guess for the city, country, or specific landmark.",
+    "Click 'Reveal Location' to display the official name, country, and map coordinates.",
+    "Points are awarded to the player or team with the closest or correct geographical guess."
+  ],
+  "translations": {
+    "en": {
+      "name": "GeoLocation",
+      "description": "Each image is a new opportunity to discover the mystery location: examine geography, landmarks, and clues to pinpoint the exact place.",
+      "instructions": [
+        "An image depicting a mystery geographic location, monument, or landscape is presented.",
+        "Contestants examine visual clues such as architecture, road signs, vegetation, and geography.",
+        "Each contestant or team submits their guess for the city, country, or specific landmark.",
+        "Click 'Reveal Location' to display the official name, country, and map coordinates.",
+        "Points are awarded to the player or team with the closest or correct geographical guess."
+      ]
+    },
+    "es": {
+      "name": "GeoLocation",
+      "description": "Cada imagen es una nueva oportunidad para descubrir el lugar misterioso: examina pistas geográficas y monumentos para acertar la ubicación.",
+      "instructions": [
+        "Se muestra una imagen de un lugar geográfico misterioso, monumento o paisaje.",
+        "Los concursantes examinan pistas visuales como arquitectura, letreros, vegetación y geografía.",
+        "Cada participante o equipo anuncia su predicción sobre la ciudad, país o monumento exacto.",
+        "Haz clic en 'Revelar Ubicación' para mostrar el nombre oficial y coordenadas del lugar.",
+        "Se otorgan puntos al participante o equipo que haya acertado o estado más cerca."
+      ]
+    },
+    "fr": {
+      "name": "GéoLocalisation",
+      "description": "Chaque image est une nouvelle opportunité de découvrir le lieu mystère : observez les indices géographiques pour identifier l'endroit exact.",
+      "instructions": [
+        "Une image présentant un lieu géographique mystère, un monument ou un paysage est affichée.",
+        "Les participants examinent les indices visuels (architecture, panneaux, végétation, géographie).",
+        "Chaque joueur ou équipe annonce sa proposition (ville, pays ou monument).",
+        "Cliquez sur 'Révéler le lieu' pour afficher la réponse officielle et les coordonnées.",
+        "Des points sont attribués au joueur ou à l'équipe la plus proche de la bonne réponse."
+      ]
+    },
+    "pt": {
+      "name": "GeoLocalização",
+      "description": "Cada imagem é uma nova oportunidade para descobrir o local misterioso: analise pistas geográficas e monumentos para acertar o local.",
+      "instructions": [
+        "Uma imagem de um local geográfico misterioso, monumento ou paisagem é apresentada.",
+        "Os concorrentes analisam pistas visuais como arquitetura, placas, vegetação e clima.",
+        "Cada participante ou equipe dá seu palpite sobre a cidade, país ou ponto turístico.",
+        "Clique em 'Revelar Local' para exibir o nome oficial e as coordenadas.",
+        "Os pontos são concedidos a quem acertar ou der o palpite mais próximo."
+      ]
+    }
+  }
+}

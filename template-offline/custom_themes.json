@@ -1,0 +1,25 @@
+[ {
+  "name" : "✨ Toxico",
+  "bgApp" : "#990000",
+  "bgMainBox" : "#994D66",
+  "bgCard" : "#FFB366",
+  "accent" : "#CCE6FF",
+  "textPrimary" : "#F8FAFC",
+  "textSecondary" : "#94A3B8"
+}, {
+  "name" : "✨ Imported Setup Theme",
+  "bgApp" : "#140C0A",
+  "bgMainBox" : "#241612",
+  "bgCard" : "#38231C",
+  "accent" : "#D97706",
+  "textPrimary" : "#F8FAFC",
+  "textSecondary" : "#94A3B8"
+}, {
+  "name" : "✨ Saved Match Theme",
+  "bgApp" : "#140A04",
+  "bgMainBox" : "#261408",
+  "bgCard" : "#3B1F0C",
+  "accent" : "#F59E0B",
+  "textPrimary" : "#F8FAFC",
+  "textSecondary" : "#94A3B8"
+} ]

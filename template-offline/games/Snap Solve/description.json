@@ -1,0 +1,62 @@
+{
+  "index": 4,
+  "name": "Snap Solve",
+  "description": "Put your visual reflexes to the test: look at distorted mystery images and identify the hidden subject as the distortion clears.",
+  "author": "Yuyi Studios",
+  "stageClass": "com.gameshowcenter.offline.games.views.SnapSolveFxStage",
+  "editorClass": "com.gameshowcenter.offline.games.editors.SnapSolveSetupEditor",
+  "available": ["1vs1", "team", "freeforall"],
+  "instructions": [
+    "Before starting each turn, decide which contestant will play while the image remains hidden.",
+    "A mystery image is drawn from the pool and distorted with a randomly selected visual filter at Maximum Difficulty.",
+    "If the subject cannot be guessed, click 'Continue Guessing...' to reduce distortion (Maximum → Medium → Easy → Original Image).",
+    "Click 'Next Image ➔' at any point to record the score and advance to the next contestant's turn.",
+    "The match concludes once all scheduled rounds per player have been played."
+  ],
+  "translations": {
+    "en": {
+      "name": "Snap Solve",
+      "description": "Put your visual reflexes to the test: look at distorted mystery images and identify the hidden subject as the distortion clears.",
+      "instructions": [
+        "Before starting each turn, decide which contestant will play while the image remains hidden.",
+        "A mystery image is drawn from the pool and distorted with a randomly selected visual filter at Maximum Difficulty.",
+        "If the subject cannot be guessed, click 'Continue Guessing...' to reduce distortion (Maximum → Medium → Easy → Original Image).",
+        "Click 'Next Image ➔' at any point to record the score and advance to the next contestant's turn.",
+        "The match concludes once all scheduled rounds per player have been played."
+      ]
+    },
+    "es": {
+      "name": "Snap Solve",
+      "description": "Pon a prueba tus reflejos visuales: adivina la imagen misteriosa mientras el filtro distorsionante se va disipando.",
+      "instructions": [
+        "Antes de comenzar cada turno, los jugadores deciden quién participará mientras la imagen permanece oculta.",
+        "Se selecciona una imagen del lote y se le aplica un filtro aleatorio con Dificultad Máxima.",
+        "Si no logran adivinar, pulsa 'Continuar adivinando...' para reducir la distorsión (Máxima → Media → Fácil → Imagen Original).",
+        "En cualquier momento puedes pulsar 'Siguiente Imagen ➔' para pasar al siguiente turno.",
+        "La partida finaliza una vez completadas todas las rondas por jugador programadas."
+      ]
+    },
+    "fr": {
+      "name": "Snap Solve",
+      "description": "Testez vos réflexes visuels : devinez l'image mystère déformée au fur et à mesure que la distorsion s'atténue.",
+      "instructions": [
+        "Avant de démarrer le tour, choisissez le participant pendant que l'image reste cachée.",
+        "Une image mystère est déformée avec un filtre aléatoire en Difficulté Maximale.",
+        "En cas d'hésitation, cliquez sur 'Continuer à deviner...' pour atténuer l'effet (Maximale → Moyenne → Facile → Image d'origine).",
+        "Cliquez sur 'Image suivante ➔' à tout moment pour passer au tour suivant.",
+        "La partie s'achève lorsque toutes les manches par joueur ont été disputées."
+      ]
+    },
+    "pt": {
+      "name": "Snap Solve",
+      "description": "Teste seus reflexos visuais: adivinhe a imagem misteriosa enquanto a distorção visual diminui gradualmente.",
+      "instructions": [
+        "Antes de iniciar a rodada, definam quem vai jogar enquanto a imagem fica oculta.",
+        "Uma imagem misteriosa é distorcida com um filtro aleatório em Dificuldade Máxima.",
+        "Se ninguém acertar, clique em 'Continuar adivinhando...' para suavizar o efeito (Máxima → Média → Fácil → Imagem Original).",
+        "A qualquer momento, clique em 'Próxima Imagem ➔' para avançar a vez.",
+        "A partida termina assim que todas as rodadas por jogador forem jogadas."
+      ]
+    }
+  }
+}

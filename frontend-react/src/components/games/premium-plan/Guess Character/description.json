@@ -1,0 +1,60 @@
+{
+  "index": 2,
+  "name": "Guess Character",
+  "description": "Say the name of each character image shown on the screen: identify pop culture icons, historical figures, and animated avatars.",
+  "author": "Yuyi Studios",
+  "available": ["1vs1", "team", "freeforall"],
+  "instructions": [
+    "Before each turn starts, contestants take a brief pause while the character image remains hidden.",
+    "Decide which player will guess, then click 'Start Turn' to reveal the mystery character.",
+    "Contestants must identify and announce the character's name before the optional countdown timer reaches zero.",
+    "Click 'Next Image ➔' at any point to record scores and advance to the next contestant's turn.",
+    "The match concludes once all scheduled rounds per player have been completed."
+  ],
+  "translations": {
+    "en": {
+      "name": "Guess Character",
+      "description": "Say the name of each character image shown on the screen: identify pop culture icons, historical figures, and animated avatars.",
+      "instructions": [
+        "Before each turn starts, contestants take a brief pause while the character image remains hidden.",
+        "Decide which player will guess, then click 'Start Turn' to reveal the mystery character.",
+        "Contestants must identify and announce the character's name before the optional countdown timer reaches zero.",
+        "Click 'Next Image ➔' at any point to record scores and advance to the next contestant's turn.",
+        "The match concludes once all scheduled rounds per player have been completed."
+      ]
+    },
+    "es": {
+      "name": "Adivina el Personaje",
+      "description": "Di el nombre de cada personaje o imagen mostrada en pantalla: identifica iconos populares, figuras históricas y personajes animados.",
+      "instructions": [
+        "Antes de iniciar cada turno, los jugadores hacen una pausa mientras la imagen del personaje permanece oculta.",
+        "Decidan quién responderá y pulsen 'Iniciar Turno' para revelar el personaje misterioso.",
+        "El participante debe decir el nombre correcto antes de que el temporizador opcional llegue a cero.",
+        "Haz clic en 'Siguiente Imagen ➔' para registrar el puntaje y pasar al turno del siguiente jugador.",
+        "La partida concluye una vez completadas todas las rondas por jugador programadas."
+      ]
+    },
+    "fr": {
+      "name": "Devine le Personnage",
+      "description": "Donnez le nom de chaque personnage affiché à l'écran : identifiez les icônes de la culture pop et personnages célèbres.",
+      "instructions": [
+        "Avant chaque tour, les participants font une pause pendant que l'image reste cachée.",
+        "Désignez le joueur du tour puis cliquez sur 'Démarrer le tour' pour révéler le personnage mystère.",
+        "Le joueur doit nommer le personnage avant que le compte à rebours optionnel ne soit écoulé.",
+        "Cliquez sur 'Image suivante ➔' pour enregistrer les points et passer au tour suivant.",
+        "La partie s'achève une fois toutes les manches par joueur terminées."
+      ]
+    },
+    "pt": {
+      "name": "Adivinhe o Personagem",
+      "description": "Diga o nome de cada personagem exibido na tela: identifique ícones populares, figuras históricas e personagens animados.",
+      "instructions": [
+        "Antes de cada rodada, os participantes aguardam enquanto a imagem permanece oculta.",
+        "Definam quem vai jogar e cliquem em 'Iniciar Turno' para revelar o personagem misterioso.",
+        "O competidor deve acertar o nome do personagem antes que o cronômetro opcional termine.",
+        "Clique em 'Próxima Imagem ➔' para registrar a pontuação e avançar para o próximo jogador.",
+        "A partida termina assim que todas as rodadas por participante forem disputadas."
+      ]
+    }
+  }
+}

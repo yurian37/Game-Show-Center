@@ -1,0 +1,62 @@
+{
+  "index": 2,
+  "name": "Hangman",
+  "description": "Classic word guessing game: guess letters one by one or solve the word before running out of lives.",
+  "author": "Yuyi Studios",
+  "stageClass": "com.gameshowcenter.offline.games.views.HangmanFxStage",
+  "editorClass": "com.gameshowcenter.offline.games.editors.HangmanSetupEditor",
+  "available": ["1vs1", "team", "freeforall"],
+  "instructions": [
+    "A hidden secret word is displayed with blank letter dashes.",
+    "Contestants take turns guessing letters from the alphabet.",
+    "Correct letters appear in all matching positions in the word.",
+    "Each incorrect guess costs one life and adds a piece to the hangman drawing.",
+    "Solve the word before all lives are lost to score victory points!"
+  ],
+  "translations": {
+    "en": {
+      "name": "Hangman",
+      "description": "Classic word guessing game: guess letters one by one or solve the word before running out of lives.",
+      "instructions": [
+        "A hidden secret word is displayed with blank letter dashes.",
+        "Contestants take turns guessing letters from the alphabet.",
+        "Correct letters appear in all matching positions in the word.",
+        "Each incorrect guess costs one life and adds a piece to the hangman drawing.",
+        "Solve the word before all lives are lost to score victory points!"
+      ]
+    },
+    "es": {
+      "name": "Ahorcado",
+      "description": "Juego clásico de adivinanza de palabras: adivina letra por letra o resuelve la palabra antes de agotar tus vidas.",
+      "instructions": [
+        "Se muestra una palabra secreta con guiones en blanco para cada letra.",
+        "Los concursantes se turnan para nombrar o seleccionar letras del alfabeto.",
+        "Si la letra es correcta, se revelará en todas las posiciones que coincidan.",
+        "Cada letra incorrecta resta una vida y dibuja una parte del ahorcado.",
+        "¡Adivina la palabra completa antes de que se agoten las vidas para ganar!"
+      ]
+    },
+    "fr": {
+      "name": "Le Pendu",
+      "description": "Jeu classique de devinettes de mots : devinez les lettres une à une ou trouvez le mot avant d'épuiser vos vies.",
+      "instructions": [
+        "Un mot secret masqué est affiché avec des tirets pour chaque lettre.",
+        "Les participants proposent tour à tour des lettres de l'alphabet.",
+        "Les lettres correctes sont dévoilées à leurs emplacements correspondants.",
+        "Chaque erreur coûte une vie et trace une partie du dessin du pendu.",
+        "Trouvez le mot complet avant d'épuiser vos vies pour remporter des points !"
+      ]
+    },
+    "pt": {
+      "name": "Jogo da Forca",
+      "description": "Jogo clássico de adivinhação de palavras: adivinhe letras uma a uma ou decifre a palavra antes de esgotar suas vidas.",
+      "instructions": [
+        "Uma palavra secreta oculta é exibida com traços para cada letra.",
+        "Os jogadores se revezam escolhendo letras do alfabeto.",
+        "Letras corretas são reveladas em suas respectivas posições.",
+        "Cada erro custa uma vida e desenha uma parte do boneco da forca.",
+        "Decifre a palavra inteira antes de perder todas as vidas para vencer!"
+      ]
+    }
+  }
+}

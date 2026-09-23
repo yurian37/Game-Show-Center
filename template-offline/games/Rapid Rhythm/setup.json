@@ -1,0 +1,43 @@
+{
+  "game" : "Rapid_Rhythm",
+  "rounds_per_player" : 1,
+  "roundsPerPlayer" : 1,
+  "tracks" : [ {
+    "id" : "track_1788143038913_0",
+    "name" : "Synthwave Groove #1",
+    "audioUrl" : "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+    "answer" : "SoundHelix Track 1",
+    "startTime" : 0,
+    "endTime" : 30,
+    "spanTime" : 30,
+    "duration" : 373
+  }, {
+    "id" : "track_1788143038915_1",
+    "name" : "Electropop Beat #2",
+    "audioUrl" : "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+    "answer" : "SoundHelix Track 2",
+    "startTime" : 0,
+    "endTime" : 30,
+    "spanTime" : 30,
+    "duration" : 426
+  }, {
+    "id" : "track_1788143038916_2",
+    "name" : "Chill Lounge Anthem #3",
+    "audioUrl" : "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+    "answer" : "SoundHelix Track 3",
+    "startTime" : 0,
+    "endTime" : 30,
+    "spanTime" : 30,
+    "duration" : 344
+  }, {
+    "id" : "track_1788143038916_3",
+    "name" : "Funky Bassline #4",
+    "audioUrl" : "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
+    "answer" : "SoundHelix Track 4",
+    "startTime" : 0,
+    "endTime" : 30,
+    "spanTime" : 30,
+    "duration" : 303
+  } ],
+  "media_pool" : [ "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3", "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3", "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" ]
+}

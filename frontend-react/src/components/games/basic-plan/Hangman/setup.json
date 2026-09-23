@@ -1,0 +1,6 @@
+{
+  "game": "Hangman",
+  "lives_per_round": 6,
+  "rounds_per_player": 1,
+  "word_pool": ["CHAMPION", "VICTORY", "STUDIO", "ARENA", "SHOWCASE", "OFFLINE"]
+}

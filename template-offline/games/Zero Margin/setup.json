@@ -1,0 +1,5 @@
+{
+  "game" : "Zero_Margin",
+  "roundsPerPlayer" : 3,
+  "targetTimesPool" : [ 5.0, 10.0, 15.0, 20.0, 30.0, 22.0 ]
+}

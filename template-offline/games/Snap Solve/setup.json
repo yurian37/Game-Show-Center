@@ -1,0 +1,6 @@
+{
+  "game" : "Snap_Solve",
+  "rounds_per_player" : 2,
+  "selected_filters" : [ "displacement", "swirl", "pixelate", "blur" ],
+  "media_pool" : [ "games/Snap Solve/images/ai_perro_1_97069857.jpg", "games/Snap Solve/images/ai_gato_1_97087498.jpg", "games/Snap Solve/images/ai_elefante_1_97104852.jpg", "games/Snap Solve/images/ai_jirafa_1_97121304.jpg", "games/Snap Solve/images/ai_tigre_1_97136938.jpg", "games/Snap Solve/images/ai_le_n_1_97153803.jpg", "games/Snap Solve/images/ai_oso_1_97169898.jpg", "games/Snap Solve/images/ai_lobo_1_97305356.jpg" ]
+}

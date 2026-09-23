@@ -1,0 +1,105 @@
+# ==============================================================================
+# Game Show Center - Root .gitignore
+# ==============================================================================
+
+# OS & Environment
+[Dd]esktop.ini
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Node / Frontend React
+frontend-react/node_modules/
+frontend-react/dist/
+frontend-react/dist-ssr/
+frontend-react/*.local
+**/node_modules/
+**/.eslintcache
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Java / Maven
+**/target/
+**/build/
+*.class
+*.war
+*.ear
+*.nar
+dependency-reduced-pom.xml
+cp.txt
+.mvn/wrapper/maven-wrapper.jar
+
+# Python / AI Environment & Bytecode
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+
+# Large AI Models, weights & binaries (GGUF, bin, weights)
+*.gguf
+*.bin
+*.safetensors
+*.pth
+*.onnx
+**/LLM Model/
+**/LLM Model/**
+**/models/*.gguf
+
+# Releases, Installers, Packaged Binaries & Executables
+**/release/
+**/release/**
+**/template-offline/template-offline/
+*.exe
+*.msi
+*.dll
+*.iso
+*.zip
+*.tar.gz
+*.7z
+empty_temp/
+
+# User Runtime / Local State
+**/preferences.json
+**/last_match_setup.json
+
+# IDEs & Editors
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+*.sw?
+*.bak

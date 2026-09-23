@@ -1,0 +1,62 @@
+{
+  "index": 3,
+  "name": "TicTacToe",
+  "description": "Classic 3x3 strategic grid battle: align three markers in a row to win the match.",
+  "author": "Yuyi Studios",
+  "stageClass": "com.gameshowcenter.offline.games.views.TicTacToeFxStage",
+  "editorClass": "com.gameshowcenter.offline.games.editors.TicTacToeSetupEditor",
+  "available": ["1vs1"],
+  "instructions": [
+    "Two players or teams compete on a 3x3 grid taking alternating turns.",
+    "Player 1 places X symbols while Player 2 places O symbols in unoccupied cells.",
+    "To win the round, a player must align three of their markers horizontally, vertically, or diagonally.",
+    "If all 9 cells are filled and neither contestant achieves three-in-a-row, the game ends in a tie.",
+    "Winning players are highlighted automatically and can be awarded match points."
+  ],
+  "translations": {
+    "en": {
+      "name": "TicTacToe",
+      "description": "Classic 3x3 strategic grid battle: align three markers in a row to win the match.",
+      "instructions": [
+        "Two players or teams compete on a 3x3 grid taking alternating turns.",
+        "Player 1 places X symbols while Player 2 places O symbols in unoccupied cells.",
+        "To win the round, a player must align three of their markers horizontally, vertically, or diagonally.",
+        "If all 9 cells are filled and neither contestant achieves three-in-a-row, the game ends in a tie.",
+        "Winning players are highlighted automatically and can be awarded match points."
+      ]
+    },
+    "es": {
+      "name": "Tres en Línea",
+      "description": "Batalla estratégica clásica en cuadrícula 3x3: alinea tres fichas seguidas para ganar la partida.",
+      "instructions": [
+        "Dos jugadores o equipos compiten en un tablero de 3x3 por turnos alternos.",
+        "El Jugador 1 coloca fichas 'X' y el Jugador 2 coloca fichas 'O' en casillas vacías.",
+        "Para ganar la ronda, un jugador debe alinear tres fichas en línea horizontal, vertical o diagonal.",
+        "Si se llenan las 9 casillas sin lograr tres en línea, la ronda se declara en empate.",
+        "El ganador se resalta automáticamente en pantalla para asignarle los puntos del torneo."
+      ]
+    },
+    "fr": {
+      "name": "Morpion (TicTacToe)",
+      "description": "Bataille stratégique classique en grille 3x3 : alignez trois symboles pour remporter la manche.",
+      "instructions": [
+        "Deux joueurs ou équipes s'affrontent à tour de rôle sur une grille de 3x3 cases.",
+        "Le Joueur 1 place les symboles 'X' et le Joueur 2 place les symboles 'O'.",
+        "Pour l'emporter, il faut aligner trois symboles identiques à l'horizontale, verticale ou diagonale.",
+        "Si les 9 cases sont occupées sans vainqueur, la manche se solde par un match nul.",
+        "Le vainqueur est mis en valeur à l'écran pour l'attribution des points."
+      ]
+    },
+    "pt": {
+      "name": "Jogo da Velha",
+      "description": "Batalha estratégica clássica em grade 3x3: alinhe três símbolos seguidos para vencer a partida.",
+      "instructions": [
+        "Dois jogadores ou equipes disputam turnos alternados em uma grade 3x3.",
+        "O Jogador 1 marca com 'X' e o Jogador 2 marca com 'O' nas casas vazias.",
+        "Para vencer a rodada, é preciso alinhar três símbolos iguais na horizontal, vertical ou diagonal.",
+        "Se todas as 9 casas forem preenchidas sem vencedor, a rodada termina empatada.",
+        "O vencedor é destacado na tela para registro dos pontos no torneio."
+      ]
+    }
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "game": "Topic_Takedown",
+  "num_categories": 3,
+  "questions_per_category": 3,
+  "categories": [
+    {
+      "category_name": "Ciencia y Naturaleza",
+      "questions": [
+        {
+          "question": "¿Cuál es el elemento químico más abundante en el universo?",
+          "answer": "Hidrógeno"
+        },
+        {
+          "question": "¿Qué planeta de nuestro sistema solar tiene el mayor número de lunas?",
+          "answer": "Saturno"
+        },
+        {
+          "question": "¿Cómo se llama el proceso por el cual las plantas convierten la luz solar en energía?",
+          "answer": "Fotosíntesis"
+        }
+      ]
+    },
+    {
+      "category_name": "Historia Universal",
+      "questions": [
+        {
+          "question": "¿En qué año llegó el ser humano a la Luna por primera vez?",
+          "answer": "1969"
+        },
+        {
+          "question": "¿Quién fue el primer presidente de los Estados Unidos?",
+          "answer": "George Washington"
+        },
+        {
+          "question": "¿Qué civilización antigua construyó la mítica ciudad de Machu Picchu?",
+          "answer": "Los Incas"
+        }
+      ]
+    },
+    {
+      "category_name": "Cine y Cultura Pop",
+      "questions": [
+        {
+          "question": "¿Cómo se llama la inteligencia artificial del traje de Iron Man?",
+          "answer": "J.A.R.V.I.S."
+        },
+        {
+          "question": "¿Qué película ganó el premio Óscar a Mejor Película en 1997 narrando un famoso naufragio?",
+          "answer": "Titanic"
+        },
+        {
+          "question": "¿En qué ficticio país africano transcurre la historia de Black Panther?",
+          "answer": "Wakanda"
+        }
+      ]
+    }
+  ]
+}

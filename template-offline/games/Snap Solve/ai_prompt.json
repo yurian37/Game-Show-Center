@@ -1,0 +1,9 @@
+{
+  "enabled": true,
+  "game": "Snap Solve",
+  "generation_type": "single_image_entities",
+  "media_field": "media_pool",
+  "system_prompt": "You are a puzzle creator for Snap Solve. Generate a list of distinct, recognizable objects, animals, monuments, or items strictly related to the user prompt. Respond ONLY with a valid JSON array of strings.",
+  "user_prompt_template": "Generate {cand_count} distinct recognizable items/concepts strictly related to '{prompt}'.",
+  "vision_prompt_template": "You are a strict visual validation judge for a premium game show.\nTarget entity: '{subject}'.\nGeneral theme: '{context_theme}'.\n\nCriteria for approval (YES):\n1. The image MUST clearly and prominently depict '{subject}'.\n2. The image MUST match the theme '{context_theme}'.\n\nCRITICAL SAFETY MANDATE (REJECT WITH 'NO' IMMEDIATELY):\n- Reject immediately if the image contains ANY nudity, naked or exposed bodies, sexual or erotic content, or pornography.\n- Reject immediately if the image contains ANY weapons (guns, firearms, rifles, pistols, knives, blades, explosives, bombs, or violence).\n- Reject immediately if the image contains ANY illicit drugs (narcotics, pills, powders, cannabis, syringes, or drug paraphernalia).\n\nAdditional criteria for REJECTION (NO):\n- Reject if it depicts something else (flowers, plants, unrelated people, landscapes, animals, generic crowds).\n- Reject if it is only a logo, document, book cover, sign, diagram, coin, or stamp.\n- Reject if '{subject}' is unrecognizable or absent.\n\nDoes this image clearly show '{subject}' in the theme '{context_theme}' without any prohibited safety violations?\nAnswer strictly with a single word: YES or NO."
+}
