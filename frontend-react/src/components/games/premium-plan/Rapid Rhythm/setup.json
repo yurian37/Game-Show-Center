@@ -41,6 +41,66 @@
       "spanTime": 30,
       "endTime": 30,
       "duration": 302
+    },
+    {
+      "id": "track_5",
+      "name": "Cinematic Ambience #5",
+      "audioUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3",
+      "answer": "SoundHelix Track 5",
+      "startTime": 0,
+      "spanTime": 30,
+      "endTime": 30,
+      "duration": 354
+    },
+    {
+      "id": "track_6",
+      "name": "Retro 8-Bit Melody #6",
+      "audioUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3",
+      "answer": "SoundHelix Track 6",
+      "startTime": 0,
+      "spanTime": 30,
+      "endTime": 30,
+      "duration": 290
+    },
+    {
+      "id": "track_7",
+      "name": "Upbeat Techno #7",
+      "audioUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3",
+      "answer": "SoundHelix Track 7",
+      "startTime": 0,
+      "spanTime": 30,
+      "endTime": 30,
+      "duration": 412
+    },
+    {
+      "id": "track_8",
+      "name": "Smooth Jazz Flow #8",
+      "audioUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3",
+      "answer": "SoundHelix Track 8",
+      "startTime": 0,
+      "spanTime": 30,
+      "endTime": 30,
+      "duration": 330
+    },
+    {
+      "id": "track_9",
+      "name": "Lo-Fi Study Beat #9",
+      "audioUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3",
+      "answer": "SoundHelix Track 9",
+      "startTime": 0,
+      "spanTime": 30,
+      "endTime": 30,
+      "duration": 381
+    },
+    {
+      "id": "track_10",
+      "name": "Epic Orchestral #10",
+      "audioUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3",
+      "answer": "SoundHelix Track 10",
+      "startTime": 0,
+      "spanTime": 30,
+      "endTime": 30,
+      "duration": 405
     }
   ]
 }

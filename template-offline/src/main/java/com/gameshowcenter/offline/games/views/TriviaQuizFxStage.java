@@ -55,6 +55,7 @@ public class TriviaQuizFxStage extends VBox {
     private boolean showAnswer = false;
     private int questionsCount = 1;
 
+    private final boolean isBattleRoyale;
     private final int roundsPerPlayer;
     private final int numPlayers;
     private final int maxQuestions;
@@ -79,6 +80,14 @@ public class TriviaQuizFxStage extends VBox {
         this.profiles = profiles != null ? profiles : new ArrayList<>();
         this.setupData = setupData;
 
+        // Parse Battle Royale
+        boolean br = false;
+        if (setupData != null) {
+            if (setupData.has("battleRoyale")) br = setupData.get("battleRoyale").asBoolean(false);
+            else if (setupData.has("battle_royale")) br = setupData.get("battle_royale").asBoolean(false);
+        }
+        this.isBattleRoyale = br;
+
         // Parse Rounds per Player & calculate limit
         int rpp = 3;
         if (setupData != null) {
@@ -89,7 +98,6 @@ public class TriviaQuizFxStage extends VBox {
         }
         this.roundsPerPlayer = rpp;
         this.numPlayers = (!this.profiles.isEmpty()) ? this.profiles.size() : 1;
-        this.maxQuestions = this.numPlayers * this.roundsPerPlayer;
 
         setSpacing(18);
         setAlignment(Pos.CENTER);
@@ -97,6 +105,8 @@ public class TriviaQuizFxStage extends VBox {
 
         // Parse Question Pool from JSON or fallback
         parseQuestionPool();
+
+        this.maxQuestions = this.isBattleRoyale ? Math.max(1, initialPool.size()) : (this.numPlayers * this.roundsPerPlayer);
 
         // 1. BADGES
         VBox badgesBox = new VBox(6);
@@ -263,9 +273,10 @@ public class TriviaQuizFxStage extends VBox {
             triviaCard.setVisible(false);
             triviaCard.setManaged(false);
 
-            completedMsg.setText(
-                    String.format("All %d questions for this round have been played (%d player(s) × %d rounds/player).",
-                            maxQuestions, numPlayers, roundsPerPlayer));
+            String finishMsg = isBattleRoyale
+                    ? String.format("¡Modo Battle Royale completado! Se han jugado todas las %d preguntas configuradas.", maxQuestions)
+                    : String.format("All %d questions for this round have been played (%d player(s) × %d rounds/player).", maxQuestions, numPlayers, roundsPerPlayer);
+            completedMsg.setText(finishMsg);
             completedBanner.setVisible(true);
             completedBanner.setManaged(true);
             return;
@@ -284,8 +295,10 @@ public class TriviaQuizFxStage extends VBox {
         currentQuestion = workingPool.remove(idx);
         showAnswer = false;
 
-        questionBadgeLabel.setText(String.format("❓ Trivia Quiz • Question %d of %d (%d round/player)",
-                Math.min(questionsCount, maxQuestions), maxQuestions, roundsPerPlayer));
+        String badge = isBattleRoyale
+                ? String.format("⚔️ Battle Royale • Question %d of %d", Math.min(questionsCount, maxQuestions), maxQuestions)
+                : String.format("❓ Trivia Quiz • Question %d of %d (%d round/player)", Math.min(questionsCount, maxQuestions), maxQuestions, roundsPerPlayer);
+        questionBadgeLabel.setText(badge);
         poolInfoLabel
                 .setText(String.format("Unseen Questions in Pool: %d of %d", workingPool.size(), initialPool.size()));
 

@@ -23,6 +23,7 @@ public class HangmanFxStage extends VBox {
     private final List<String> initialWordPool = new ArrayList<>();
     private final List<String> workingWordPool = new ArrayList<>();
 
+    private final boolean isBattleRoyale;
     private final int maxLives;
     private final int roundsPerPlayer;
     private final int totalRounds;
@@ -68,6 +69,14 @@ public class HangmanFxStage extends VBox {
         }
         this.maxLives = lives;
 
+        // Parse Battle Royale
+        boolean br = false;
+        if (setupData != null) {
+            if (setupData.has("battleRoyale")) br = setupData.get("battleRoyale").asBoolean(false);
+            else if (setupData.has("battle_royale")) br = setupData.get("battle_royale").asBoolean(false);
+        }
+        this.isBattleRoyale = br;
+
         // Parse Rounds per Player
         int rpp = 1;
         if (setupData != null) {
@@ -77,7 +86,6 @@ public class HangmanFxStage extends VBox {
         this.roundsPerPlayer = rpp;
 
         int numPlayers = (!this.profiles.isEmpty()) ? this.profiles.size() : 1;
-        this.totalRounds = numPlayers * this.roundsPerPlayer;
 
         // Load Heart Images
         loadHeartImages();
@@ -98,6 +106,8 @@ public class HangmanFxStage extends VBox {
         if (initialWordPool.isEmpty()) {
             initialWordPool.addAll(Arrays.asList("CHAMPION", "VICTORY", "STUDIO", "ARENA", "SHOWCASE", "OFFLINE"));
         }
+
+        this.totalRounds = this.isBattleRoyale ? Math.max(1, initialWordPool.size()) : (numPlayers * this.roundsPerPlayer);
 
         setSpacing(18);
         setAlignment(Pos.CENTER);
@@ -285,7 +295,11 @@ public class HangmanFxStage extends VBox {
         letterInput.setText("");
         fullWordInput.setText("");
 
-        roundCounterLabel.setText(String.format("Round %d of %d (%d round/player)", currentRoundNumber, totalRounds, roundsPerPlayer));
+        if (isBattleRoyale) {
+            roundCounterLabel.setText(String.format("⚔️ Battle Royale • Word %d of %d", currentRoundNumber, totalRounds));
+        } else {
+            roundCounterLabel.setText(String.format("Round %d of %d (%d round/player)", currentRoundNumber, totalRounds, roundsPerPlayer));
+        }
 
         inputControlsBox.setVisible(true);
         endBanner.setVisible(false);

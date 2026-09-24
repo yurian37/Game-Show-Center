@@ -11,6 +11,7 @@ import com.gameshowcenter.offline.theme.ThemeManager;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
@@ -25,6 +26,7 @@ public class ZeroMarginSetupEditor implements IGameSetupEditor {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private Spinner<Integer> roundsSpinner;
+    private CheckBox battleRoyaleCheckBox;
     private final List<TextField> targetTimeFields = new ArrayList<>();
     private HBox timesGridPanel;
 
@@ -32,6 +34,20 @@ public class ZeroMarginSetupEditor implements IGameSetupEditor {
     public Node createEditorPanel(JsonNode currentSetup, List<Competitor> profiles, ThemeManager.Palette palette) {
         VBox box = new VBox(12);
         String textColor = palette != null ? ThemeManager.getContrastTextColor(palette.bgCard) : ThemeManager.getTextPrimaryHex();
+
+        // Battle Royale Toggle
+        boolean curBR = currentSetup != null && currentSetup.has("battleRoyale") && currentSetup.get("battleRoyale").asBoolean();
+        battleRoyaleCheckBox = new CheckBox(I18n.get("game.editor.battleroyale.check"));
+        battleRoyaleCheckBox.setSelected(curBR);
+        battleRoyaleCheckBox.setStyle(String.format("-fx-font-weight: 900; -fx-text-fill: #f59e0b; -fx-font-size: 13px; -fx-cursor: hand;"));
+
+        Label brHint = new Label(I18n.get("game.editor.battleroyale.hint"));
+        brHint.setWrapText(true);
+        brHint.setStyle("-fx-font-size: 11px; -fx-text-fill: #94a3b8; -fx-font-style: italic;");
+
+        VBox brCard = new VBox(4, battleRoyaleCheckBox, brHint);
+        brCard.setStyle("-fx-background-color: rgba(245, 158, 11, 0.08); -fx-border-color: rgba(245, 158, 11, 0.3); -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-padding: 8px 12px;");
+        box.getChildren().add(brCard);
 
         HBox roundsRow = new HBox(12);
         roundsRow.setAlignment(Pos.CENTER_LEFT);
@@ -48,6 +64,11 @@ public class ZeroMarginSetupEditor implements IGameSetupEditor {
         roundsSpinner = new Spinner<>();
         roundsSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 20, curRounds, 1));
         roundsSpinner.setEditable(true);
+        roundsSpinner.setDisable(curBR);
+
+        battleRoyaleCheckBox.selectedProperty().addListener((obs, oldV, isBr) -> {
+            roundsSpinner.setDisable(isBr);
+        });
 
         roundsRow.getChildren().addAll(rLabel, roundsSpinner);
         box.getChildren().add(roundsRow);
@@ -131,6 +152,7 @@ public class ZeroMarginSetupEditor implements IGameSetupEditor {
     public JsonNode getUpdatedSetup() {
         ObjectNode root = objectMapper.createObjectNode();
         root.put("game", "Zero_Margin");
+        root.put("battleRoyale", battleRoyaleCheckBox != null && battleRoyaleCheckBox.isSelected());
         int r = 1;
         try {
             r = Math.max(1, roundsSpinner.getValue());
@@ -158,8 +180,26 @@ public class ZeroMarginSetupEditor implements IGameSetupEditor {
     }
 
     @Override
+    public String validateSetup(List<Competitor> profiles) {
+        return validateSetup(profiles, battleRoyaleCheckBox != null && battleRoyaleCheckBox.isSelected());
+    }
+
+    @Override
+    public String validateSetup(List<Competitor> profiles, boolean battleRoyale) {
+        return validateSetupData(getUpdatedSetup(), profiles, battleRoyale);
+    }
+
+    @Override
     public String validateSetupData(JsonNode setupData, List<Competitor> profiles) {
+        boolean br = setupData != null && setupData.has("battleRoyale") && setupData.get("battleRoyale").asBoolean();
+        return validateSetupData(setupData, profiles, br);
+    }
+
+    @Override
+    public String validateSetupData(JsonNode setupData, List<Competitor> profiles, boolean battleRoyale) {
         if (setupData == null) return "Zero Margin setup is missing.";
+
+        boolean isBr = battleRoyale || (setupData.has("battleRoyale") && setupData.get("battleRoyale").asBoolean());
 
         JsonNode poolNode = setupData.has("targetTimesPool") ? setupData.get("targetTimesPool") :
             (setupData.has("target_times_pool") ? setupData.get("target_times_pool") : null);

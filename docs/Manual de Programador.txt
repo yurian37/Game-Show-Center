@@ -5,7 +5,7 @@
 ================================================================================
 
 FECHA: Septiembre 2026
-VERSIÓN DEL ENTORNO: 0.9.1 Standalone Runtime & Developer SDK
+VERSIÓN DEL ENTORNO: 1.0.0 Standalone Runtime & Developer SDK (Release Oficial)
 TECNOLOGÍA CORE: Java 21+ / JavaFX 22 / Jackson JSON / Dynamic ClassLoader / Local AI (GGUF / RAG / Vision)
 
 
@@ -220,15 +220,47 @@ B. Contrato del Editor de Ajustes (`editorClass`):
        // Construye el panel visual que se muestra dentro de la ventana modal de ajustes
        Node createEditorPanel(JsonNode currentSetup, List<Competitor> profiles, Palette palette);
 
-       // Valida los datos antes de iniciar la partida. Retorna null si todo es correcto,
-       // o un mensaje explicativo internacionalizado si falta contenido
-       String validateSetupData(JsonNode setupData, List<Competitor> profiles);
+       // Valida los datos antes de iniciar la partida. Por defecto lee si battleRoyale esta
+       // activo en setupData y lo reenvia a la sobrecarga con bandera
+       default String validateSetupData(JsonNode setupData, List<Competitor> profiles) {
+           boolean br = setupData != null && (
+               (setupData.has("battleRoyale") && setupData.get("battleRoyale").asBoolean(false)) ||
+               (setupData.has("battle_royale") && setupData.get("battle_royale").asBoolean(false))
+           );
+           return validateSetupData(setupData, profiles, br);
+       }
+
+       // Sobrecarga de validacion que contempla el modo Battle Royale
+       default String validateSetupData(JsonNode setupData, List<Competitor> profiles, boolean battleRoyale) {
+           return null;
+       }
+
+       // Valida la configuracion activa en el panel editor
+       default String validateSetup(List<Competitor> profiles) {
+           return validateSetupData(getUpdatedSetup(), profiles);
+       }
+
+       default String validateSetup(List<Competitor> profiles, boolean battleRoyale) {
+           return validateSetupData(getUpdatedSetup(), profiles, battleRoyale);
+       }
 
        // Retorna el JsonNode con los datos actualizados tras la edición del usuario
-       // ATENCIÓN: El método se llama exactamente getUpdatedSetup()
+       // Debe incluir la bandera booleana: root.put("battleRoyale", isBattleRoyaleSelected);
        JsonNode getUpdatedSetup();
    }
    ```
+
+   Reglas de Implementación de Battle Royale en Minijuegos:
+   1. Si `battleRoyale` es TRUE:
+      - No aplicar la restricción estricta de `items >= jugadores * rondas`.
+      - Validar únicamente que exista al menos 1 elemento (`items.size() >= 1`).
+      - Validar de manera rigurosa que todos los elementos configurados funcionen:
+        archivos de imagen existentes en disco y reproducibilidad de pistas de audio.
+      - En el `Stage` de ejecución, calcular el total de rondas del juego en función
+        del tamaño del banco (`totalMatchRounds = items.size()`), asegurando que todos
+        los elementos aparezcan en la arena antes de finalizar la partida.
+   2. Si `battleRoyale` es FALSE:
+      - Mantener las reglas clásicas de validación por rondas y jugadores.
 
 
 --------------------------------------------------------------------------------

@@ -10,11 +10,11 @@
 **Game Show Center** transforms any classroom, auditorium, corporate event, or family gathering into an authentic TV-style game show. It combines broadcast-quality aesthetics with pedagogical tools, allowing educators, hosts, and developers to run trivia, word challenges, and competitive rounds seamlessly.
 
 ### Key Highlights
-- **100% Offline Desktop Runtime (`template-offline`)**: Zero-latency JavaFX 22 application that runs entirely without an internet connection.
+- **100% Offline Desktop Runtime (`template-offline` v1.0.0)**: Zero-latency JavaFX 22 application that runs entirely without an internet connection, featuring native Windows `.exe` packaging and per-game Battle Royale mode.
 - **Private Local AI with RAG**: Offline LLM inference using quantized GGUF models. Hosts and teachers can upload custom PDF textbooks/manuals (up to 10 files) to automatically generate curriculum-aligned questions and challenges with zero API costs and full student data privacy.
 - **Modern Web Showcase & Host Portal (`frontend-react`)**: Responsive React 18 + Vite platform for online demonstrations, minigame catalog, and host management.
 - **Spring Boot Backend (`backend-java`)**: Robust REST API for online licensing, game distribution, and cloud integration.
-- **Modular Game SDK**: Extensible architecture supporting hot-swappable minigames (*Trivia Quiz*, *Hangman*, *Topic Takedown*, *GeoLocation*, *Snap Solve*, *Zero Margin*, etc.) loaded dynamically via custom classloaders.
+- **Modular Game SDK**: Extensible architecture supporting hot-swappable minigames (*Trivia Quiz*, *Hangman*, *Topic Takedown*, *GeoLocation*, *Snap Solve*, *Zero Margin*, *TimeLine*, *Rapid Rhythm*, *Guess Character*, etc.) loaded dynamically via custom classloaders.
 
 ---
 

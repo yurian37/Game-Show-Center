@@ -26,6 +26,7 @@ public class TopicTakedownSetupEditor implements IGameSetupEditor {
 
     private Spinner<Integer> categoriesSpinner;
     private Spinner<Integer> questionsSpinner;
+    private CheckBox battleRoyaleCheckBox;
 
     private VBox categoriesContainer;
     private final List<CategoryData> categoryDataList = new ArrayList<>();
@@ -60,6 +61,20 @@ public class TopicTakedownSetupEditor implements IGameSetupEditor {
         VBox root = new VBox(14);
         root.setPadding(new Insets(4));
         String textColor = palette != null ? ThemeManager.getContrastTextColor(palette.bgCard) : ThemeManager.getTextPrimaryHex();
+
+        // Battle Royale Toggle
+        boolean curBR = currentSetup != null && currentSetup.has("battleRoyale") && currentSetup.get("battleRoyale").asBoolean();
+        battleRoyaleCheckBox = new CheckBox(I18n.get("game.editor.battleroyale.check"));
+        battleRoyaleCheckBox.setSelected(curBR);
+        battleRoyaleCheckBox.setStyle(String.format("-fx-font-weight: 900; -fx-text-fill: #f59e0b; -fx-font-size: 13px; -fx-cursor: hand;"));
+
+        Label brHint = new Label(I18n.get("game.editor.battleroyale.hint"));
+        brHint.setWrapText(true);
+        brHint.setStyle("-fx-font-size: 11px; -fx-text-fill: #94a3b8; -fx-font-style: italic;");
+
+        VBox brCard = new VBox(4, battleRoyaleCheckBox, brHint);
+        brCard.setStyle("-fx-background-color: rgba(245, 158, 11, 0.08); -fx-border-color: rgba(245, 158, 11, 0.3); -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-padding: 8px 12px;");
+        root.getChildren().add(brCard);
 
         // 1. Initial dimensions from JSON or fallback
         int curCats = 3;
@@ -266,15 +281,27 @@ public class TopicTakedownSetupEditor implements IGameSetupEditor {
 
     @Override
     public String validateSetup(List<Competitor> profiles) {
+        return validateSetup(profiles, battleRoyaleCheckBox != null && battleRoyaleCheckBox.isSelected());
+    }
+
+    @Override
+    public String validateSetup(List<Competitor> profiles, boolean battleRoyale) {
         if (categoriesSpinner == null || questionsSpinner == null) return null;
         int targetCats = categoriesSpinner.getValue();
         int targetQPerCat = questionsSpinner.getValue();
 
-        if (targetCats < 1 || targetCats > 6) {
-            return "Topic Takedown: Number of categories must be between 1 and 6.";
-        }
-        if (targetQPerCat < 1 || targetQPerCat > 8) {
-            return "Topic Takedown: Questions per category must be between 1 and 8.";
+        boolean isBr = battleRoyale || (battleRoyaleCheckBox != null && battleRoyaleCheckBox.isSelected());
+        if (isBr) {
+            if (targetCats < 1) {
+                return "Topic Takedown: At least 1 category is required.";
+            }
+        } else {
+            if (targetCats < 1 || targetCats > 6) {
+                return "Topic Takedown: Number of categories must be between 1 and 6.";
+            }
+            if (targetQPerCat < 1 || targetQPerCat > 8) {
+                return "Topic Takedown: Questions per category must be between 1 and 8.";
+            }
         }
 
         for (int c = 0; c < targetCats; c++) {
@@ -299,21 +326,34 @@ public class TopicTakedownSetupEditor implements IGameSetupEditor {
 
     @Override
     public String validateSetupData(JsonNode setupData, List<Competitor> profiles) {
+        boolean br = setupData != null && setupData.has("battleRoyale") && setupData.get("battleRoyale").asBoolean();
+        return validateSetupData(setupData, profiles, br);
+    }
+
+    @Override
+    public String validateSetupData(JsonNode setupData, List<Competitor> profiles, boolean battleRoyale) {
         if (setupData == null) return null;
+        boolean isBr = battleRoyale || (setupData.has("battleRoyale") && setupData.get("battleRoyale").asBoolean());
         int numCats = setupData.has("numCategories") ? setupData.get("numCategories").asInt(0) :
                 (setupData.has("num_categories") ? setupData.get("num_categories").asInt(0) : 0);
         int qPerCat = setupData.has("questionsPerCategory") ? setupData.get("questionsPerCategory").asInt(0) :
                 (setupData.has("questions_per_category") ? setupData.get("questions_per_category").asInt(0) : 0);
 
-        if (numCats < 1 || numCats > 6) {
-            return "Topic Takedown setup invalid: Categories must be between 1 and 6.";
-        }
-        if (qPerCat < 1 || qPerCat > 8) {
-            return "Topic Takedown setup invalid: Questions per category must be between 1 and 8.";
+        if (isBr) {
+            if (numCats < 1) {
+                return "Topic Takedown setup invalid: At least 1 category is required.";
+            }
+        } else {
+            if (numCats < 1 || numCats > 6) {
+                return "Topic Takedown setup invalid: Categories must be between 1 and 6.";
+            }
+            if (qPerCat < 1 || qPerCat > 8) {
+                return "Topic Takedown setup invalid: Questions per category must be between 1 and 8.";
+            }
         }
 
         JsonNode cats = setupData.has("categories") ? setupData.get("categories") : null;
-        if (cats == null || !cats.isArray() || cats.size() < numCats) {
+        if (cats == null || !cats.isArray() || cats.size() < (isBr ? 1 : numCats)) {
             return "Topic Takedown setup invalid: Incomplete categories.";
         }
 
@@ -324,6 +364,7 @@ public class TopicTakedownSetupEditor implements IGameSetupEditor {
     public JsonNode getUpdatedSetup() {
         ObjectNode root = objectMapper.createObjectNode();
         root.put("game", "Topic_Takedown");
+        root.put("battleRoyale", battleRoyaleCheckBox != null && battleRoyaleCheckBox.isSelected());
 
         int targetCats = categoriesSpinner.getValue();
         int targetQPerCat = questionsSpinner.getValue();

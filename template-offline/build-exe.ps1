@@ -1,6 +1,6 @@
 param(
-    [string]$AppVersion = "0.7.0",
-    [string]$ReleaseTag = "v0.7"
+    [string]$AppVersion = "1.0.0",
+    [string]$ReleaseTag = "v1.0"
 )
 
 # Script de compilacion y generacion de ejecutable .EXE para Game Show Center Offline
@@ -21,7 +21,10 @@ if ($LASTEXITCODE -ne 0) {
 
 # 2. Localizar artefacto JAR Standalone y preparar staging
 Write-Host "[2/4] Preparando artefactos de distribucion..." -ForegroundColor Yellow
-$jarFile = Get-ChildItem "target\*standalone.jar" | Select-Object -First 1
+$jarFile = Get-ChildItem "target\*$AppVersion*standalone.jar" | Select-Object -First 1
+if (-not $jarFile) {
+    $jarFile = Get-ChildItem "target\*standalone.jar" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+}
 if (-not $jarFile) {
     Write-Host "No se encontro el archivo JAR standalone en target\." -ForegroundColor Red
     exit 1

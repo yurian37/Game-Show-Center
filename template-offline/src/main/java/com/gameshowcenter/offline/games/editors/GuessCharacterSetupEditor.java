@@ -31,6 +31,7 @@ public class GuessCharacterSetupEditor implements IGameSetupEditor {
     private final java.util.Set<String> copyrightWarnings = new java.util.HashSet<>();
 
     private Spinner<Integer> roundsSpinner;
+    private CheckBox battleRoyaleCheckBox;
     private CheckBox enableTimerCheckBox;
     private Spinner<Integer> timerSecondsSpinner;
     private FlowPane thumbnailsFlow;
@@ -50,8 +51,12 @@ public class GuessCharacterSetupEditor implements IGameSetupEditor {
         int curRounds = 3;
         boolean curEnableTimer = true;
         int curTimerSecs = 30;
+        boolean curBattleRoyale = false;
 
         if (currentSetup != null) {
+            if (currentSetup.has("battleRoyale")) curBattleRoyale = currentSetup.get("battleRoyale").asBoolean(false);
+            else if (currentSetup.has("battle_royale")) curBattleRoyale = currentSetup.get("battle_royale").asBoolean(false);
+
             if (currentSetup.has("rounds_per_player")) curRounds = currentSetup.get("rounds_per_player").asInt(3);
             else if (currentSetup.has("roundsPerPlayer")) curRounds = currentSetup.get("roundsPerPlayer").asInt(3);
 
@@ -80,6 +85,19 @@ public class GuessCharacterSetupEditor implements IGameSetupEditor {
         Label descLabel = new Label(I18n.get("game.editor.guesscharacter.desc"));
         descLabel.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 12px;");
 
+        // Battle Royale Toggle Row
+        battleRoyaleCheckBox = new CheckBox(I18n.get("game.editor.battleroyale.check"));
+        battleRoyaleCheckBox.setSelected(curBattleRoyale);
+        battleRoyaleCheckBox.setStyle("-fx-text-fill: #fbbf24; -fx-font-weight: 900; -fx-font-size: 12px; -fx-cursor: hand;");
+
+        Label brHint = new Label(I18n.get("game.editor.battleroyale.hint"));
+        brHint.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 11px; -fx-wrap-text: true;");
+
+        VBox brCard = new VBox(4);
+        brCard.setPadding(new Insets(8, 12, 8, 12));
+        brCard.setStyle("-fx-background-color: rgba(245, 158, 11, 0.08); -fx-border-color: rgba(245, 158, 11, 0.3); -fx-border-radius: 8px; -fx-background-radius: 8px;");
+        brCard.getChildren().addAll(battleRoyaleCheckBox, brHint);
+
         // 2. PARAMETERS ROW
         HBox paramsRow = new HBox(20);
         paramsRow.setAlignment(Pos.CENTER_LEFT);
@@ -92,7 +110,12 @@ public class GuessCharacterSetupEditor implements IGameSetupEditor {
         roundsSpinner = new Spinner<>(1, 20, curRounds, 1);
         roundsSpinner.setEditable(true);
         roundsSpinner.setPrefWidth(75);
+        roundsSpinner.setDisable(curBattleRoyale);
         roundsBox.getChildren().addAll(rLabel, roundsSpinner);
+
+        battleRoyaleCheckBox.setOnAction(e -> {
+            roundsSpinner.setDisable(battleRoyaleCheckBox.isSelected());
+        });
 
         // Set Timer Checkbox
         enableTimerCheckBox = new CheckBox(I18n.get("game.editor.guesscharacter.set_timer"));
@@ -184,7 +207,7 @@ public class GuessCharacterSetupEditor implements IGameSetupEditor {
 
         renderThumbnails();
 
-        root.getChildren().addAll(descLabel, paramsRow, new Separator(), poolHeader, addControlsRow, scroll);
+        root.getChildren().addAll(descLabel, brCard, paramsRow, new Separator(), poolHeader, addControlsRow, scroll);
         return root;
     }
 
@@ -259,6 +282,7 @@ public class GuessCharacterSetupEditor implements IGameSetupEditor {
     public JsonNode getUpdatedSetup() {
         ObjectNode root = objectMapper.createObjectNode();
         root.put("game", "Guess_Character");
+        root.put("battleRoyale", battleRoyaleCheckBox != null && battleRoyaleCheckBox.isSelected());
         root.put("rounds_per_player", roundsSpinner != null ? roundsSpinner.getValue() : 3);
         root.put("enable_timer", enableTimerCheckBox != null ? enableTimerCheckBox.isSelected() : true);
         root.put("timer_seconds", timerSecondsSpinner != null ? timerSecondsSpinner.getValue() : 30);
@@ -285,26 +309,45 @@ public class GuessCharacterSetupEditor implements IGameSetupEditor {
     }
 
     @Override
+    public String validateSetup(List<Competitor> profiles, boolean battleRoyale) {
+        return validateSetupData(getUpdatedSetup(), profiles, battleRoyale);
+    }
+
+    @Override
     public String validateSetupData(JsonNode setupData, List<Competitor> profiles) {
+        boolean br = setupData != null && (
+            (setupData.has("battleRoyale") && setupData.get("battleRoyale").asBoolean(false)) ||
+            (setupData.has("battle_royale") && setupData.get("battle_royale").asBoolean(false))
+        );
+        return validateSetupData(setupData, profiles, br);
+    }
+
+    @Override
+    public String validateSetupData(JsonNode setupData, List<Competitor> profiles, boolean battleRoyale) {
         if (setupData == null) {
             return "Guess Character configuration is missing.";
         }
+
+        boolean isBr = battleRoyale || (setupData.has("battleRoyale") && setupData.get("battleRoyale").asBoolean(false))
+                || (setupData.has("battle_royale") && setupData.get("battle_royale").asBoolean(false));
 
         int rpp = 3;
         if (setupData.has("rounds_per_player")) rpp = setupData.get("rounds_per_player").asInt(3);
         else if (setupData.has("roundsPerPlayer")) rpp = setupData.get("roundsPerPlayer").asInt(3);
 
         int compCount = (profiles != null && !profiles.isEmpty()) ? profiles.size() : 1;
-        int requiredImages = compCount * rpp;
+        int requiredImages = isBr ? 1 : (compCount * rpp);
 
         JsonNode poolNode = setupData.has("media_pool") ? setupData.get("media_pool")
                 : (setupData.has("mediaPool") ? setupData.get("mediaPool") : null);
 
         if (poolNode == null || !poolNode.isArray() || poolNode.size() == 0) {
-            return "Guess Character requires at least " + requiredImages + " character image(s). None are added.";
+            return isBr
+                    ? "Guess Character requires at least 1 character image. None are added."
+                    : ("Guess Character requires at least " + requiredImages + " character image(s). None are added.");
         }
 
-        if (poolNode.size() < requiredImages) {
+        if (!isBr && poolNode.size() < requiredImages) {
             return "Guess Character requires at least " + requiredImages + " image(s) for " + compCount + " competitor(s) (" + rpp + " round/player), but only " + poolNode.size() + " image(s) are configured.";
         }
 

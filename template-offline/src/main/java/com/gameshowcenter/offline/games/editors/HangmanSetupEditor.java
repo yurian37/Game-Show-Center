@@ -8,9 +8,11 @@ import com.gameshowcenter.offline.games.IGameSetupEditor;
 import com.gameshowcenter.offline.i18n.I18n;
 import com.gameshowcenter.offline.model.Competitor;
 import com.gameshowcenter.offline.theme.ThemeManager;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
@@ -28,11 +30,32 @@ public class HangmanSetupEditor implements IGameSetupEditor {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private Spinner<Integer> livesSpinner;
     private Spinner<Integer> roundsSpinner;
+    private CheckBox battleRoyaleCheckBox;
     private TextField wordsField;
 
     @Override
     public Node createEditorPanel(JsonNode currentSetup, List<Competitor> profiles, ThemeManager.Palette palette) {
         VBox box = new VBox(12);
+
+        boolean curBattleRoyale = false;
+        if (currentSetup != null) {
+            if (currentSetup.has("battleRoyale")) curBattleRoyale = currentSetup.get("battleRoyale").asBoolean(false);
+            else if (currentSetup.has("battle_royale")) curBattleRoyale = currentSetup.get("battle_royale").asBoolean(false);
+        }
+
+        // Battle Royale Toggle Row
+        battleRoyaleCheckBox = new CheckBox(I18n.get("game.editor.battleroyale.check"));
+        battleRoyaleCheckBox.setSelected(curBattleRoyale);
+        battleRoyaleCheckBox.setStyle("-fx-text-fill: #fbbf24; -fx-font-weight: 900; -fx-font-size: 12px; -fx-cursor: hand;");
+
+        Label brHint = new Label(I18n.get("game.editor.battleroyale.hint"));
+        brHint.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 11px; -fx-wrap-text: true;");
+
+        VBox brCard = new VBox(4);
+        brCard.setPadding(new Insets(8, 12, 8, 12));
+        brCard.setStyle("-fx-background-color: rgba(245, 158, 11, 0.08); -fx-border-color: rgba(245, 158, 11, 0.3); -fx-border-radius: 8px; -fx-background-radius: 8px;");
+        brCard.getChildren().addAll(battleRoyaleCheckBox, brHint);
+        box.getChildren().add(brCard);
 
         HBox spinnersRow = new HBox(20);
         spinnersRow.setAlignment(Pos.CENTER_LEFT);
@@ -69,7 +92,12 @@ public class HangmanSetupEditor implements IGameSetupEditor {
         roundsSpinner = new Spinner<>(1, 10, curRounds, 1);
         roundsSpinner.setEditable(true);
         roundsSpinner.setPrefWidth(70);
+        roundsSpinner.setDisable(curBattleRoyale);
         roundsBox.getChildren().addAll(rLabel, roundsSpinner);
+
+        battleRoyaleCheckBox.setOnAction(e -> {
+            roundsSpinner.setDisable(battleRoyaleCheckBox.isSelected());
+        });
 
         spinnersRow.getChildren().addAll(livesBox, roundsBox);
         box.getChildren().add(spinnersRow);
@@ -168,43 +196,36 @@ public class HangmanSetupEditor implements IGameSetupEditor {
 
     @Override
     public String validateSetup(List<Competitor> profiles) {
-        if (wordsField != null && roundsSpinner != null) {
-            int compCount = (profiles != null && !profiles.isEmpty()) ? profiles.size() : 2;
-            int rounds = roundsSpinner.getValue();
-            int minWords = compCount * rounds;
+        return validateSetupData(getUpdatedSetup(), profiles);
+    }
 
-            Set<String> seen = new HashSet<>();
-            List<String> duplicates = new ArrayList<>();
-            for (String w : wordsField.getText().split(",")) {
-                String norm = w.trim().toUpperCase();
-                if (!norm.isEmpty()) {
-                    if (!seen.add(norm)) {
-                        if (!duplicates.contains(norm)) duplicates.add(norm);
-                    }
-                }
-            }
-
-            if (!duplicates.isEmpty()) {
-                return I18n.get("game.editor.hangman.duplicate_words", String.join(", ", duplicates));
-            }
-
-            if (seen.size() < minWords) {
-                return String.format("Cannot save Hangman setup: Word pool has %d unique items, but minimum required is %d (%d competitors × %d rounds). Please add more words.",
-                    seen.size(), minWords, compCount, rounds);
-            }
-        }
-        return null;
+    @Override
+    public String validateSetup(List<Competitor> profiles, boolean battleRoyale) {
+        return validateSetupData(getUpdatedSetup(), profiles, battleRoyale);
     }
 
     @Override
     public String validateSetupData(JsonNode setupData, List<Competitor> profiles) {
+        boolean br = setupData != null && (
+            (setupData.has("battleRoyale") && setupData.get("battleRoyale").asBoolean(false)) ||
+            (setupData.has("battle_royale") && setupData.get("battle_royale").asBoolean(false))
+        );
+        return validateSetupData(setupData, profiles, br);
+    }
+
+    @Override
+    public String validateSetupData(JsonNode setupData, List<Competitor> profiles, boolean battleRoyale) {
         if (setupData == null) return null;
+
+        boolean isBr = battleRoyale || (setupData.has("battleRoyale") && setupData.get("battleRoyale").asBoolean(false))
+                || (setupData.has("battle_royale") && setupData.get("battle_royale").asBoolean(false));
+
         int compCount = (profiles != null && !profiles.isEmpty()) ? profiles.size() : 2;
         int rounds = 3;
         if (setupData.has("roundsPerPlayer")) rounds = setupData.get("roundsPerPlayer").asInt();
         else if (setupData.has("rounds_per_player")) rounds = setupData.get("rounds_per_player").asInt();
 
-        int minWords = compCount * rounds;
+        int minWords = isBr ? 1 : (compCount * rounds);
         JsonNode poolNode = setupData.has("wordPool") ? setupData.get("wordPool") :
             (setupData.has("word_pool") ? setupData.get("word_pool") : null);
 
@@ -226,7 +247,9 @@ public class HangmanSetupEditor implements IGameSetupEditor {
         }
 
         if (seen.size() < minWords) {
-            return I18n.get("game.editor.hangman.pool_insufficient", seen.size(), minWords, compCount, rounds);
+            return isBr
+                    ? "Hangman setup invalid: Word pool is empty. At least 1 word is required."
+                    : I18n.get("game.editor.hangman.pool_insufficient", seen.size(), minWords, compCount, rounds);
         }
         return null;
     }
@@ -235,6 +258,7 @@ public class HangmanSetupEditor implements IGameSetupEditor {
     public JsonNode getUpdatedSetup() {
         ObjectNode root = objectMapper.createObjectNode();
         root.put("game", "Hangman");
+        root.put("battleRoyale", battleRoyaleCheckBox != null && battleRoyaleCheckBox.isSelected());
         root.put("lives_per_round", livesSpinner.getValue());
         root.put("livesPerRound", livesSpinner.getValue());
         root.put("roundsPerPlayer", roundsSpinner.getValue());

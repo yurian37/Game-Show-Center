@@ -2,7 +2,7 @@
 ; Desarrollado por Yuyi Studio
 
 #define MyAppName "Game Show Center Offline"
-#define MyAppVersion "0.7.0"
+#define MyAppVersion "1.0.0"
 #define MyAppPublisher "Yuyi Studio"
 #define MyAppURL "https://gameshowcenter.com"
 #define MyAppExeName "GameShowCenter.exe"
@@ -31,14 +31,14 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 ; Archivo ejecutable o JAR compilado
-Source: "target\template-offline-0.7.0-standalone.jar"; DestDir: "{app}"; Flags: ignoreversion
+Source: "target\template-offline-1.0.0-standalone.jar"; DestDir: "{app}"; Flags: ignoreversion
 ; Carpeta de minijuegos y assets
 Source: "games\*"; DestDir: "{app}\games"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "assets\*"; DestDir: "{app}\assets"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
-Name: "{group}\{#MyAppName}"; Filename: "javaw.exe"; Parameters: "-jar ""{app}\template-offline-0.7.0-standalone.jar"""; WorkingDir: "{app}"
-Name: "{autodesktop}\{#MyAppName}"; Filename: "javaw.exe"; Parameters: "-jar ""{app}\template-offline-0.7.0-standalone.jar"""; WorkingDir: "{app}"; Tasks: desktopicon
+Name: "{group}\{#MyAppName}"; Filename: "javaw.exe"; Parameters: "-jar ""{app}\template-offline-1.0.0-standalone.jar"""; WorkingDir: "{app}"
+Name: "{autodesktop}\{#MyAppName}"; Filename: "javaw.exe"; Parameters: "-jar ""{app}\template-offline-1.0.0-standalone.jar"""; WorkingDir: "{app}"; Tasks: desktopicon
 
 [Run]
-Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: shellexec postinstall skipifsilent; Filename: "javaw.exe"; Parameters: "-jar ""{app}\template-offline-0.7.0-standalone.jar"""
+Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: shellexec postinstall skipifsilent; Filename: "javaw.exe"; Parameters: "-jar ""{app}\template-offline-1.0.0-standalone.jar"""

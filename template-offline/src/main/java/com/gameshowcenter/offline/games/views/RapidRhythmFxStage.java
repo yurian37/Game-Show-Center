@@ -61,6 +61,7 @@ public class RapidRhythmFxStage extends VBox {
     private int roundNumber = 1;
     private boolean isMatchFinished = false;
 
+    private final boolean isBattleRoyale;
     private final int roundsPerPlayer;
     private final int numPlayers;
     private final int totalMatchRounds;
@@ -105,14 +106,18 @@ public class RapidRhythmFxStage extends VBox {
         this.setupData = setupData;
 
         int rpp = 1;
+        boolean br = false;
         if (setupData != null) {
+            if (setupData.has("battleRoyale")) br = setupData.get("battleRoyale").asBoolean(false);
+            else if (setupData.has("battle_royale")) br = setupData.get("battle_royale").asBoolean(false);
+
             if (setupData.has("rounds_per_player")) rpp = setupData.get("rounds_per_player").asInt(1);
             else if (setupData.has("roundsPerPlayer")) rpp = setupData.get("roundsPerPlayer").asInt(1);
         }
 
+        this.isBattleRoyale = br;
         this.roundsPerPlayer = rpp;
         this.numPlayers = (!this.profiles.isEmpty()) ? this.profiles.size() : 1;
-        this.totalMatchRounds = this.numPlayers * this.roundsPerPlayer;
 
         setSpacing(14);
         setAlignment(Pos.CENTER);
@@ -120,11 +125,17 @@ public class RapidRhythmFxStage extends VBox {
 
         parseTrackPool();
 
+        this.totalMatchRounds = this.isBattleRoyale ? Math.max(1, initialPool.size()) : (this.numPlayers * this.roundsPerPlayer);
+
         // 1. TOP STATUS BADGES
         HBox topBar = new HBox(12);
         topBar.setAlignment(Pos.CENTER);
 
-        roundBadgeLabel = new Label(String.format(I18n.get("game.rhythm.title_song"), 1, totalMatchRounds));
+        String badgeTitle = String.format(I18n.get("game.rhythm.title_song"), 1, totalMatchRounds);
+        if (isBattleRoyale) {
+            badgeTitle = "⚔️ BR • " + badgeTitle;
+        }
+        roundBadgeLabel = new Label(badgeTitle);
         roundBadgeLabel.setStyle(String.format(
                 "-fx-background-color: rgba(245, 158, 11, 0.15); -fx-text-fill: #f59e0b; -fx-font-weight: 900; -fx-font-size: 12px; -fx-padding: 6px 14px; -fx-background-radius: 20px; -fx-border-color: rgba(245, 158, 11, 0.3); -fx-border-radius: 20px;",
                 ThemeManager.getAccentHex()));
@@ -366,7 +377,10 @@ public class RapidRhythmFxStage extends VBox {
         Label finTitle = new Label(I18n.get("game.rhythm.completed"));
         finTitle.setStyle("-fx-font-size: 18px; -fx-font-weight: 900; -fx-text-fill: #fbbf24;");
 
-        Label finDesc = new Label(String.format(I18n.get("game.rhythm.all_rounds_concluded"), totalMatchRounds, numPlayers, roundsPerPlayer));
+        String finDescText = isBattleRoyale
+                ? String.format("¡Modo Battle Royale completado! Las %d pistas de audio configuradas aparecieron en la arena.", totalMatchRounds)
+                : String.format(I18n.get("game.rhythm.all_rounds_concluded"), totalMatchRounds, numPlayers, roundsPerPlayer);
+        Label finDesc = new Label(finDescText);
         finDesc.setStyle("-fx-font-size: 12px; -fx-text-fill: #cbd5e1; -fx-text-alignment: center;");
         finDesc.setWrapText(true);
         finDesc.setMaxWidth(480);
@@ -535,7 +549,9 @@ public class RapidRhythmFxStage extends VBox {
     }
 
     private void updateUI() {
-        roundBadgeLabel.setText(String.format(I18n.get("game.rhythm.title_song"), Math.min(roundNumber, totalMatchRounds), totalMatchRounds));
+        String badge = String.format(I18n.get("game.rhythm.title_song"), Math.min(roundNumber, totalMatchRounds), totalMatchRounds);
+        if (isBattleRoyale) badge = "⚔️ BR • " + badge;
+        roundBadgeLabel.setText(badge);
         poolInfoLabel.setText(String.format(I18n.get("game.rhythm.unseen_pool"), workingPool.size()));
 
         dynamicContainer.getChildren().clear();

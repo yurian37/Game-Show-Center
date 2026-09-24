@@ -8,9 +8,11 @@ import com.gameshowcenter.offline.games.IGameSetupEditor;
 import com.gameshowcenter.offline.i18n.I18n;
 import com.gameshowcenter.offline.model.Competitor;
 import com.gameshowcenter.offline.theme.ThemeManager;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Spinner;
@@ -26,6 +28,7 @@ public class TriviaQuizSetupEditor implements IGameSetupEditor {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private Spinner<Integer> roundsSpinner;
+    private CheckBox battleRoyaleCheckBox;
     private final List<QuestionItem> questionItems = new ArrayList<>();
     private VBox questionsListPanel;
 
@@ -39,6 +42,26 @@ public class TriviaQuizSetupEditor implements IGameSetupEditor {
         VBox box = new VBox(12);
         String textColor = palette != null ? ThemeManager.getContrastTextColor(palette.bgCard) : ThemeManager.getTextPrimaryHex();
 
+        boolean curBattleRoyale = false;
+        if (currentSetup != null) {
+            if (currentSetup.has("battleRoyale")) curBattleRoyale = currentSetup.get("battleRoyale").asBoolean(false);
+            else if (currentSetup.has("battle_royale")) curBattleRoyale = currentSetup.get("battle_royale").asBoolean(false);
+        }
+
+        // Battle Royale Toggle Row
+        battleRoyaleCheckBox = new CheckBox(I18n.get("game.editor.battleroyale.check"));
+        battleRoyaleCheckBox.setSelected(curBattleRoyale);
+        battleRoyaleCheckBox.setStyle("-fx-text-fill: #fbbf24; -fx-font-weight: 900; -fx-font-size: 12px; -fx-cursor: hand;");
+
+        Label brHint = new Label(I18n.get("game.editor.battleroyale.hint"));
+        brHint.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 11px; -fx-wrap-text: true;");
+
+        VBox brCard = new VBox(4);
+        brCard.setPadding(new Insets(8, 12, 8, 12));
+        brCard.setStyle("-fx-background-color: rgba(245, 158, 11, 0.08); -fx-border-color: rgba(245, 158, 11, 0.3); -fx-border-radius: 8px; -fx-background-radius: 8px;");
+        brCard.getChildren().addAll(battleRoyaleCheckBox, brHint);
+        box.getChildren().add(brCard);
+
         HBox roundsRow = new HBox(12);
         roundsRow.setAlignment(Pos.CENTER_LEFT);
         Label rLabel = new Label(I18n.get("game.editor.rounds_per_player"));
@@ -47,6 +70,11 @@ public class TriviaQuizSetupEditor implements IGameSetupEditor {
         int curRounds = (currentSetup != null && currentSetup.has("roundsPerPlayer")) ? currentSetup.get("roundsPerPlayer").asInt() : 3;
         roundsSpinner = new Spinner<>(1, 10, curRounds, 1);
         roundsSpinner.setEditable(true);
+        roundsSpinner.setDisable(curBattleRoyale);
+
+        battleRoyaleCheckBox.setOnAction(e -> {
+            roundsSpinner.setDisable(battleRoyaleCheckBox.isSelected());
+        });
 
         roundsRow.getChildren().addAll(rLabel, roundsSpinner);
         box.getChildren().add(roundsRow);
@@ -138,45 +166,58 @@ public class TriviaQuizSetupEditor implements IGameSetupEditor {
 
     @Override
     public String validateSetup(List<Competitor> profiles) {
-        if (roundsSpinner != null && questionItems != null) {
-            int compCount = (profiles != null && !profiles.isEmpty()) ? profiles.size() : 2;
-            int rounds = roundsSpinner.getValue();
-            int minQuestions = compCount * rounds;
+        return validateSetup(profiles, battleRoyaleCheckBox != null && battleRoyaleCheckBox.isSelected());
+    }
 
-            int validQuestions = 0;
-            for (QuestionItem item : questionItems) {
-                if (!item.questionField.getText().trim().isEmpty()) {
-                    validQuestions++;
-                }
-            }
-
-            if (validQuestions < minQuestions) {
-                return String.format("Cannot save Trivia Quiz setup: Question pool has %d items, but minimum required is %d (%d competitors × %d rounds). Please add more questions.",
-                    validQuestions, minQuestions, compCount, rounds);
-            }
-        }
-        return null;
+    @Override
+    public String validateSetup(List<Competitor> profiles, boolean battleRoyale) {
+        return validateSetupData(getUpdatedSetup(), profiles, battleRoyale);
     }
 
     @Override
     public String validateSetupData(JsonNode setupData, List<Competitor> profiles) {
+        boolean br = setupData != null && (
+            (setupData.has("battleRoyale") && setupData.get("battleRoyale").asBoolean(false)) ||
+            (setupData.has("battle_royale") && setupData.get("battle_royale").asBoolean(false))
+        );
+        return validateSetupData(setupData, profiles, br);
+    }
+
+    @Override
+    public String validateSetupData(JsonNode setupData, List<Competitor> profiles, boolean battleRoyale) {
         if (setupData == null) return null;
+
+        boolean isBr = battleRoyale || (setupData.has("battleRoyale") && setupData.get("battleRoyale").asBoolean(false))
+                || (setupData.has("battle_royale") && setupData.get("battle_royale").asBoolean(false));
+
         int compCount = (profiles != null && !profiles.isEmpty()) ? profiles.size() : 2;
         int rounds = 3;
         if (setupData.has("roundsPerPlayer")) rounds = setupData.get("roundsPerPlayer").asInt();
         else if (setupData.has("rounds_per_player")) rounds = setupData.get("rounds_per_player").asInt();
 
-        int minQuestions = compCount * rounds;
+        int minQuestions = isBr ? 1 : (compCount * rounds);
         int questionCount = 0;
         JsonNode poolNode = setupData.has("questionPool") ? setupData.get("questionPool") :
             (setupData.has("question_pool") ? setupData.get("question_pool") : null);
 
         if (poolNode != null && poolNode.isArray()) {
-            questionCount = poolNode.size();
+            for (JsonNode qNode : poolNode) {
+                String qText = "";
+                if (qNode.isObject() && qNode.has("question")) {
+                    qText = qNode.get("question").asText().trim();
+                } else if (qNode.isTextual()) {
+                    qText = qNode.asText().trim();
+                }
+                if (!qText.isEmpty()) {
+                    questionCount++;
+                }
+            }
         }
 
         if (questionCount < minQuestions) {
-            return I18n.get("game.editor.triviaquiz.pool_insufficient", questionCount, minQuestions, compCount, rounds);
+            return isBr
+                    ? "Trivia Quiz setup invalid: Question pool is empty. At least 1 question is required."
+                    : I18n.get("game.editor.triviaquiz.pool_insufficient", questionCount, minQuestions, compCount, rounds);
         }
         return null;
     }
@@ -185,6 +226,7 @@ public class TriviaQuizSetupEditor implements IGameSetupEditor {
     public JsonNode getUpdatedSetup() {
         ObjectNode root = objectMapper.createObjectNode();
         root.put("game", "Trivia_Quiz");
+        root.put("battleRoyale", battleRoyaleCheckBox != null && battleRoyaleCheckBox.isSelected());
         int rpp = roundsSpinner.getValue();
         root.put("roundsPerPlayer", rpp);
         root.put("rounds_per_player", rpp);

@@ -51,6 +51,7 @@ public class ZeroMarginFxStage extends VBox {
     private final List<Double> targetTimesPool = new ArrayList<>();
     private final List<TurnResult> playerResults = new ArrayList<>();
 
+    private boolean isBattleRoyale = false;
     private int roundsPerPlayer = 3;
     private int currentRound = 1;
     private int currentPlayerIndex = 0;
@@ -270,6 +271,10 @@ public class ZeroMarginFxStage extends VBox {
     }
 
     private void parseSetup() {
+        if (setupData != null && setupData.has("battleRoyale") && setupData.get("battleRoyale").asBoolean()) {
+            this.isBattleRoyale = true;
+        }
+
         int rpp = 3;
         if (setupData != null) {
             if (setupData.has("roundsPerPlayer")) rpp = setupData.get("roundsPerPlayer").asInt(3);
@@ -289,6 +294,10 @@ public class ZeroMarginFxStage extends VBox {
 
         if (targetTimesPool.isEmpty()) {
             targetTimesPool.addAll(DEFAULT_POOL);
+        }
+
+        if (isBattleRoyale) {
+            this.roundsPerPlayer = Math.max(1, targetTimesPool.size());
         }
     }
 
@@ -324,7 +333,7 @@ public class ZeroMarginFxStage extends VBox {
         currentRound = 1;
         currentPlayerIndex = 0;
         lastTargetTime = -1.0;
-        roundTargetTime = pickTargetTime(-1.0);
+        roundTargetTime = isBattleRoyale ? targetTimesPool.get(0) : pickTargetTime(-1.0);
         playerResults.clear();
 
         completedBanner.setVisible(false);
@@ -340,7 +349,9 @@ public class ZeroMarginFxStage extends VBox {
         elapsedSeconds = 0.0;
         stoppedSeconds = 0.0;
 
-        roundBadgeLabel.setText(String.format("⏱️ Zero Margin • Round %d of %d", currentRound, roundsPerPlayer));
+        roundBadgeLabel.setText(isBattleRoyale
+                ? String.format("⚔️ BR • Ronda %d de %d (Objetivo #%d)", currentRound, roundsPerPlayer, currentRound)
+                : String.format("⏱️ Zero Margin • Round %d of %d", currentRound, roundsPerPlayer));
 
         Competitor activeComp = profiles.get(currentPlayerIndex);
         turnBadgeLabel.setText(String.format("Active Turn: %s (%d of %d)", activeComp.getName(), currentPlayerIndex + 1, profiles.size()));
@@ -422,14 +433,18 @@ public class ZeroMarginFxStage extends VBox {
                 currentRound++;
                 currentPlayerIndex = 0;
                 lastTargetTime = roundTargetTime;
-                roundTargetTime = pickTargetTime(lastTargetTime);
+                roundTargetTime = isBattleRoyale 
+                        ? targetTimesPool.get(currentRound - 1) 
+                        : pickTargetTime(lastTargetTime);
                 resetTurnState();
             } else {
                 // MATCH COMPLETED
                 mainGameCard.setVisible(false);
                 mainGameCard.setManaged(false);
 
-                completedMsg.setText(String.format("All %d rounds for all %d competitor(s) have been completed.", roundsPerPlayer, profiles.size()));
+                completedMsg.setText(isBattleRoyale
+                        ? String.format("⚔️ ¡BATTLE ROYALE COMPLETADO! Todos los tiempos objetivo (%d) fueron presentados en la arena.", roundsPerPlayer)
+                        : String.format("All %d rounds for all %d competitor(s) have been completed.", roundsPerPlayer, profiles.size()));
 
                 completedBanner.setVisible(true);
                 completedBanner.setManaged(true);

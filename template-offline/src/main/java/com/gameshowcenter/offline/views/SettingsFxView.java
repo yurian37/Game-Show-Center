@@ -100,6 +100,13 @@ public class SettingsFxView extends ScrollPane {
     private HBox ffaCountBox;
     private Label ffaLabel;
     private ComboBox<Integer> ffaCombo;
+
+    private boolean battleRoyale = false;
+    private VBox battleRoyaleCard;
+    private Label battleRoyaleTitle;
+    private Label battleRoyaleBadge;
+    private Label battleRoyaleHelpLabel;
+    private Button battleRoyaleToggleBtn;
     private VBox competitorsBox;
     private Label competitorsTitle;
     private VBox scorePresetsBox;
@@ -292,6 +299,7 @@ public class SettingsFxView extends ScrollPane {
         });
 
         modePills.getChildren().addAll(btn1v1, btnTeam, btnFfa);
+
         modeBox.getChildren().addAll(modeTitle, modeHelpLabel, modePills, teamCountBox, ffaCountBox);
 
         competitorsBox = new VBox(12);
@@ -507,7 +515,8 @@ public class SettingsFxView extends ScrollPane {
                             }
                         }
                     }
-                    String error = editor.validateSetupData(setupData, activeProfiles);
+                    boolean isBr = setupData != null && setupData.has("battleRoyale") && setupData.get("battleRoyale").asBoolean();
+                    String error = editor.validateSetupData(setupData, activeProfiles, isBr);
                     return error != null ? new GameValidationError(game.getName(), error) : null;
                 }, VALIDATION_EXECUTOR))
                 .toList();
@@ -551,6 +560,13 @@ public class SettingsFxView extends ScrollPane {
                             List<GameDescriptor> orderedGames = new ArrayList<>(selectedGames);
                             orderedGames.sort(Comparator.comparingInt(GameDescriptor::getPlayOrder));
                             config.setSelectedGames(orderedGames);
+
+                            boolean anyBR = orderedGames.stream().anyMatch(g -> {
+                                JsonNode sd = g.getSetupData();
+                                return sd != null && sd.has("battleRoyale") && sd.get("battleRoyale").asBoolean();
+                            });
+                            config.setBattleRoyale(anyBR);
+
                             saveCurrentSetupToCache();
                             listener.onStartMatchConfigured(config);
                         }
@@ -1464,7 +1480,8 @@ public class SettingsFxView extends ScrollPane {
                                     }
                                 }
                             }
-                            String error = editor.validateSetupData(setupData, activeProfiles);
+                            boolean isBr = setupData != null && setupData.has("battleRoyale") && setupData.get("battleRoyale").asBoolean();
+                            String error = editor.validateSetupData(setupData, activeProfiles, isBr);
 
                             long elapsed = System.currentTimeMillis() - startTime;
                             long remaining = Math.max(0, 750 - elapsed);
@@ -1497,9 +1514,30 @@ public class SettingsFxView extends ScrollPane {
             }
 
             VBox infoBox = new VBox(2);
+            HBox titleRow = new HBox(6);
+            titleRow.setAlignment(Pos.CENTER_LEFT);
+
             Label nameLabel = new Label(game.getName() != null ? game.getName() : "Minigame");
             nameLabel.setStyle(String.format("-fx-font-weight: bold; -fx-text-fill: %s; -fx-font-size: 13px;",
                     ThemeManager.getTextOnCardPrimaryHex()));
+            titleRow.getChildren().add(nameLabel);
+
+            JsonNode gSetup = game.getSetupData();
+            if (gSetup == null) {
+                File setupFile = new File("games/" + game.getName() + "/setup.json");
+                if (!setupFile.exists()) setupFile = new File("template-offline/games/" + game.getName() + "/setup.json");
+                if (setupFile.exists()) {
+                    try {
+                        gSetup = objectMapper.readTree(setupFile);
+                        game.setSetupData(gSetup);
+                    } catch (Exception ignored) {}
+                }
+            }
+            if (gSetup != null && gSetup.has("battleRoyale") && gSetup.get("battleRoyale").asBoolean()) {
+                Label brBadge = new Label("⚔️ BR");
+                brBadge.setStyle("-fx-background-color: rgba(245, 158, 11, 0.25); -fx-text-fill: #fbbf24; -fx-font-size: 9px; -fx-font-weight: 900; -fx-padding: 2px 6px; -fx-background-radius: 6px; -fx-border-color: #f59e0b; -fx-border-radius: 6px;");
+                titleRow.getChildren().add(brBadge);
+            }
 
             Label statusModeLabel = new Label(
                     modeSupported ? "Author: " + (game.getAuthor() != null ? game.getAuthor() : "YuyiStudio")
@@ -1509,7 +1547,7 @@ public class SettingsFxView extends ScrollPane {
                             ThemeManager.getAccentHex())
                     : "-fx-text-fill: #f43f5e; -fx-font-size: 10px; -fx-font-weight: bold;");
 
-            infoBox.getChildren().addAll(nameLabel, statusModeLabel);
+            infoBox.getChildren().addAll(titleRow, statusModeLabel);
             HBox.setHgrow(infoBox, Priority.ALWAYS);
 
             HBox actionButtonsBox = new HBox(8);
@@ -1667,7 +1705,8 @@ public class SettingsFxView extends ScrollPane {
             long startTime = System.currentTimeMillis();
 
             CompletableFuture.supplyAsync(() -> {
-                String error = editor.validateSetupData(updated, activeProfiles);
+                boolean isBr = updated != null && updated.has("battleRoyale") && updated.get("battleRoyale").asBoolean();
+                String error = editor.validateSetupData(updated, activeProfiles, isBr);
                 if (error == null) {
                     try {
                         File targetFile = new File("games/" + game.getName() + "/setup.json");
@@ -2025,6 +2064,7 @@ public class SettingsFxView extends ScrollPane {
         root.put("gameMode", selectedGameMode);
         root.put("mode", selectedGameMode);
         root.put("ffaPlayerCount", ffaPlayerCount);
+        root.put("battleRoyale", battleRoyale);
 
         // Score presets
         ArrayNode presetsArray = objectMapper.createArrayNode();
@@ -2156,6 +2196,14 @@ public class SettingsFxView extends ScrollPane {
             } else if (root.has("initialPlayers") && root.get("initialPlayers").has("ffaPlayerCount")) {
                 this.ffaPlayerCount = root.get("initialPlayers").get("ffaPlayerCount").asInt(4);
             }
+
+            // 2.1 BATTLE ROYALE MODE
+            if (root.has("battleRoyale")) {
+                this.battleRoyale = root.get("battleRoyale").asBoolean(false);
+            } else {
+                this.battleRoyale = false;
+            }
+            updateBattleRoyaleUI();
 
             // 3. SCORE PRESETS
             if (root.has("scorePresets")) {
@@ -2369,6 +2417,8 @@ public class SettingsFxView extends ScrollPane {
     private void handleResetSetup() {
         this.selectedGameMode = "1vs1";
         this.ffaPlayerCount = 4;
+        this.battleRoyale = false;
+        updateBattleRoyaleUI();
         resetGameSelections();
         scorePresets.clear();
         scorePresets.addAll(Arrays.asList("+10", "+20", "+50", "-10", "-20"));
@@ -2424,6 +2474,51 @@ public class SettingsFxView extends ScrollPane {
         refreshStyles();
     }
 
+    public boolean isBattleRoyale() {
+        return battleRoyale;
+    }
+
+    public void setBattleRoyale(boolean battleRoyale) {
+        this.battleRoyale = battleRoyale;
+        updateBattleRoyaleUI();
+    }
+
+    private void updateBattleRoyaleUI() {
+        if (battleRoyaleCard == null) return;
+
+        if (battleRoyale) {
+            battleRoyaleCard.setStyle(
+                    "-fx-background-color: rgba(245, 158, 11, 0.08); -fx-border-color: rgba(245, 158, 11, 0.5); -fx-border-width: 1.5px; -fx-border-radius: 12px; -fx-background-radius: 12px; -fx-padding: 12px 14px; -fx-effect: dropshadow(three-pass-box, rgba(245,158,11,0.2), 10, 0, 0, 2);");
+            if (battleRoyaleBadge != null) {
+                battleRoyaleBadge.setText(I18n.get("settings.mode.battleroyale.badge_on"));
+                battleRoyaleBadge.setStyle("-fx-background-color: rgba(245, 158, 11, 0.25); -fx-text-fill: #fbbf24; -fx-font-size: 10px; -fx-font-weight: 900; -fx-padding: 3px 8px; -fx-background-radius: 6px; -fx-border-color: #f59e0b; -fx-border-radius: 6px;");
+            }
+            if (battleRoyaleToggleBtn != null) {
+                battleRoyaleToggleBtn.setText("🔥 " + I18n.get("settings.mode.battleroyale.btn_on"));
+                battleRoyaleToggleBtn.setStyle("-fx-background-color: linear-gradient(to right, #f59e0b, #e11d48); -fx-text-fill: #ffffff; -fx-font-size: 11px; -fx-font-weight: 900; -fx-padding: 6px 14px; -fx-background-radius: 10px; -fx-border-color: #fbbf24; -fx-border-radius: 10px; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(245,158,11,0.4), 8, 0, 0, 2);");
+            }
+            if (gamesSubtitle != null) {
+                gamesSubtitle.setText(I18n.get("settings.games.help_battleroyale"));
+            }
+        } else {
+            battleRoyaleCard.setStyle(
+                    "-fx-background-color: rgba(255, 255, 255, 0.03); -fx-border-color: rgba(255, 255, 255, 0.1); -fx-border-radius: 12px; -fx-background-radius: 12px; -fx-padding: 12px 14px;");
+            if (battleRoyaleBadge != null) {
+                battleRoyaleBadge.setText(I18n.get("settings.mode.battleroyale.badge_off"));
+                battleRoyaleBadge.setStyle("-fx-background-color: rgba(148, 163, 184, 0.15); -fx-text-fill: #94a3b8; -fx-font-size: 10px; -fx-font-weight: 800; -fx-padding: 3px 8px; -fx-background-radius: 6px; -fx-border-color: rgba(148, 163, 184, 0.3); -fx-border-radius: 6px;");
+            }
+            if (battleRoyaleToggleBtn != null) {
+                battleRoyaleToggleBtn.setText("⚪ " + I18n.get("settings.mode.battleroyale.btn_off"));
+                battleRoyaleToggleBtn.setStyle(String.format(
+                        "-fx-background-color: %s; -fx-text-fill: #94a3b8; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 6px 14px; -fx-background-radius: 10px; -fx-border-color: rgba(255, 255, 255, 0.15); -fx-border-radius: 10px; -fx-cursor: hand;",
+                        ThemeManager.getButtonHex()));
+            }
+            if (gamesSubtitle != null) {
+                gamesSubtitle.setText(I18n.get("settings.games.help"));
+            }
+        }
+    }
+
     public void refreshStyles() {
         ThemeManager.updateDynamicTextColors();
 
@@ -2449,6 +2544,7 @@ public class SettingsFxView extends ScrollPane {
             modeTitle.setStyle(String.format("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: %s;",
                     ThemeManager.getAccentHex()));
         }
+        updateBattleRoyaleUI();
         if (competitorsBox != null) {
             competitorsBox.setStyle(String.format(
                     "-fx-background-color: %s; -fx-border-color: rgba(255, 255, 255, 0.1); -fx-border-radius: 16px; -fx-background-radius: 16px;",
@@ -2593,6 +2689,10 @@ public class SettingsFxView extends ScrollPane {
             btnFfa.setTooltip(new Tooltip(I18n.get("settings.mode.ffa.hint")));
         }
         if (ffaLabel != null) ffaLabel.setText(I18n.get("settings.mode.ffa.count"));
+
+        if (battleRoyaleTitle != null) battleRoyaleTitle.setText(I18n.get("settings.mode.battleroyale.title"));
+        if (battleRoyaleHelpLabel != null) battleRoyaleHelpLabel.setText(I18n.get("settings.mode.battleroyale.desc"));
+        updateBattleRoyaleUI();
 
         if (competitorsTitle != null) competitorsTitle.setText(I18n.get("settings.players.title"));
         if (competitorsSubtitle != null) competitorsSubtitle.setText(I18n.get("settings.players.help"));

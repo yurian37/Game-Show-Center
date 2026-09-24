@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.gameshowcenter.offline.games.IGameSetupEditor;
+import com.gameshowcenter.offline.i18n.I18n;
 import com.gameshowcenter.offline.model.Competitor;
 import com.gameshowcenter.offline.theme.ThemeManager;
 import javafx.geometry.Insets;
@@ -34,6 +35,7 @@ public class TimeLineSetupEditor implements IGameSetupEditor {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final List<EventItem> eventItems = new ArrayList<>();
+    private CheckBox battleRoyaleCheckBox;
     private VBox eventsContainer;
 
     @Override
@@ -41,6 +43,26 @@ public class TimeLineSetupEditor implements IGameSetupEditor {
         VBox root = new VBox(12);
         root.setPadding(new Insets(10));
         String textColor = palette != null ? ThemeManager.getContrastTextColor(palette.bgCard) : ThemeManager.getTextPrimaryHex();
+
+        boolean curBattleRoyale = false;
+        if (currentSetup != null) {
+            if (currentSetup.has("battleRoyale")) curBattleRoyale = currentSetup.get("battleRoyale").asBoolean(false);
+            else if (currentSetup.has("battle_royale")) curBattleRoyale = currentSetup.get("battle_royale").asBoolean(false);
+        }
+
+        // Battle Royale Toggle Row
+        battleRoyaleCheckBox = new CheckBox(I18n.get("game.editor.battleroyale.check"));
+        battleRoyaleCheckBox.setSelected(curBattleRoyale);
+        battleRoyaleCheckBox.setStyle("-fx-text-fill: #fbbf24; -fx-font-weight: 900; -fx-font-size: 12px; -fx-cursor: hand;");
+
+        Label brHint = new Label(I18n.get("game.editor.battleroyale.hint"));
+        brHint.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 11px; -fx-wrap-text: true;");
+
+        VBox brCard = new VBox(4);
+        brCard.setPadding(new Insets(8, 12, 8, 12));
+        brCard.setStyle("-fx-background-color: rgba(245, 158, 11, 0.08); -fx-border-color: rgba(245, 158, 11, 0.3); -fx-border-radius: 8px; -fx-background-radius: 8px;");
+        brCard.getChildren().addAll(battleRoyaleCheckBox, brHint);
+        root.getChildren().add(brCard);
 
         // 1. Info Label explaining manual host scoring and no rounds
         Label descLabel = new Label("Juego educativo sin rondas predefinidas: termina cuando todos los hitos se colocan en la línea de tiempo. El host asigna los puntos manualmente desde la Arena.");
@@ -132,6 +154,7 @@ public class TimeLineSetupEditor implements IGameSetupEditor {
     public JsonNode getUpdatedSetup() {
         ObjectNode root = objectMapper.createObjectNode();
         root.put("game", "TimeLine");
+        root.put("battleRoyale", battleRoyaleCheckBox != null && battleRoyaleCheckBox.isSelected());
 
         ArrayNode eventsArr = root.putArray("events");
         for (int i = 0; i < eventItems.size(); i++) {
@@ -158,12 +181,37 @@ public class TimeLineSetupEditor implements IGameSetupEditor {
     }
 
     @Override
+    public String validateSetup(List<Competitor> profiles) {
+        return validateSetupData(getUpdatedSetup(), profiles);
+    }
+
+    @Override
+    public String validateSetup(List<Competitor> profiles, boolean battleRoyale) {
+        return validateSetupData(getUpdatedSetup(), profiles, battleRoyale);
+    }
+
+    @Override
     public String validateSetupData(JsonNode setupData, List<Competitor> profiles) {
+        boolean br = setupData != null && (
+            (setupData.has("battleRoyale") && setupData.get("battleRoyale").asBoolean(false)) ||
+            (setupData.has("battle_royale") && setupData.get("battle_royale").asBoolean(false))
+        );
+        return validateSetupData(setupData, profiles, br);
+    }
+
+    @Override
+    public String validateSetupData(JsonNode setupData, List<Competitor> profiles, boolean battleRoyale) {
         if (setupData == null) return "La configuración de TimeLine está vacía.";
 
+        boolean isBr = battleRoyale || (setupData.has("battleRoyale") && setupData.get("battleRoyale").asBoolean(false))
+                || (setupData.has("battle_royale") && setupData.get("battle_royale").asBoolean(false));
+
         JsonNode eventsNode = setupData.has("events") ? setupData.get("events") : null;
-        if (eventsNode == null || !eventsNode.isArray() || eventsNode.size() < 3) {
-            return "TimeLine requiere al menos 3 eventos históricos para poder jugar.";
+        int minEvents = isBr ? 1 : 3;
+        if (eventsNode == null || !eventsNode.isArray() || eventsNode.size() < minEvents) {
+            return isBr
+                    ? "TimeLine requiere al menos 1 evento histórico para poder jugar."
+                    : "TimeLine requiere al menos 3 eventos históricos para poder jugar.";
         }
 
         for (JsonNode ev : eventsNode) {

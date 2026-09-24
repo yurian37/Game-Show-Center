@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.gameshowcenter.offline.games.GameStageRegistry;
 import com.gameshowcenter.offline.games.editors.HangmanSetupEditor;
+import com.gameshowcenter.offline.games.editors.TriviaQuizSetupEditor;
+import com.gameshowcenter.offline.games.editors.GuessCharacterSetupEditor;
+import com.gameshowcenter.offline.games.editors.SnapSolveSetupEditor;
 import com.gameshowcenter.offline.model.Competitor;
 import com.gameshowcenter.offline.model.GameDescriptor;
 import com.gameshowcenter.offline.model.MatchConfig;
@@ -29,11 +32,16 @@ public class RequirementVerification {
         System.out.println("RUNNING VERIFICATION TESTS FOR USER REQUIREMENTS");
         System.out.println("==================================================");
 
+        try {
+            javafx.application.Platform.startup(() -> {});
+        } catch (Exception ignored) {}
+
         testAccessibilityFontScaling();
         testHangmanSetupEditorValidation();
         testHangmanAIServiceDeduplication();
         testArenaGameFontScaling();
         testBackgroundPersistenceAcrossWindows();
+        testBattleRoyaleModeValidation();
 
         System.out.println("==================================================");
         System.out.println("ALL JAVA VERIFICATION TESTS PASSED SUCCESSFULLY!");
@@ -301,5 +309,151 @@ public class RequirementVerification {
         ThemeManager.setPalette("1. Midnight Indigo");
         ThemeManager.setCustomAppBgColor(null);
         System.out.println("-> Background Persistence Across Windows tests passed successfully!");
+    }
+
+    private static void testBattleRoyaleModeValidation() {
+        System.out.println("\n[Test 6] Testing Battle Royale Mode Validation Across Editors...");
+
+        ObjectMapper mapper = new ObjectMapper();
+        List<Competitor> profiles = new ArrayList<>();
+        profiles.add(new Competitor("1", "Jugador 1", null));
+        profiles.add(new Competitor("2", "Jugador 2", null));
+
+        // 1. Hangman (compCount=2, rounds=2 => requires 4 in normal, 1 in BR)
+        HangmanSetupEditor hangmanEditor = new HangmanSetupEditor();
+        ObjectNode hangmanSetup = mapper.createObjectNode();
+        hangmanSetup.put("game", "Hangman");
+        hangmanSetup.put("rounds_per_player", 2);
+        ArrayNode hangmanPool = hangmanSetup.putArray("wordPool");
+        hangmanPool.add("CASA"); // only 1 word
+
+        String hangmanNormalErr = hangmanEditor.validateSetupData(hangmanSetup, profiles, false);
+        assert hangmanNormalErr != null : "Hangman with 1 word should fail in normal mode";
+
+        String hangmanBRErr = hangmanEditor.validateSetupData(hangmanSetup, profiles, true);
+        assert hangmanBRErr == null : "Hangman with 1 word should PASS in Battle Royale mode, but got: " + hangmanBRErr;
+        System.out.println("-> Hangman: 1 word passes in BR, fails in normal mode.");
+
+        // Hangman with 0 words should fail in BR
+        ObjectNode hangmanEmpty = mapper.createObjectNode();
+        hangmanEmpty.put("rounds_per_player", 2);
+        hangmanEmpty.putArray("wordPool");
+        String hangmanEmptyErr = hangmanEditor.validateSetupData(hangmanEmpty, profiles, true);
+        assert hangmanEmptyErr != null : "Hangman with 0 words should fail in Battle Royale mode";
+        System.out.println("-> Hangman: 0 words fails in BR mode as expected.");
+
+        // 2. Trivia Quiz (compCount=2, rounds=2 => requires 4 in normal, 1 in BR)
+        TriviaQuizSetupEditor triviaEditor = new TriviaQuizSetupEditor();
+        ObjectNode triviaSetup = mapper.createObjectNode();
+        triviaSetup.put("rounds_per_player", 2);
+        ArrayNode triviaPool = triviaSetup.putArray("questionPool");
+        ObjectNode q1 = triviaPool.addObject();
+        q1.put("question", "¿Capital de Francia?");
+        q1.put("answer", "París");
+
+        String triviaNormalErr = triviaEditor.validateSetupData(triviaSetup, profiles, false);
+        assert triviaNormalErr != null : "Trivia with 1 question should fail in normal mode";
+
+        String triviaBRErr = triviaEditor.validateSetupData(triviaSetup, profiles, true);
+        assert triviaBRErr == null : "Trivia with 1 question should PASS in Battle Royale mode, but got: " + triviaBRErr;
+        System.out.println("-> Trivia Quiz: 1 question passes in BR, fails in normal mode.");
+
+        // Trivia with 0 questions should fail in BR
+        ObjectNode triviaEmpty = mapper.createObjectNode();
+        triviaEmpty.put("rounds_per_player", 2);
+        triviaEmpty.putArray("questionPool");
+        String triviaEmptyErr = triviaEditor.validateSetupData(triviaEmpty, profiles, true);
+        assert triviaEmptyErr != null : "Trivia with 0 questions should fail in Battle Royale mode";
+        System.out.println("-> Trivia Quiz: 0 questions fails in BR mode as expected.");
+
+        // 3. Guess Character (compCount=2, rounds=3 => requires 6 in normal, 1 in BR)
+        GuessCharacterSetupEditor gcEditor = new GuessCharacterSetupEditor();
+        ObjectNode gcSetup = mapper.createObjectNode();
+        gcSetup.put("game", "Guess_Character");
+        gcSetup.put("rounds_per_player", 3);
+        ArrayNode gcPool = gcSetup.putArray("media_pool");
+        gcPool.add("games/Guess Character/images/ai_elden_ring_1_95470563.jpg"); // 1 valid image
+
+        String gcNormalErr = gcEditor.validateSetupData(gcSetup, profiles, false);
+        assert gcNormalErr != null : "Guess Character with 1 image should fail in normal mode";
+
+        String gcBRErr = gcEditor.validateSetupData(gcSetup, profiles, true);
+        assert gcBRErr == null : "Guess Character with 1 valid image should PASS in BR mode, but got: " + gcBRErr;
+        System.out.println("-> Guess Character: 1 valid image passes in BR, fails in normal mode.");
+
+        // Guess Character with non-existent / unreachable image should fail in BR
+        ObjectNode gcInvalid = mapper.createObjectNode();
+        gcInvalid.put("rounds_per_player", 3);
+        ArrayNode gcInvalidPool = gcInvalid.putArray("media_pool");
+        gcInvalidPool.add("games/Guess Character/images/fake_ghost_image_9999.jpg");
+        String gcInvalidErr = gcEditor.validateSetupData(gcInvalid, profiles, true);
+        assert gcInvalidErr != null : "Guess Character with invalid/unreachable image must fail even in BR mode";
+        System.out.println("-> Guess Character: invalid image correctly fails in BR mode.");
+
+        // 4. Snap Solve (compCount=2, rounds=2 => requires 4 in normal, 1 in BR)
+        SnapSolveSetupEditor ssEditor = new SnapSolveSetupEditor();
+        ObjectNode ssSetup = mapper.createObjectNode();
+        ssSetup.put("rounds_per_player", 2);
+        ArrayNode ssFilters = ssSetup.putArray("selected_filters");
+        ssFilters.add("swirl");
+        ArrayNode ssPool = ssSetup.putArray("media_pool");
+        ssPool.add("games/Guess Character/images/ai_elden_ring_1_95470563.jpg"); // 1 valid image
+
+        String ssNormalErr = ssEditor.validateSetupData(ssSetup, profiles, false);
+        assert ssNormalErr != null : "Snap Solve with 1 image should fail in normal mode";
+
+        String ssBRErr = ssEditor.validateSetupData(ssSetup, profiles, true);
+        assert ssBRErr == null : "Snap Solve with 1 valid image should PASS in BR mode, but got: " + ssBRErr;
+        System.out.println("-> Snap Solve: 1 valid image passes in BR, fails in normal mode.");
+
+        // Snap Solve with broken image must fail in BR
+        ObjectNode ssBroken = mapper.createObjectNode();
+        ssBroken.put("rounds_per_player", 2);
+        ArrayNode ssBrokenFilters = ssBroken.putArray("selected_filters");
+        ssBrokenFilters.add("swirl");
+        ArrayNode ssBrokenPool = ssBroken.putArray("media_pool");
+        ssBrokenPool.add("games/Snap Solve/images/nonexistent_snap_image_9999.jpg");
+        String ssBrokenErr = ssEditor.validateSetupData(ssBroken, profiles, true);
+        assert ssBrokenErr != null : "Snap Solve with broken image must fail even in BR mode";
+        System.out.println("-> Snap Solve: broken image correctly fails in BR mode.");
+
+        // 5. Test automatic detection of "battleRoyale" inside setupData
+        ObjectNode hangmanWithBRField = mapper.createObjectNode();
+        hangmanWithBRField.put("game", "Hangman");
+        hangmanWithBRField.put("rounds_per_player", 5);
+        hangmanWithBRField.put("battleRoyale", true);
+        hangmanWithBRField.putArray("wordPool").add("SOL"); // Only 1 word, but battleRoyale = true
+
+        String autoDetectErr = hangmanEditor.validateSetupData(hangmanWithBRField, profiles);
+        assert autoDetectErr == null : "validateSetupData(setupData, profiles) should auto-detect battleRoyale: true inside setupData, but got: " + autoDetectErr;
+        System.out.println("-> validateSetupData auto-detects battleRoyale flag inside setupData.");
+
+        // 6. TimeLineSetupEditor (normal requires >= 3 events, BR requires >= 1)
+        com.gameshowcenter.offline.games.editors.TimeLineSetupEditor tlEditor = new com.gameshowcenter.offline.games.editors.TimeLineSetupEditor();
+        ObjectNode tlSetup = mapper.createObjectNode();
+        tlSetup.put("game", "TimeLine");
+        tlSetup.put("battleRoyale", false);
+        ArrayNode tlEvents = tlSetup.putArray("events");
+        ObjectNode ev1 = tlEvents.addObject();
+        ev1.put("id", "ev_1");
+        ev1.put("title", "Apolo 11");
+        ev1.put("year", 1969);
+
+        String tlNormalErr = tlEditor.validateSetupData(tlSetup, profiles);
+        assert tlNormalErr != null : "TimeLine with 1 event should fail in normal mode";
+
+        tlSetup.put("battleRoyale", true);
+        String tlBRErr = tlEditor.validateSetupData(tlSetup, profiles);
+        assert tlBRErr == null : "TimeLine with 1 event should pass in Battle Royale mode, but got: " + tlBRErr;
+        System.out.println("-> TimeLine: 1 event passes in BR, fails in normal mode.");
+
+        // 7. MatchConfig Battle Royale property
+        MatchConfig config = new MatchConfig();
+        assert !config.isBattleRoyale() : "MatchConfig should default battleRoyale to false";
+        config.setBattleRoyale(true);
+        assert config.isBattleRoyale() : "MatchConfig battleRoyale should be true";
+        System.out.println("-> MatchConfig battleRoyale field verified.");
+
+        System.out.println("-> Battle Royale Mode Validation tests passed successfully!");
     }
 }

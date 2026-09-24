@@ -24,10 +24,22 @@ public interface IGameSetupEditor {
      * @return error message if invalid, or null if valid.
      */
     default String validateSetup(List<Competitor> profiles) {
-        return null;
+        return validateSetupData(getUpdatedSetup(), profiles);
+    }
+
+    default String validateSetup(List<Competitor> profiles, boolean battleRoyale) {
+        return validateSetupData(getUpdatedSetup(), profiles, battleRoyale);
     }
 
     default String validateSetupData(JsonNode setupData, List<Competitor> profiles) {
+        boolean br = setupData != null && (
+            (setupData.has("battleRoyale") && setupData.get("battleRoyale").asBoolean(false)) ||
+            (setupData.has("battle_royale") && setupData.get("battle_royale").asBoolean(false))
+        );
+        return validateSetupData(setupData, profiles, br);
+    }
+
+    default String validateSetupData(JsonNode setupData, List<Competitor> profiles, boolean battleRoyale) {
         return null;
     }
 }

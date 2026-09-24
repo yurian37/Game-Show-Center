@@ -40,6 +40,7 @@ public class RapidRhythmSetupEditor implements IGameSetupEditor {
     // Active Preview MediaPlayer
     private MediaPlayer previewPlayer;
     private Button currentPreviewBtn;
+    private CheckBox battleRoyaleCheckBox;
 
     public static class TrackEntry {
         public String id;
@@ -59,8 +60,12 @@ public class RapidRhythmSetupEditor implements IGameSetupEditor {
         trackEntries.clear();
 
         int curRounds = 1;
+        boolean curBattleRoyale = false;
 
         if (currentSetup != null) {
+            if (currentSetup.has("battleRoyale")) curBattleRoyale = currentSetup.get("battleRoyale").asBoolean(false);
+            else if (currentSetup.has("battle_royale")) curBattleRoyale = currentSetup.get("battle_royale").asBoolean(false);
+
             if (currentSetup.has("rounds_per_player")) curRounds = currentSetup.get("rounds_per_player").asInt(1);
             else if (currentSetup.has("roundsPerPlayer")) curRounds = currentSetup.get("roundsPerPlayer").asInt(1);
         }
@@ -71,6 +76,19 @@ public class RapidRhythmSetupEditor implements IGameSetupEditor {
         // 1. HEADER DESCRIPTION
         Label descLabel = new Label(I18n.get("game.editor.rhythm.desc"));
         descLabel.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 12px;");
+
+        // Battle Royale Toggle Row
+        battleRoyaleCheckBox = new CheckBox(I18n.get("game.editor.battleroyale.check"));
+        battleRoyaleCheckBox.setSelected(curBattleRoyale);
+        battleRoyaleCheckBox.setStyle("-fx-text-fill: #fbbf24; -fx-font-weight: 900; -fx-font-size: 12px; -fx-cursor: hand;");
+
+        Label brHint = new Label(I18n.get("game.editor.battleroyale.hint"));
+        brHint.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 11px; -fx-wrap-text: true;");
+
+        VBox brCard = new VBox(4);
+        brCard.setPadding(new Insets(8, 12, 8, 12));
+        brCard.setStyle("-fx-background-color: rgba(245, 158, 11, 0.08); -fx-border-color: rgba(245, 158, 11, 0.3); -fx-border-radius: 8px; -fx-background-radius: 8px;");
+        brCard.getChildren().addAll(battleRoyaleCheckBox, brHint);
 
         // 2. PARAMETERS ROW
         HBox paramsRow = new HBox(20);
@@ -83,7 +101,12 @@ public class RapidRhythmSetupEditor implements IGameSetupEditor {
         roundsSpinner = new Spinner<>(1, 20, curRounds, 1);
         roundsSpinner.setEditable(true);
         roundsSpinner.setPrefWidth(75);
+        roundsSpinner.setDisable(curBattleRoyale);
         roundsBox.getChildren().addAll(rLabel, roundsSpinner);
+
+        battleRoyaleCheckBox.setOnAction(e -> {
+            roundsSpinner.setDisable(battleRoyaleCheckBox.isSelected());
+        });
 
         paramsRow.getChildren().add(roundsBox);
 
@@ -198,7 +221,7 @@ public class RapidRhythmSetupEditor implements IGameSetupEditor {
 
         updatePoolCount();
 
-        root.getChildren().addAll(descLabel, paramsRow, new Separator(), poolHeader, addControlsRow, scroll);
+        root.getChildren().addAll(descLabel, brCard, paramsRow, new Separator(), poolHeader, addControlsRow, scroll);
         return root;
     }
 
@@ -398,6 +421,7 @@ public class RapidRhythmSetupEditor implements IGameSetupEditor {
     public JsonNode getUpdatedSetup() {
         ObjectNode root = objectMapper.createObjectNode();
         root.put("game", "Rapid_Rhythm");
+        root.put("battleRoyale", battleRoyaleCheckBox != null && battleRoyaleCheckBox.isSelected());
         int rpp = roundsSpinner != null ? roundsSpinner.getValue() : 1;
         root.put("rounds_per_player", rpp);
         root.put("roundsPerPlayer", rpp);
@@ -433,26 +457,45 @@ public class RapidRhythmSetupEditor implements IGameSetupEditor {
     }
 
     @Override
+    public String validateSetup(List<Competitor> profiles, boolean battleRoyale) {
+        return validateSetupData(getUpdatedSetup(), profiles, battleRoyale);
+    }
+
+    @Override
     public String validateSetupData(JsonNode setupData, List<Competitor> profiles) {
+        boolean br = setupData != null && (
+            (setupData.has("battleRoyale") && setupData.get("battleRoyale").asBoolean(false)) ||
+            (setupData.has("battle_royale") && setupData.get("battle_royale").asBoolean(false))
+        );
+        return validateSetupData(setupData, profiles, br);
+    }
+
+    @Override
+    public String validateSetupData(JsonNode setupData, List<Competitor> profiles, boolean battleRoyale) {
         if (setupData == null) {
             return "Rapid Rhythm configuration is missing.";
         }
+
+        boolean isBr = battleRoyale || (setupData.has("battleRoyale") && setupData.get("battleRoyale").asBoolean(false))
+                || (setupData.has("battle_royale") && setupData.get("battle_royale").asBoolean(false));
 
         int rpp = 1;
         if (setupData.has("rounds_per_player")) rpp = setupData.get("rounds_per_player").asInt(1);
         else if (setupData.has("roundsPerPlayer")) rpp = setupData.get("roundsPerPlayer").asInt(1);
 
         int compCount = (profiles != null && !profiles.isEmpty()) ? profiles.size() : 1;
-        int requiredTracks = compCount * rpp;
+        int requiredTracks = isBr ? 1 : (compCount * rpp);
 
         JsonNode tracksNode = setupData.has("tracks") ? setupData.get("tracks")
                 : (setupData.has("media_pool") ? setupData.get("media_pool") : null);
 
         if (tracksNode == null || !tracksNode.isArray() || tracksNode.size() == 0) {
-            return "Rapid Rhythm requires at least " + requiredTracks + " audio track(s). None are added.";
+            return isBr
+                    ? "Rapid Rhythm requires at least 1 audio track. None are added."
+                    : ("Rapid Rhythm requires at least " + requiredTracks + " audio track(s). None are added.");
         }
 
-        if (tracksNode.size() < requiredTracks) {
+        if (!isBr && tracksNode.size() < requiredTracks) {
             return "Rapid Rhythm requires at least " + requiredTracks + " track(s) for " + compCount + " competitor(s) (" + rpp + " round/player), but only " + tracksNode.size() + " track(s) are configured.";
         }
 

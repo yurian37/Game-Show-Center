@@ -1,5 +1,6 @@
 {
   "game" : "TimeLine",
+  "battleRoyale" : false,
   "events" : [ {
     "id" : "ev_1",
     "title" : "Guerra de Troya",

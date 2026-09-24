@@ -9,7 +9,12 @@ public class MatchConfig {
     private List<String> scorePresets = Arrays.asList("+10", "+50", "+100", "-10", "-50");
     private Map<String, Integer> scores = new HashMap<>();
 
+    private boolean battleRoyale = false;
+
     public MatchConfig() {}
+
+    public boolean isBattleRoyale() { return battleRoyale; }
+    public void setBattleRoyale(boolean battleRoyale) { this.battleRoyale = battleRoyale; }
 
     public String getGameMode() { return gameMode; }
     public void setGameMode(String gameMode) { this.gameMode = gameMode; }

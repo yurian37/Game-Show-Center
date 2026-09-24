@@ -31,6 +31,7 @@ public class SnapSolveSetupEditor implements IGameSetupEditor {
     private final java.util.Set<String> copyrightWarnings = new java.util.HashSet<>();
 
     private Spinner<Integer> roundsSpinner;
+    private CheckBox battleRoyaleCheckBox;
     private CheckBox displacementCheck;
     private CheckBox swirlCheck;
     private CheckBox pixelateCheck;
@@ -50,9 +51,13 @@ public class SnapSolveSetupEditor implements IGameSetupEditor {
         }
 
         int curRounds = 2;
+        boolean curBattleRoyale = false;
         List<String> curFilters = new ArrayList<>(Arrays.asList("displacement", "swirl", "pixelate", "blur"));
 
         if (currentSetup != null) {
+            if (currentSetup.has("battleRoyale")) curBattleRoyale = currentSetup.get("battleRoyale").asBoolean(false);
+            else if (currentSetup.has("battle_royale")) curBattleRoyale = currentSetup.get("battle_royale").asBoolean(false);
+
             if (currentSetup.has("rounds_per_player")) curRounds = currentSetup.get("rounds_per_player").asInt(2);
             else if (currentSetup.has("roundsPerPlayer")) curRounds = currentSetup.get("roundsPerPlayer").asInt(2);
 
@@ -84,6 +89,19 @@ public class SnapSolveSetupEditor implements IGameSetupEditor {
         Label descLabel = new Label(I18n.get("game.editor.snapsolve.desc"));
         descLabel.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 12px;");
 
+        // Battle Royale Toggle Row
+        battleRoyaleCheckBox = new CheckBox(I18n.get("game.editor.battleroyale.check"));
+        battleRoyaleCheckBox.setSelected(curBattleRoyale);
+        battleRoyaleCheckBox.setStyle("-fx-text-fill: #fbbf24; -fx-font-weight: 900; -fx-font-size: 12px; -fx-cursor: hand;");
+
+        Label brHint = new Label(I18n.get("game.editor.battleroyale.hint"));
+        brHint.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 11px; -fx-wrap-text: true;");
+
+        VBox brCard = new VBox(4);
+        brCard.setPadding(new Insets(8, 12, 8, 12));
+        brCard.setStyle("-fx-background-color: rgba(245, 158, 11, 0.08); -fx-border-color: rgba(245, 158, 11, 0.3); -fx-border-radius: 8px; -fx-background-radius: 8px;");
+        brCard.getChildren().addAll(battleRoyaleCheckBox, brHint);
+
         // 2. PARAMETERS ROW
         HBox paramsRow = new HBox(20);
         paramsRow.setAlignment(Pos.CENTER_LEFT);
@@ -96,7 +114,12 @@ public class SnapSolveSetupEditor implements IGameSetupEditor {
         roundsSpinner = new Spinner<>(1, 20, curRounds, 1);
         roundsSpinner.setEditable(true);
         roundsSpinner.setPrefWidth(75);
+        roundsSpinner.setDisable(curBattleRoyale);
         roundsBox.getChildren().addAll(rLabel, roundsSpinner);
+
+        battleRoyaleCheckBox.setOnAction(e -> {
+            roundsSpinner.setDisable(battleRoyaleCheckBox.isSelected());
+        });
 
         paramsRow.getChildren().addAll(roundsBox);
 
@@ -194,7 +217,7 @@ public class SnapSolveSetupEditor implements IGameSetupEditor {
 
         refreshThumbnails();
 
-        root.getChildren().addAll(descLabel, paramsRow, filtersContainer, new Separator(), poolHeaderBox, urlBox, scroll);
+        root.getChildren().addAll(descLabel, brCard, paramsRow, filtersContainer, new Separator(), poolHeaderBox, urlBox, scroll);
         return root;
     }
 
@@ -277,6 +300,7 @@ public class SnapSolveSetupEditor implements IGameSetupEditor {
     public ObjectNode getUpdatedSetup() {
         ObjectNode node = objectMapper.createObjectNode();
         node.put("game", "Snap_Solve");
+        node.put("battleRoyale", battleRoyaleCheckBox != null && battleRoyaleCheckBox.isSelected());
         node.put("rounds_per_player", roundsSpinner != null ? roundsSpinner.getValue() : 2);
 
         ArrayNode filtersArray = node.putArray("selected_filters");
@@ -307,16 +331,33 @@ public class SnapSolveSetupEditor implements IGameSetupEditor {
     }
 
     @Override
+    public String validateSetup(List<Competitor> profiles, boolean battleRoyale) {
+        return validateSetupData(getUpdatedSetup(), profiles, battleRoyale);
+    }
+
+    @Override
     public String validateSetupData(JsonNode setupData, List<Competitor> profiles) {
+        boolean br = setupData != null && (
+            (setupData.has("battleRoyale") && setupData.get("battleRoyale").asBoolean(false)) ||
+            (setupData.has("battle_royale") && setupData.get("battle_royale").asBoolean(false))
+        );
+        return validateSetupData(setupData, profiles, br);
+    }
+
+    @Override
+    public String validateSetupData(JsonNode setupData, List<Competitor> profiles, boolean battleRoyale) {
         if (setupData == null) {
             return "Snap Solve: Configuration is null or invalid.";
         }
+
+        boolean isBr = battleRoyale || (setupData.has("battleRoyale") && setupData.get("battleRoyale").asBoolean(false))
+                || (setupData.has("battle_royale") && setupData.get("battle_royale").asBoolean(false));
 
         int rpp = 2;
         if (setupData.has("rounds_per_player")) rpp = setupData.get("rounds_per_player").asInt(2);
         else if (setupData.has("roundsPerPlayer")) rpp = setupData.get("roundsPerPlayer").asInt(2);
 
-        if (rpp < 1) {
+        if (!isBr && rpp < 1) {
             return "Snap Solve: Rounds per player must be at least 1.";
         }
 
@@ -327,16 +368,18 @@ public class SnapSolveSetupEditor implements IGameSetupEditor {
         }
 
         int compCount = (profiles != null && !profiles.isEmpty()) ? profiles.size() : 1;
-        int requiredImages = compCount * rpp;
+        int requiredImages = isBr ? 1 : (compCount * rpp);
 
         JsonNode poolNode = setupData.has("media_pool") ? setupData.get("media_pool")
                 : (setupData.has("mediaPool") ? setupData.get("mediaPool") : null);
 
         if (poolNode == null || !poolNode.isArray() || poolNode.size() == 0) {
-            return "Snap Solve: At least " + requiredImages + " image(s) required in pool. None are configured.";
+            return isBr
+                    ? "Snap Solve: At least 1 image is required in pool. None are configured."
+                    : ("Snap Solve: At least " + requiredImages + " image(s) required in pool. None are configured.");
         }
 
-        if (poolNode.size() < requiredImages) {
+        if (!isBr && poolNode.size() < requiredImages) {
             return "Snap Solve: At least " + requiredImages + " image(s) required for " + compCount + " contestant(s) (" + rpp + " round/player), but only " + poolNode.size() + " image(s) provided.";
         }
 

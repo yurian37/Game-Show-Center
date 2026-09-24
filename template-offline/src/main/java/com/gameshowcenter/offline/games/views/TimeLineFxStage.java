@@ -69,6 +69,8 @@ public class TimeLineFxStage extends VBox {
         this(profiles, setupData, null);
     }
 
+    private boolean isBattleRoyale = false;
+
     public TimeLineFxStage(List<Competitor> profiles, JsonNode setupData, Consumer<Competitor> winnerListener) {
         this.profiles = (profiles != null && !profiles.isEmpty())
                 ? profiles
@@ -82,6 +84,10 @@ public class TimeLineFxStage extends VBox {
     }
 
     private void initData() {
+        if (setupData != null && setupData.has("battleRoyale") && setupData.get("battleRoyale").asBoolean()) {
+            this.isBattleRoyale = true;
+        }
+
         if (setupData != null && setupData.has("events") && setupData.get("events").isArray()) {
             for (JsonNode ev : setupData.get("events")) {
                 String id = ev.has("id") ? ev.get("id").asText() : ("ev_" + (allEvents.size() + 1));
@@ -92,7 +98,8 @@ public class TimeLineFxStage extends VBox {
             }
         }
 
-        if (allEvents.size() < 3) {
+        boolean needFallback = isBattleRoyale ? allEvents.isEmpty() : (allEvents.size() < 3);
+        if (needFallback) {
             allEvents.clear();
             allEvents.add(new Milestone("ev_1", "Invención de la Rueda", -3500, "Primeros vestigios en Mesopotamia"));
             allEvents.add(new Milestone("ev_2", "Imprenta de Gutenberg", 1440, "Revolución de los libros impresos"));
@@ -115,10 +122,10 @@ public class TimeLineFxStage extends VBox {
         topBar.setPadding(new Insets(10, 20, 10, 20));
         topBar.setStyle("-fx-background-color: #131726; -fx-border-color: #2e3856; -fx-border-radius: 16px; -fx-background-radius: 16px; -fx-max-width: 960px;");
 
-        Label gameTitle = new Label("⏳ TIMELINE");
+        Label gameTitle = new Label(isBattleRoyale ? "⏳ TIMELINE [⚔️ BATTLE ROYALE]" : "⏳ TIMELINE");
         gameTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: 900; -fx-text-fill: #f59e0b; -fx-letter-spacing: 1px;");
 
-        remainingBadge = new Label("Hitos pendientes");
+        remainingBadge = new Label(isBattleRoyale ? "⚔️ BR: Hitos pendientes" : "Hitos pendientes");
         remainingBadge.setStyle("-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #cbd5e1; -fx-background-color: #1e293b; -fx-padding: 4px 10px; -fx-background-radius: 8px;");
 
         Region spacer = new Region();
@@ -243,12 +250,23 @@ public class TimeLineFxStage extends VBox {
         List<Milestone> shuffled = new ArrayList<>(allEvents);
         Collections.shuffle(shuffled);
 
-        if (shuffled.size() >= 2) {
-            timeline.add(shuffled.remove(0));
-            timeline.add(shuffled.remove(0));
-            timeline.sort(Comparator.comparingInt(a -> a.year));
+        if (isBattleRoyale) {
+            if (shuffled.size() == 1) {
+                timeline.add(new Milestone("anchor_0", "Año 0 (Inicio de la Era Común)", 0, "Hito base de referencia histórica"));
+                deck.addAll(shuffled);
+            } else {
+                // First milestone anchors the timeline, the remaining N-1 appear as cards to be positioned
+                timeline.add(shuffled.remove(0));
+                deck.addAll(shuffled);
+            }
+        } else {
+            if (shuffled.size() >= 2) {
+                timeline.add(shuffled.remove(0));
+                timeline.add(shuffled.remove(0));
+                timeline.sort(Comparator.comparingInt(a -> a.year));
+            }
+            deck.addAll(shuffled);
         }
-        deck.addAll(shuffled);
 
         if (!deck.isEmpty()) {
             currentMystery = deck.remove(0);
@@ -262,7 +280,9 @@ public class TimeLineFxStage extends VBox {
 
     private void renderTurn() {
         int pending = deck.size() + (currentMystery != null ? 1 : 0);
-        remainingBadge.setText(String.format("%d hitos pendientes", pending));
+        remainingBadge.setText(isBattleRoyale 
+                ? String.format("⚔️ BR: %d hitos restantes", pending)
+                : String.format("%d hitos pendientes", pending));
 
 
         if (currentMystery != null) {
@@ -485,7 +505,9 @@ public class TimeLineFxStage extends VBox {
         Label congrats = new Label("¡LÍNEA DE TIEMPO COMPLETADA!");
         congrats.setStyle("-fx-font-size: 20px; -fx-font-weight: 900; -fx-text-fill: white;");
 
-        Label champ = new Label("Todos los hitos han sido colocados en orden cronológico.");
+        Label champ = new Label(isBattleRoyale
+                ? "⚔️ ¡BATTLE ROYALE COMPLETADO! Todos los elementos fueron presentados en la arena."
+                : "Todos los hitos han sido colocados en orden cronológico.");
         champ.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #f59e0b; -fx-background-color: rgba(245, 158, 11, 0.15); -fx-padding: 6px 16px; -fx-border-color: rgba(245, 158, 11, 0.4); -fx-border-radius: 10px; -fx-background-radius: 10px;");
 
         Button restartBtn = new Button("Jugar Otra Vez ↺");

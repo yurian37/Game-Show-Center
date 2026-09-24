@@ -5,7 +5,7 @@
 ================================================================================
 
 FECHA: Septiembre 2026
-VERSIÓN DEL SOFTWARE: 0.9.1 Standalone Desktop
+VERSIÓN DEL SOFTWARE: 1.0.0 Standalone Desktop (Release Oficial)
 SISTEMA OPERATIVO: Windows 10 / 11 (64-bit)
 
 NOTA IMPORTANTE:
@@ -156,11 +156,25 @@ Cada tarjeta de juego tiene su propio botón "Ajustes" (o "Setup"):
 - ¿Para qué sirve?: Te permite personalizar los contenidos de ese juego antes de
   empezar. Por ejemplo: cambiar las palabras secretas, las preguntas de trivia,
   el tiempo del temporizador o las categorías.
+
+- Modo Battle Royale por Juego (⚔️):
+  Dentro de los Ajustes de cada juego encontrarás la opción "Modo Battle Royale".
+  * Objetivo: En este modo se descarta la regla tradicional de # de rondas por jugador.
+    La partida tiene como meta que TODOS los elementos configurados en el banco
+    (imágenes, canciones, preguntas, palabras, hitos históricos o tiempos objetivo)
+    aparezcan en la arena hasta agotarse por completo.
+  * Regla de Validación Simplificada: No exige que el banco supere la multiplicación de
+    jugadores por rondas. Solo valida que exista al menos 1 elemento (>= 1) y que
+    todos los archivos multimedia (imágenes y audios) funcionen y existan en tu equipo.
+  * Identificador Visual [⚔️ BR]: Al activar Battle Royale en un minijuego, su tarjeta
+    en el selector mostrará una insignia dorada [⚔️ BR] para que el anfitrión identifique
+    fácilmente cuáles juegos competirán en esta modalidad.
+
 - Asistente Inteligente y Avisos Claros:
   Al presionar "Comenzar Juego", el sistema revisa de inmediato que todos los juegos
-  seleccionados tengan suficiente contenido para todos tus jugadores. Si por ejemplo
-  elegiste 4 jugadores pero solo pusiste 2 preguntas, aparecerá una ventana con un
-  mensaje claro y comprensible explicando exactamente qué falta para que la partida
+  seleccionados tengan suficiente contenido para todos tus jugadores (o que cumplan las
+  reglas de Battle Royale si está activado). Si falta algo, aparecerá una ventana con un
+  mensaje claro y comprensible explicando exactamente qué ajustar para que la partida
   sea un éxito total.
 
 

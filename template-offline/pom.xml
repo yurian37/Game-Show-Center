@@ -6,7 +6,7 @@
 
     <groupId>com.gameshowcenter</groupId>
     <artifactId>template-offline</artifactId>
-    <version>0.7.0</version>
+    <version>1.0.0</version>
     <name>Game Show Center - Offline Executable</name>
     <description>Standalone Offline Executable Game Show Center Developed by YuyiStudio</description>
 

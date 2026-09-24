@@ -52,6 +52,7 @@ public class SnapSolveFxStage extends VBox {
     private int roundNumber = 1;
     private boolean isMatchFinished = false;
 
+    private final boolean isBattleRoyale;
     private final int roundsPerPlayer;
     private final int numPlayers;
     private final int totalMatchRounds;
@@ -84,14 +85,18 @@ public class SnapSolveFxStage extends VBox {
         this.setupData = setupData;
 
         int rpp = 2;
+        boolean br = false;
         if (setupData != null) {
+            if (setupData.has("battleRoyale")) br = setupData.get("battleRoyale").asBoolean(false);
+            else if (setupData.has("battle_royale")) br = setupData.get("battle_royale").asBoolean(false);
+
             if (setupData.has("rounds_per_player")) rpp = setupData.get("rounds_per_player").asInt(2);
             else if (setupData.has("roundsPerPlayer")) rpp = setupData.get("roundsPerPlayer").asInt(2);
         }
 
+        this.isBattleRoyale = br;
         this.roundsPerPlayer = rpp;
         this.numPlayers = (!this.profiles.isEmpty()) ? this.profiles.size() : 1;
-        this.totalMatchRounds = this.numPlayers * this.roundsPerPlayer;
 
         setSpacing(14);
         setAlignment(Pos.CENTER);
@@ -99,11 +104,17 @@ public class SnapSolveFxStage extends VBox {
 
         parseFiltersAndPool();
 
+        this.totalMatchRounds = this.isBattleRoyale ? Math.max(1, initialPool.size()) : (this.numPlayers * this.roundsPerPlayer);
+
         // 1. TOP STATUS BADGES
         HBox topBar = new HBox(12);
         topBar.setAlignment(Pos.CENTER);
 
-        roundBadgeLabel = new Label(String.format(I18n.get("game.snapsolve.title_round"), 1, totalMatchRounds));
+        String badgeTitle = String.format(I18n.get("game.snapsolve.title_round"), 1, totalMatchRounds);
+        if (isBattleRoyale) {
+            badgeTitle = "⚔️ BR • " + badgeTitle;
+        }
+        roundBadgeLabel = new Label(badgeTitle);
         roundBadgeLabel.setStyle(String.format(
                 "-fx-background-color: rgba(245, 158, 11, 0.15); -fx-text-fill: #f59e0b; -fx-font-weight: 900; -fx-font-size: 12px; -fx-padding: 6px 14px; -fx-background-radius: 20px; -fx-border-color: rgba(245, 158, 11, 0.3); -fx-border-radius: 20px;",
                 ThemeManager.getAccentHex()));
@@ -209,7 +220,9 @@ public class SnapSolveFxStage extends VBox {
 
     private void showWaitingBox() {
         isWaiting = true;
-        roundBadgeLabel.setText(String.format(I18n.get("game.snapsolve.title_round"), roundNumber, totalMatchRounds));
+        String badge = String.format(I18n.get("game.snapsolve.title_round"), roundNumber, totalMatchRounds);
+        if (isBattleRoyale) badge = "⚔️ BR • " + badge;
+        roundBadgeLabel.setText(badge);
         poolInfoLabel.setText(String.format(I18n.get("game.snapsolve.remaining_pool"), workingPool.size()));
 
         if (waitingBox.getChildren().size() > 1 && waitingBox.getChildren().get(1) instanceof Label rLabel) {
@@ -526,9 +539,10 @@ public class SnapSolveFxStage extends VBox {
         Label title = new Label(I18n.get("game.snapsolve.completed"));
         title.setStyle("-fx-font-size: 20px; -fx-font-weight: 900; -fx-text-fill: #f59e0b;");
 
-        Label desc = new Label(String.format(
-                I18n.get("game.snapsolve.all_rounds_concluded"),
-                totalMatchRounds, numPlayers, roundsPerPlayer));
+        String finDescText = isBattleRoyale
+                ? String.format("¡Modo Battle Royale completado! Las %d imágenes configuradas aparecieron en la arena.", totalMatchRounds)
+                : String.format(I18n.get("game.snapsolve.all_rounds_concluded"), totalMatchRounds, numPlayers, roundsPerPlayer);
+        Label desc = new Label(finDescText);
         desc.setStyle("-fx-font-size: 12px; -fx-text-fill: #e2e8f0; -fx-text-alignment: center;");
         desc.setWrapText(true);
         desc.setMaxWidth(520);

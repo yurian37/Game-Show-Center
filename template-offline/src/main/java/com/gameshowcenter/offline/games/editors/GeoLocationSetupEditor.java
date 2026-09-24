@@ -59,6 +59,7 @@ public class GeoLocationSetupEditor implements IGameSetupEditor {
     private final List<LocationItem> locations = new ArrayList<>();
     private final java.util.Set<String> copyrightWarnings = new java.util.HashSet<>();
     private Spinner<Integer> roundsSpinner;
+    private CheckBox battleRoyaleCheckBox;
     private ComboBox<Integer> imagesPerRoundCombo;
     private VBox locationsContainer;
 
@@ -76,8 +77,12 @@ public class GeoLocationSetupEditor implements IGameSetupEditor {
         // Load data from currentSetup
         int curRounds = 1;
         int curImagesPerRound = 3;
+        boolean curBattleRoyale = false;
 
         if (currentSetup != null) {
+            if (currentSetup.has("battleRoyale")) curBattleRoyale = currentSetup.get("battleRoyale").asBoolean(false);
+            else if (currentSetup.has("battle_royale")) curBattleRoyale = currentSetup.get("battle_royale").asBoolean(false);
+
             if (currentSetup.has("rounds_per_player")) curRounds = currentSetup.get("rounds_per_player").asInt(1);
             else if (currentSetup.has("roundsPerPlayer")) curRounds = currentSetup.get("roundsPerPlayer").asInt(1);
 
@@ -110,6 +115,19 @@ public class GeoLocationSetupEditor implements IGameSetupEditor {
         Label descLabel = new Label(I18n.get("game.editor.geolocation.desc"));
         descLabel.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 12px;");
 
+        // Battle Royale Toggle Row
+        battleRoyaleCheckBox = new CheckBox(I18n.get("game.editor.battleroyale.check"));
+        battleRoyaleCheckBox.setSelected(curBattleRoyale);
+        battleRoyaleCheckBox.setStyle("-fx-text-fill: #fbbf24; -fx-font-weight: 900; -fx-font-size: 12px; -fx-cursor: hand;");
+
+        Label brHint = new Label(I18n.get("game.editor.battleroyale.hint"));
+        brHint.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 11px; -fx-wrap-text: true;");
+
+        VBox brCard = new VBox(4);
+        brCard.setPadding(new Insets(8, 12, 8, 12));
+        brCard.setStyle("-fx-background-color: rgba(245, 158, 11, 0.08); -fx-border-color: rgba(245, 158, 11, 0.3); -fx-border-radius: 8px; -fx-background-radius: 8px;");
+        brCard.getChildren().addAll(battleRoyaleCheckBox, brHint);
+
         // 2. SPINNERS ROW
         HBox spinnersRow = new HBox(24);
         spinnersRow.setAlignment(Pos.CENTER_LEFT);
@@ -121,7 +139,12 @@ public class GeoLocationSetupEditor implements IGameSetupEditor {
         roundsSpinner = new Spinner<>(1, 10, curRounds, 1);
         roundsSpinner.setEditable(true);
         roundsSpinner.setPrefWidth(75);
+        roundsSpinner.setDisable(curBattleRoyale);
         roundsBox.getChildren().addAll(rLabel, roundsSpinner);
+
+        battleRoyaleCheckBox.setOnAction(e -> {
+            roundsSpinner.setDisable(battleRoyaleCheckBox.isSelected());
+        });
 
         HBox imgCountBox = new HBox(8);
         imgCountBox.setAlignment(Pos.CENTER_LEFT);
@@ -183,7 +206,7 @@ public class GeoLocationSetupEditor implements IGameSetupEditor {
 
         renderLocationCards();
 
-        root.getChildren().addAll(descLabel, spinnersRow, new Separator(), addSection, new Separator(), scroll);
+        root.getChildren().addAll(descLabel, brCard, spinnersRow, new Separator(), addSection, new Separator(), scroll);
         return root;
     }
 
@@ -553,6 +576,7 @@ public class GeoLocationSetupEditor implements IGameSetupEditor {
     public JsonNode getUpdatedSetup() {
         ObjectNode root = objectMapper.createObjectNode();
         root.put("game", "GeoLocation");
+        root.put("battleRoyale", battleRoyaleCheckBox != null && battleRoyaleCheckBox.isSelected());
         root.put("rounds_per_player", roundsSpinner != null ? roundsSpinner.getValue() : 1);
         root.put("images_per_round", imagesPerRoundCombo != null && imagesPerRoundCombo.getValue() != null ? imagesPerRoundCombo.getValue() : 3);
 
@@ -588,28 +612,49 @@ public class GeoLocationSetupEditor implements IGameSetupEditor {
     }
 
     @Override
+    public String validateSetup(List<Competitor> profiles, boolean battleRoyale) {
+        return validateSetupData(getUpdatedSetup(), profiles, battleRoyale);
+    }
+
+    @Override
     public String validateSetupData(JsonNode setupData, List<Competitor> profiles) {
+        boolean br = setupData != null && (
+            (setupData.has("battleRoyale") && setupData.get("battleRoyale").asBoolean(false)) ||
+            (setupData.has("battle_royale") && setupData.get("battle_royale").asBoolean(false))
+        );
+        return validateSetupData(setupData, profiles, br);
+    }
+
+    @Override
+    public String validateSetupData(JsonNode setupData, List<Competitor> profiles, boolean battleRoyale) {
         if (setupData == null) {
             return "GeoLocation configuration is missing.";
         }
+
+        boolean isBr = battleRoyale || (setupData.has("battleRoyale") && setupData.get("battleRoyale").asBoolean(false))
+                || (setupData.has("battle_royale") && setupData.get("battle_royale").asBoolean(false));
 
         int rpp = 1;
         if (setupData.has("rounds_per_player")) rpp = setupData.get("rounds_per_player").asInt(1);
         else if (setupData.has("roundsPerPlayer")) rpp = setupData.get("roundsPerPlayer").asInt(1);
 
-        int minImages = 3;
-        if (setupData.has("images_per_round")) minImages = setupData.get("images_per_round").asInt(3);
-        else if (setupData.has("imagesPerRound")) minImages = setupData.get("imagesPerRound").asInt(3);
+        int minImages = isBr ? 1 : 3;
+        if (!isBr) {
+            if (setupData.has("images_per_round")) minImages = setupData.get("images_per_round").asInt(3);
+            else if (setupData.has("imagesPerRound")) minImages = setupData.get("imagesPerRound").asInt(3);
+        }
 
         int compCount = (profiles != null && !profiles.isEmpty()) ? profiles.size() : 1;
-        int requiredLocations = compCount * rpp;
+        int requiredLocations = isBr ? 1 : (compCount * rpp);
 
         JsonNode locsNode = setupData.has("locations") ? setupData.get("locations") : null;
         if (locsNode == null || !locsNode.isArray() || locsNode.size() == 0) {
-            return "GeoLocation requires at least " + requiredLocations + " configured location(s). None are added.";
+            return isBr
+                    ? "GeoLocation requires at least 1 configured location. None are added."
+                    : ("GeoLocation requires at least " + requiredLocations + " configured location(s). None are added.");
         }
 
-        if (locsNode.size() < requiredLocations) {
+        if (!isBr && locsNode.size() < requiredLocations) {
             return "GeoLocation requires at least " + requiredLocations + " location(s) for " + compCount + " competitor(s) (" + rpp + " round/player), but only " + locsNode.size() + " location(s) are configured.";
         }
 
@@ -622,7 +667,9 @@ public class GeoLocationSetupEditor implements IGameSetupEditor {
             JsonNode imgs = loc.has("images") ? loc.get("images") : null;
             if (imgs == null || !imgs.isArray() || imgs.size() < minImages) {
                 int count = (imgs != null && imgs.isArray()) ? imgs.size() : 0;
-                return "Location '" + locName + "' has only " + count + " image(s). At least " + minImages + " images are required per round.";
+                return battleRoyale
+                        ? ("Location '" + locName + "' has no images. At least 1 image is required.")
+                        : ("Location '" + locName + "' has only " + count + " image(s). At least " + minImages + " images are required per round.");
             }
 
             // Image accessibility & offline verification

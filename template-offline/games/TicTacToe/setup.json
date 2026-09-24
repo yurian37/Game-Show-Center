@@ -1,5 +1,7 @@
 {
   "game" : "TicTacToe",
   "startingTeam" : "random",
-  "starting_team" : "random"
+  "starting_team" : "random",
+  "turnTimer" : 1.0,
+  "turn_time" : 1.0
 }
