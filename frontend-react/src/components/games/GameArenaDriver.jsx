@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import SvgEmoji from '../SvgEmoji';
 import {
   getGamePlayComponent,
   getGameDefaultSetup,
@@ -58,7 +59,7 @@ export default function GameArenaDriver({
           className="bg-[#1b2238]/80 hover:bg-[#252f4c] text-indigo-300 hover:text-indigo-200 border border-indigo-500/30 text-xs font-bold px-3.5 py-1.5 rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer active:scale-95"
           title="View game rules and instructions"
         >
-          <span>📖</span>
+          <SvgEmoji name="book" />
           <span>Game Rules & Instructions</span>
         </button>
       </div>
@@ -74,7 +75,7 @@ export default function GameArenaDriver({
         ) : (
           <div className="space-y-6 max-w-xl mx-auto animate-fadeIn py-8 text-center">
             <div className="w-20 h-20 mx-auto rounded-3xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-4xl shadow-inner">
-              🎮
+              <SvgEmoji name="gamepad" size={40} />
             </div>
             <div>
               <h3 className="text-2xl font-black text-indigo-300 mb-2">{gameTitle}</h3>
@@ -100,16 +101,17 @@ export default function GameArenaDriver({
                   How to Play
                 </span>
                 <h3 className="text-lg font-black text-white flex items-center gap-2">
-                  <span>🎮 {gameTitle}</span>
+                  <SvgEmoji name="gamepad" />
+                  <span>{gameTitle}</span>
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setShowInstructions(false)}
-                className="text-slate-400 hover:text-white p-1 rounded-lg text-sm cursor-pointer transition-colors"
+                className="text-slate-400 hover:text-white p-1 rounded-lg text-sm cursor-pointer transition-colors flex items-center justify-center"
                 title="Close"
               >
-                ✕
+                <SvgEmoji name="close" />
               </button>
             </div>
 

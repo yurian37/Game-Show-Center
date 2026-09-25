@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
+import SvgEmoji from '../../../SvgEmoji';
 
 export const AVAILABLE_FILTERS = [
-  { id: 'displacement', label: 'Displacement', icon: '〰️', desc: 'Sine wave coordinate distortion' },
-  { id: 'swirl', label: 'Swirl', icon: '🌪️', desc: 'Spiral twist and vortex rotation' },
-  { id: 'pixelate', label: 'Pixelate', icon: '🧱', desc: 'Chunky mosaic pixel blocks' },
-  { id: 'blur', label: 'Blur', icon: '🌫️', desc: 'Progressive visual softening' }
+  { id: 'displacement', label: 'Displacement', icon: 'wave', desc: 'Sine wave coordinate distortion' },
+  { id: 'swirl', label: 'Swirl', icon: 'vortex', desc: 'Spiral twist and vortex rotation' },
+  { id: 'pixelate', label: 'Pixelate', icon: 'bricks', desc: 'Chunky mosaic pixel blocks' },
+  { id: 'blur', label: 'Blur', icon: 'fog', desc: 'Progressive visual softening' }
 ];
 
 export default function SnapSolveSetup({ value, onChange }) {
@@ -128,7 +129,7 @@ export default function SnapSolveSetup({ value, onChange }) {
                     <span className="text-[9px] text-slate-400 block truncate">{f.desc}</span>
                   </div>
                   <span className={`ml-auto text-xs font-bold ${isChecked ? 'text-purple-400' : 'text-slate-600'}`}>
-                    {isChecked ? '✓' : '○'}
+                    {isChecked ? <SvgEmoji name="check" /> : <SvgEmoji name="circle-outline" />}
                   </span>
                 </button>
               );
@@ -143,7 +144,7 @@ export default function SnapSolveSetup({ value, onChange }) {
             Image Pool ({mediaPool.length} images)
           </label>
           <span className="text-[10px] font-bold text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-md border border-indigo-500/20">
-            🖼️ Visual Pool
+            <SvgEmoji name="image" className="mr-1.5 inline" /> Visual Pool
           </span>
         </div>
 
@@ -203,7 +204,7 @@ export default function SnapSolveSetup({ value, onChange }) {
                 className="absolute top-1 right-1 bg-rose-600/90 hover:bg-rose-600 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold transition-all opacity-0 group-hover:opacity-100 shadow cursor-pointer"
                 title="Remove Image"
               >
-                ✕
+                <SvgEmoji name="close" />
               </button>
             </div>
           ))}

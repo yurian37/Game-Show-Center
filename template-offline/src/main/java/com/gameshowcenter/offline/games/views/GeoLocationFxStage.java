@@ -17,6 +17,7 @@ import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
 
 import java.util.*;
+import com.gameshowcenter.offline.util.SvgEmoji;
 
 public class GeoLocationFxStage extends VBox {
 
@@ -148,9 +149,12 @@ public class GeoLocationFxStage extends VBox {
 
         String badgeTitle = String.format(I18n.get("game.geolocation.title_round"), 1, totalMatchRounds);
         if (isBattleRoyale) {
-            badgeTitle = "⚔️ BR • " + badgeTitle;
+            badgeTitle = "BR • " + badgeTitle;
         }
         roundBadgeLabel = new Label(badgeTitle);
+        if (isBattleRoyale) {
+            SvgEmoji.setGraphic(roundBadgeLabel, "swords", 12);
+        }
         roundBadgeLabel.setStyle(String.format(
                 "-fx-background-color: rgba(245, 158, 11, 0.15); -fx-text-fill: #f59e0b; -fx-font-weight: 900; -fx-font-size: 12px; -fx-padding: 6px 14px; -fx-background-radius: 20px; -fx-border-color: rgba(245, 158, 11, 0.3); -fx-border-radius: 20px;",
                 ThemeManager.getAccentHex()));
@@ -229,8 +233,8 @@ public class GeoLocationFxStage extends VBox {
                 "-fx-background-color: %s; -fx-border-color: rgba(99, 102, 241, 0.4); -fx-border-width: 2px; -fx-border-radius: 24px; -fx-background-radius: 24px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.7), 20, 0, 0, 8);",
                 ThemeManager.getCardHex()));
 
-        Label iconLbl = new Label("🧭");
-        iconLbl.setStyle("-fx-font-size: 54px;");
+        Label iconLbl = new Label();
+        SvgEmoji.setGraphic(iconLbl, "compass", 54);
 
         Label roundTitle = new Label(String.format(I18n.get("game.common.round_n_of_m"), 1, totalMatchRounds));
         roundTitle.setStyle(String.format("-fx-font-size: 11px; -fx-font-weight: 900; -fx-text-fill: %s;",
@@ -293,7 +297,8 @@ public class GeoLocationFxStage extends VBox {
         loader.setMaxSize(40, 40);
 
         // Image Counter Badge (Over image: Number of image / Total images per round)
-        imageCounterBadge = new Label("📷 1 / 3");
+        imageCounterBadge = new Label("1 / 3");
+        SvgEmoji.setGraphic(imageCounterBadge, "camera", 14);
         imageCounterBadge.setStyle(
                 "-fx-background-color: rgba(15, 23, 42, 0.88); -fx-text-fill: #ffffff; -fx-font-weight: 900; -fx-font-size: 13px; -fx-padding: 6px 18px; -fx-background-radius: 14px; -fx-border-color: rgba(255, 255, 255, 0.25); -fx-border-radius: 14px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 8, 0, 0, 2);");
         StackPane.setAlignment(imageCounterBadge, Pos.BOTTOM_CENTER);
@@ -326,6 +331,7 @@ public class GeoLocationFxStage extends VBox {
         btnRow.setMaxWidth(680);
 
         nextImageBtn = new Button(I18n.get("game.common.next_image"));
+        SvgEmoji.setGraphic(nextImageBtn, "arrow-right", 16);
         nextImageBtn.setPrefWidth(334);
         nextImageBtn.setStyle(String.format(
                 "-fx-background-color: #4f46e5; -fx-text-fill: #ffffff; -fx-font-size: 13px; -fx-font-weight: 900; -fx-padding: 12px 20px; -fx-background-radius: 12px; -fx-cursor: hand;",
@@ -333,6 +339,7 @@ public class GeoLocationFxStage extends VBox {
         nextImageBtn.setOnAction(e -> handleNextImage());
 
         revealAnswerBtn = new Button(I18n.get("game.common.reveal_answer"));
+        SvgEmoji.setGraphic(revealAnswerBtn, "eye", 16);
         revealAnswerBtn.setPrefWidth(334);
         revealAnswerBtn.setStyle(String.format(
                 "-fx-background-color: %s; -fx-text-fill: %s; -fx-font-size: 13px; -fx-font-weight: 900; -fx-padding: 12px 20px; -fx-background-radius: 12px; -fx-cursor: hand;",
@@ -359,8 +366,8 @@ public class GeoLocationFxStage extends VBox {
                 "-fx-background-color: %s; -fx-border-color: #f59e0b; -fx-border-width: 2px; -fx-border-radius: 24px; -fx-background-radius: 24px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 24, 0, 0, 8);",
                 ThemeManager.getCardHex()));
 
-        Label cup = new Label("🏆");
-        cup.setStyle("-fx-font-size: 54px;");
+        Label cup = new Label();
+        SvgEmoji.setGraphic(cup, "trophy", 54);
 
         Label finTitle = new Label(I18n.get("game.geolocation.completed"));
         finTitle.setStyle("-fx-font-size: 18px; -fx-font-weight: 900; -fx-text-fill: #fbbf24;");
@@ -381,7 +388,12 @@ public class GeoLocationFxStage extends VBox {
 
     private void updateUI() {
         String badge = String.format(I18n.get("game.geolocation.title_round"), Math.min(roundNumber, totalMatchRounds), totalMatchRounds);
-        if (isBattleRoyale) badge = "⚔️ BR • " + badge;
+        if (isBattleRoyale) {
+            badge = "BR • " + badge;
+            SvgEmoji.setGraphic(roundBadgeLabel, "swords", 12);
+        } else {
+            roundBadgeLabel.setGraphic(null);
+        }
         roundBadgeLabel.setText(badge);
         poolInfoLabel.setText(String.format(I18n.get("game.geolocation.unseen_locations"), workingPool.size()));
 
@@ -408,31 +420,38 @@ public class GeoLocationFxStage extends VBox {
         boolean isLast = currentImageIndex >= totalImages - 1;
 
         // Display exact Number of image / Total images per round
-        imageCounterBadge.setText(String.format("📷 %d / %d", currentImageIndex + 1, totalImages));
+        imageCounterBadge.setText(String.format("%d / %d", currentImageIndex + 1, totalImages));
+        SvgEmoji.setGraphic(imageCounterBadge, "camera", 14);
 
         // Rule 3 & 4: Next Image vs Last Image
         if (isLast) {
             nextImageBtn.setText(I18n.get("game.common.last_image"));
+            SvgEmoji.setGraphic(nextImageBtn, "flag", 16);
             nextImageBtn.setDisable(true);
             nextImageBtn.setStyle("-fx-background-color: #1e293b; -fx-text-fill: #64748b; -fx-font-size: 13px; -fx-font-weight: 900; -fx-padding: 12px 20px; -fx-background-radius: 12px; -fx-opacity: 0.7;");
         } else {
             nextImageBtn.setText(I18n.get("game.common.next_image"));
+            SvgEmoji.setGraphic(nextImageBtn, "arrow-right", 16);
             nextImageBtn.setDisable(false);
             nextImageBtn.setStyle("-fx-background-color: #4f46e5; -fx-text-fill: #ffffff; -fx-font-size: 13px; -fx-font-weight: 900; -fx-padding: 12px 20px; -fx-background-radius: 12px; -fx-cursor: hand;");
         }
 
         // Rule 2: Reveal Answer vs Next Round
         if (isAnswerRevealed) {
-            answerLabel.setText("🏛️ " + (currentLocation != null ? currentLocation.getName() : "Unknown"));
+            answerLabel.setText(currentLocation != null ? currentLocation.getName() : "Unknown");
+            SvgEmoji.setGraphic(answerLabel, "monument", 16);
             answerLabel.setStyle("-fx-font-size: 17px; -fx-font-weight: 900; -fx-text-fill: #34d399; -fx-background-color: rgba(16, 185, 129, 0.15); -fx-padding: 6px 20px; -fx-background-radius: 10px; -fx-border-color: rgba(16, 185, 129, 0.4); -fx-border-radius: 10px;");
 
             revealAnswerBtn.setText(roundNumber >= totalMatchRounds ? I18n.get("game.common.finish_match") : I18n.get("game.common.next_round"));
+            SvgEmoji.setGraphic(revealAnswerBtn, roundNumber >= totalMatchRounds ? "trophy" : "arrow-right", 16);
             revealAnswerBtn.setStyle("-fx-background-color: #10b981; -fx-text-fill: #ffffff; -fx-font-size: 13px; -fx-font-weight: 900; -fx-padding: 12px 20px; -fx-background-radius: 12px; -fx-cursor: hand;");
         } else {
             answerLabel.setText(I18n.get("game.common.answer_hidden"));
+            answerLabel.setGraphic(null);
             answerLabel.setStyle("-fx-font-size: 15px; -fx-font-weight: 900; -fx-text-fill: #64748b; -fx-padding: 6px 14px;");
 
             revealAnswerBtn.setText(I18n.get("game.common.reveal_answer"));
+            SvgEmoji.setGraphic(revealAnswerBtn, "eye", 16);
             revealAnswerBtn.setStyle(String.format(
                     "-fx-background-color: %s; -fx-text-fill: %s; -fx-font-size: 13px; -fx-font-weight: 900; -fx-padding: 12px 20px; -fx-background-radius: 12px; -fx-cursor: hand;",
                     ThemeManager.getAccentHex(), ThemeManager.getTextOnAccentPrimaryHex()));

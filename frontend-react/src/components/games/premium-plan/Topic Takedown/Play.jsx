@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import SvgEmoji from '../../../SvgEmoji';
 
 const FALLBACK_CATEGORIES = [
   {
@@ -119,7 +120,7 @@ export default function TopicTakedownPlay({ profiles = [], setupData = {} }) {
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4 w-full border-b border-slate-800 pb-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-xl shadow-lg shadow-orange-500/20">
-            🎯
+            <SvgEmoji name="target" size={32} />
           </div>
           <div className="text-left">
             <h2 className="text-lg font-black text-white tracking-wide">Topic Takedown</h2>
@@ -139,7 +140,7 @@ export default function TopicTakedownPlay({ profiles = [], setupData = {} }) {
             title="Reset Board for a new round"
             className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-[#1b2238] hover:bg-[#252f4c] text-slate-300 hover:text-white border border-slate-700/60 transition-all flex items-center gap-1.5 cursor-pointer"
           >
-            <span>🔄</span> Reset Round
+            <SvgEmoji name="refresh" className="mr-1.5" /> Reset Round
           </button>
         </div>
       </div>
@@ -147,7 +148,7 @@ export default function TopicTakedownPlay({ profiles = [], setupData = {} }) {
       {/* Round Finished Banner */}
       {isAllBoardCleared && (
         <div className="w-full bg-gradient-to-r from-amber-950/40 via-amber-900/20 to-amber-950/40 border-2 border-amber-500/60 p-6 rounded-3xl text-center shadow-2xl animate-fadeIn mb-8 flex flex-col items-center gap-3">
-          <div className="text-4xl animate-bounce">🏆</div>
+          <div className="text-4xl animate-bounce flex items-center justify-center"><SvgEmoji name="trophy" size={40} /></div>
           <h3 className="text-2xl font-black text-amber-300 uppercase tracking-wider">
             BOARD COMPLETED!
           </h3>
@@ -158,7 +159,7 @@ export default function TopicTakedownPlay({ profiles = [], setupData = {} }) {
             onClick={handleRestartRound}
             className="mt-2 px-8 py-3 rounded-2xl font-black text-xs uppercase tracking-wider bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-slate-950 cursor-pointer shadow-xl active:scale-95 transition-all"
           >
-            🔄 Play New Round
+            <SvgEmoji name="refresh" className="mr-1.5" /> Play New Round
           </button>
         </div>
       )}
@@ -202,7 +203,7 @@ export default function TopicTakedownPlay({ profiles = [], setupData = {} }) {
                     {isRevealed ? (
                       <>
                         <span className="text-[10px] font-extrabold uppercase text-slate-500 tracking-wider">
-                          ✓ Revelada
+                          <span className="inline-flex items-center gap-1"><SvgEmoji name="check" /> Revelada</span>
                         </span>
                         <span className="text-lg sm:text-xl font-black text-slate-600 line-through">
                           {questionNumber}
@@ -279,11 +280,11 @@ export default function TopicTakedownPlay({ profiles = [], setupData = {} }) {
 
               {showAnswerInView ? (
                 <div className="text-base sm:text-lg font-black text-emerald-300 animate-fadeIn bg-emerald-500/10 border border-emerald-500/30 py-3 px-4 rounded-xl text-center">
-                  💡 {activeQuestion.answer}
+                  <SvgEmoji name="bulb" className="mr-1.5 inline" /> {activeQuestion.answer}
                 </div>
               ) : (
                 <div className="py-3 px-4 rounded-xl bg-slate-900 border border-slate-800 text-slate-500 text-xs sm:text-sm font-bold flex items-center justify-center gap-2 select-none">
-                  <span>🔒 Hidden Answer</span>
+                  <span className="inline-flex items-center gap-1.5"><SvgEmoji name="lock" /> Hidden Answer</span>
                 </div>
               )}
             </div>
@@ -296,11 +297,11 @@ export default function TopicTakedownPlay({ profiles = [], setupData = {} }) {
                   onClick={handleRevealAnswer}
                   className="flex-1 min-w-[140px] max-w-xs bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-slate-950 font-black text-xs uppercase tracking-wider py-3.5 px-6 rounded-xl shadow-lg transition-all active:scale-95 cursor-pointer"
                 >
-                  👁️ Reveal Answer
+                  <SvgEmoji name="eye" className="mr-1.5" /> Reveal Answer
                 </button>
               ) : (
                 <div className="text-[11px] font-bold text-emerald-400/90 py-2">
-                  ✓ Answer revealed (this question is now completed)
+                  <span className="inline-flex items-center gap-1"><SvgEmoji name="check" /> Answer revealed (this question is now completed)</span>
                 </div>
               )}
 

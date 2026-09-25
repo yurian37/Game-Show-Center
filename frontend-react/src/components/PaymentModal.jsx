@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import SvgEmoji from './SvgEmoji';
 
 // Cryptographic SHA-256 hash of the VIP promo code ("yinyang")
 const ENCRYPTED_VIP_HASH = "53086b510bd55bb3f8373b5cf2e55ef92b512c1c6fbbfbe6e95c1c8a4df55811";
@@ -27,15 +28,15 @@ export default function PaymentModal({ isOpen, onClose, onDownloadSuccess }) {
   const handleValidatePromoCode = async (e) => {
     e.preventDefault();
     if (!promoCode.trim()) return;
-    setPromoStatus({ type: 'error', text: '🚧 En Mantenimiento: Las descargas y validaciones se encuentran temporalmente en mantenimiento.' });
+    setPromoStatus({ type: 'error', text: 'En Mantenimiento: Las descargas y validaciones se encuentran temporalmente en mantenimiento.' });
   };
 
   const handleSimulatedPayment = () => {
-    setPaymentStatus({ type: 'error', text: '🚧 En Mantenimiento: Las descargas se encuentran temporalmente en mantenimiento.' });
+    setPaymentStatus({ type: 'error', text: 'En Mantenimiento: Las descargas se encuentran temporalmente en mantenimiento.' });
   };
 
   const handleOpenPayPalLink = () => {
-    setPaymentStatus({ type: 'error', text: '🚧 En Mantenimiento: Los pagos y descargas se encuentran temporalmente en mantenimiento.' });
+    setPaymentStatus({ type: 'error', text: 'En Mantenimiento: Los pagos y descargas se encuentran temporalmente en mantenimiento.' });
   };
 
   return (
@@ -47,7 +48,7 @@ export default function PaymentModal({ isOpen, onClose, onDownloadSuccess }) {
           onClick={onClose}
           className="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800/60 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all cursor-pointer"
         >
-          ✕
+          <SvgEmoji name="close" />
         </button>
 
         {/* HEADER */}
@@ -67,23 +68,23 @@ export default function PaymentModal({ isOpen, onClose, onDownloadSuccess }) {
         <div className="grid grid-cols-2 gap-2 mb-6 bg-[#0b0e17] p-1.5 rounded-2xl border border-slate-900">
           <button
             onClick={() => setActiveMethod('card')}
-            className={`py-2.5 px-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all cursor-pointer ${
+            className={`py-2.5 px-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
               activeMethod === 'card'
                 ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            💳 Card / PayPal
+            <SvgEmoji name="credit-card" /> Card / PayPal
           </button>
           <button
             onClick={() => setActiveMethod('promo')}
-            className={`py-2.5 px-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all cursor-pointer ${
+            className={`py-2.5 px-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
               activeMethod === 'promo'
                 ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            🔑 VIP Promo Code
+            <SvgEmoji name="key" /> VIP Promo Code
           </button>
         </div>
 
@@ -114,12 +115,13 @@ export default function PaymentModal({ isOpen, onClose, onDownloadSuccess }) {
                   onClick={handleOpenPayPalLink}
                   className="w-full py-3 px-4 rounded-xl font-bold text-xs bg-[#2c2e2f] hover:bg-[#3b3d3e] text-white border border-slate-700 shadow-md active:scale-[0.99] transition-all cursor-pointer flex items-center justify-center gap-2"
                 >
-                  <span>💳 Pay with Debit or Credit Card</span>
+                  <SvgEmoji name="credit-card" />
+                  <span>Pay with Debit or Credit Card</span>
                 </button>
               </div>
 
-              <div className="pt-2 text-[10px] text-slate-400">
-                🔒 Secure global checkout powered by PayPal.
+              <div className="pt-2 text-[10px] text-slate-400 flex items-center justify-center gap-1">
+                <SvgEmoji name="lock" /> Secure global checkout powered by PayPal.
               </div>
             </div>
 
@@ -135,9 +137,9 @@ export default function PaymentModal({ isOpen, onClose, onDownloadSuccess }) {
             <div className="border-t border-slate-800/80 pt-3">
               <button
                 onClick={handleSimulatedPayment}
-                className="w-full py-2.5 px-4 rounded-xl font-bold text-[11px] bg-slate-800/80 hover:bg-slate-800 text-slate-300 border border-slate-700/60 transition-all cursor-pointer"
+                className="w-full py-2.5 px-4 rounded-xl font-bold text-[11px] bg-slate-800/80 hover:bg-slate-800 text-slate-300 border border-slate-700/60 transition-all cursor-pointer flex items-center justify-center gap-1.5"
               >
-                ⚡ Simulate Successful Checkout ($5.00 USD)
+                <SvgEmoji name="lightning" /> Simulate Successful Checkout ($5.00 USD)
               </button>
             </div>
           </div>
@@ -157,8 +159,8 @@ export default function PaymentModal({ isOpen, onClose, onDownloadSuccess }) {
                 onChange={(e) => setPromoCode(e.target.value)}
                 className="w-full bg-[#0f1322] border border-emerald-500/40 rounded-xl px-4 py-3 text-sm font-bold text-slate-100 focus:outline-none focus:border-emerald-400 placeholder:text-slate-600"
               />
-              <span className="text-[10px] text-slate-500 block mt-1">
-                🔒 Cryptographically verified via secure SHA-256 hash ("YinYang").
+              <span className="text-[10px] text-slate-500 flex items-center gap-1 mt-1">
+                <SvgEmoji name="lock" /> Cryptographically verified via secure SHA-256 hash ("YinYang").
               </span>
             </div>
 
@@ -174,7 +176,7 @@ export default function PaymentModal({ isOpen, onClose, onDownloadSuccess }) {
               type="submit"
               className="w-full py-3.5 px-6 rounded-2xl font-black text-xs uppercase tracking-wider bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-xl active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
             >
-              🔑 Validate Code & Download Free
+              <SvgEmoji name="key" /> Validate Code & Download Free
             </button>
           </form>
         )}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import heartFilledImg from '../../../../assets/hangman/heart_filled.png';
 import heartEmptyImg from '../../../../assets/hangman/heart_empty.png';
+import SvgEmoji from '../../../SvgEmoji';
 
 const DEFAULT_WORD_POOL = ['CHAMPION', 'VICTORY', 'STUDIO', 'ARENA', 'SHOWCASE', 'OFFLINE'];
 
@@ -129,7 +130,7 @@ export default function HangmanPlay({ profiles = [], setupData = {}, _onSelectWi
     const isWordComplete = currentWord.split('').every(ch => updatedGuessed.includes(ch));
     if (isWordComplete) {
       setGameState('won');
-      setEndMessage(`👑 CONGRATULATIONS! You solved the word with ${livesLeft} heart(s) remaining!`);
+      setEndMessage(`CONGRATULATIONS! You solved the word with ${livesLeft} heart(s) remaining!`);
     }
   };
 
@@ -147,7 +148,7 @@ export default function HangmanPlay({ profiles = [], setupData = {}, _onSelectWi
       setGuessedLetters(allLetters);
       setUsedLetters(prev => Array.from(new Set([...prev, ...allLetters])));
       setGameState('won');
-      setEndMessage(`👑 BRILLIANT! You guessed the entire word correctly with ${livesLeft} heart(s) remaining!`);
+      setEndMessage(`BRILLIANT! You guessed the entire word correctly with ${livesLeft} heart(s) remaining!`);
     } else {
       // LOSS: Lose ALL hearts immediately
       setLivesLeft(0);
@@ -225,7 +226,7 @@ export default function HangmanPlay({ profiles = [], setupData = {}, _onSelectWi
       <div className="w-full bg-[#121624] border border-slate-800/90 rounded-2xl p-4 mb-6 shadow-lg flex flex-col items-center gap-2.5 transition-all">
         <div className="flex items-center justify-between w-full px-1">
           <span className="text-xs font-black text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-            <span>🔠</span>
+            <SvgEmoji name="letters-case" />
             <span>Used Letters</span>
           </span>
           <span className="text-[11px] font-black px-2.5 py-0.5 rounded-full bg-slate-800/90 border border-slate-700 text-indigo-300">
@@ -251,7 +252,7 @@ export default function HangmanPlay({ profiles = [], setupData = {}, _onSelectWi
                   }`}
                 >
                   <span className="text-sm font-black">{letter}</span>
-                  <span className="text-[10px] font-bold no-underline opacity-90">{isCorrect ? '✓' : '✕'}</span>
+                  <span className="text-[10px] font-bold no-underline opacity-90">{isCorrect ? <SvgEmoji name="check" /> : <SvgEmoji name="close" />}</span>
                 </span>
               );
             })}
@@ -266,7 +267,7 @@ export default function HangmanPlay({ profiles = [], setupData = {}, _onSelectWi
           {/* 1. GUESS SINGLE LETTER */}
           <form onSubmit={handleSubmitLetter} className="bg-[#121624] p-4 rounded-2xl border border-slate-800/80 flex flex-col gap-3">
             <label className="text-xs font-black text-indigo-300 uppercase tracking-wider text-left">
-              🔤 Guess a Single Letter
+              <SvgEmoji name="letters-abc" className="mr-1.5" /> Guess a Single Letter
             </label>
             <div className="flex gap-2">
               <input
@@ -291,7 +292,7 @@ export default function HangmanPlay({ profiles = [], setupData = {}, _onSelectWi
           {/* 2. GUESS FULL WORD */}
           <form onSubmit={handleSubmitFullWord} className="bg-[#121624] p-4 rounded-2xl border border-slate-800/80 flex flex-col gap-3">
             <label className="text-xs font-black text-amber-300 uppercase tracking-wider text-left">
-              💡 Solve Entire Word
+              <SvgEmoji name="bulb" className="mr-1.5" /> Solve Entire Word
             </label>
             <div className="flex gap-2">
               <input
@@ -319,7 +320,7 @@ export default function HangmanPlay({ profiles = [], setupData = {}, _onSelectWi
             ? 'bg-gradient-to-r from-emerald-500/20 via-teal-500/30 to-emerald-500/20 border-emerald-400 text-emerald-200'
             : 'bg-gradient-to-r from-rose-500/20 via-red-500/30 to-rose-500/20 border-rose-400 text-rose-200'
         }`}>
-          <div className="text-4xl mb-2">{gameState === 'won' ? '👑' : '💀'}</div>
+          <div className="text-4xl mb-2 flex items-center justify-center">{gameState === 'won' ? <SvgEmoji name="crown" size={40} /> : <SvgEmoji name="skull" size={40} />}</div>
           <h3 className="text-xl font-black mb-2 uppercase">{gameState === 'won' ? 'ROUND VICTORY!' : 'ROUND OVER'}</h3>
           <p className="text-sm font-bold leading-relaxed mb-6">{endMessage}</p>
 
@@ -328,11 +329,11 @@ export default function HangmanPlay({ profiles = [], setupData = {}, _onSelectWi
               onClick={handleNextRound}
               className="px-8 py-3.5 rounded-2xl font-black text-sm uppercase tracking-wider transition-all duration-300 shadow-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white cursor-pointer active:scale-95"
             >
-              NEXT ROUND ➔
+              NEXT ROUND
             </button>
           ) : (
             <div className="inline-block bg-slate-900/90 border border-amber-500/40 text-amber-300 px-6 py-3 rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg">
-              🏁 HANGMAN MATCH COMPLETED! ({totalRounds} of {totalRounds} Rounds Played)
+              <SvgEmoji name="flag" className="mr-1.5 inline" /> HANGMAN MATCH COMPLETED! ({totalRounds} of {totalRounds} Rounds Played)
             </div>
           )}
         </div>

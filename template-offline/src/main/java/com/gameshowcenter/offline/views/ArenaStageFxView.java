@@ -7,8 +7,10 @@ import com.gameshowcenter.offline.model.Competitor;
 import com.gameshowcenter.offline.model.GameDescriptor;
 import com.gameshowcenter.offline.model.MatchConfig;
 import com.gameshowcenter.offline.theme.ThemeManager;
+import com.gameshowcenter.offline.util.SvgEmoji;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -211,7 +213,8 @@ public class ArenaStageFxView extends ScrollPane {
         HBox scoreHeaderRow = new HBox(12);
         scoreHeaderRow.setAlignment(Pos.CENTER);
 
-        Label pointTitle = new Label("⚡ " + I18n.get("arena.scoreboard.title"));
+        Label pointTitle = new Label(I18n.get("arena.scoreboard.title"));
+        SvgEmoji.setGraphic(pointTitle, "lightning", 16);
         pointTitle.setStyle(String.format("-fx-font-size: 12px; -fx-font-weight: 900; -fx-text-fill: %s; -fx-letter-spacing: 1px;", ThemeManager.getAccentHex()));
         pointTitle.setTextOverrun(javafx.scene.control.OverrunStyle.CLIP);
         pointTitle.setEllipsisString("");
@@ -256,7 +259,8 @@ public class ArenaStageFxView extends ScrollPane {
             scoreBtnBox.getChildren().add(btn);
         }
 
-        Button rouletteArenaBtn = new Button("🎰 " + I18n.get("game.roulette.title"));
+        Button rouletteArenaBtn = new Button(I18n.get("game.roulette.title"));
+        SvgEmoji.setGraphic(rouletteArenaBtn, "slot-machine", 16);
         rouletteArenaBtn.setStyle(String.format("-fx-background-color: %s; -fx-text-fill: %s; -fx-font-size: 12px; -fx-font-weight: 900; -fx-padding: 8px 18px; -fx-background-radius: 10px; -fx-border-color: rgba(245, 158, 11, 0.5); -fx-border-radius: 10px; -fx-cursor: hand;", ThemeManager.getButtonHex(), ThemeManager.getAccentHex()));
         rouletteArenaBtn.setTextOverrun(javafx.scene.control.OverrunStyle.CLIP);
         rouletteArenaBtn.setEllipsisString("");
@@ -302,13 +306,15 @@ public class ArenaStageFxView extends ScrollPane {
         prevGameBtn.setEllipsisString("");
         prevGameBtn.setOnAction(e -> switchGame(-1));
 
-        activeGameTitle = new Label("🎮 " + I18n.get("arena.header.game") + ": ");
+        activeGameTitle = new Label(I18n.get("arena.header.game") + ": ");
+        SvgEmoji.setGraphic(activeGameTitle, "gamepad", 18);
         activeGameTitle.setStyle(String.format("-fx-font-size: 18px; -fx-font-weight: 900; -fx-text-fill: %s;", ThemeManager.getAccentHex()));
         activeGameTitle.setWrapText(true);
         activeGameTitle.setTextOverrun(javafx.scene.control.OverrunStyle.CLIP);
         activeGameTitle.setEllipsisString("");
 
-        Button rulesBtn = new Button("📖 " + I18n.get("arena.btn.rules"));
+        Button rulesBtn = new Button(I18n.get("arena.btn.rules"));
+        SvgEmoji.setGraphic(rulesBtn, "book", 16);
         rulesBtn.setStyle(String.format("-fx-background-color: %s; -fx-text-fill: %s; -fx-font-weight: bold; -fx-border-color: rgba(255, 255, 255, 0.2); -fx-border-radius: 10px; -fx-background-radius: 10px; -fx-padding: 8px 16px; -fx-cursor: hand;", ThemeManager.getButtonHex(), ThemeManager.getTextOnButtonPrimaryHex()));
         rulesBtn.setTextOverrun(javafx.scene.control.OverrunStyle.CLIP);
         rulesBtn.setEllipsisString("");
@@ -388,13 +394,11 @@ public class ArenaStageFxView extends ScrollPane {
                 imgView.setPreserveRatio(true);
                 iconCircle.getChildren().add(imgView);
             } catch (Exception e) {
-                Label trophyIcon = new Label("🏆");
-                trophyIcon.setStyle("-fx-font-size: 32px;");
+                Node trophyIcon = SvgEmoji.create("trophy", 32);
                 iconCircle.getChildren().add(trophyIcon);
             }
         } else {
-            Label trophyIcon = new Label("🏆");
-            trophyIcon.setStyle("-fx-font-size: 32px;");
+            Node trophyIcon = SvgEmoji.create("trophy", 32);
             iconCircle.getChildren().add(trophyIcon);
         }
 
@@ -512,7 +516,8 @@ public class ArenaStageFxView extends ScrollPane {
         ));
 
         String gameName = activeGame != null ? activeGame.getName() : "Game";
-        Label titleLabel = new Label("📖 " + gameName.toUpperCase() + " - " + I18n.get("arena.btn.rules"));
+        Label titleLabel = new Label(gameName.toUpperCase() + " - " + I18n.get("arena.btn.rules"));
+        SvgEmoji.setGraphic(titleLabel, "book", 18);
         titleLabel.setStyle(String.format("-fx-font-size: 18px; -fx-font-weight: 900; -fx-text-fill: %s;", ThemeManager.getTextOnCardPrimaryHex()));
 
         HBox langRow = new HBox(8);
@@ -621,7 +626,8 @@ public class ArenaStageFxView extends ScrollPane {
         };
 
         for (I18n.LanguageOption opt : I18n.SUPPORTED_LANGUAGES) {
-            Button lBtn = new Button(opt.flag + " " + opt.code.toUpperCase());
+            Button lBtn = new Button(opt.code.toUpperCase());
+            SvgEmoji.setGraphic(lBtn, opt.flag, 16);
             lBtn.setUserData(opt.code);
             lBtn.setOnAction(e -> {
                 selectedLang[0] = opt.code;
@@ -653,7 +659,8 @@ public class ArenaStageFxView extends ScrollPane {
 
         if (games != null && !games.isEmpty()) {
             GameDescriptor activeGame = games.get(currentGameIndex);
-            activeGameTitle.setText("🎮 " + I18n.get("arena.header.game") + ": " + activeGame.getName().toUpperCase());
+            activeGameTitle.setText(I18n.get("arena.header.game") + ": " + activeGame.getName().toUpperCase());
+            SvgEmoji.setGraphic(activeGameTitle, "gamepad", 18);
             gameCounterLabel.setText(String.format("%d / %d", currentGameIndex + 1, games.size()));
 
             Region stageNode = com.gameshowcenter.offline.games.GameStageRegistry.createStage(
@@ -671,7 +678,8 @@ public class ArenaStageFxView extends ScrollPane {
                 ThemeManager.applyTextScale(stageNode, ThemeManager.getFontScale());
             }
         } else {
-            activeGameTitle.setText("🎮 " + I18n.get("arena.title"));
+            activeGameTitle.setText(I18n.get("arena.title"));
+            SvgEmoji.setGraphic(activeGameTitle, "gamepad", 18);
             gameCounterLabel.setText("0 / 0");
 
             Label emptyLabel = new Label(I18n.get("arena.no_games"));
@@ -745,7 +753,8 @@ public class ArenaStageFxView extends ScrollPane {
             ThemeManager.getMainBoxHex(), ThemeManager.getAccentHex()
         ));
 
-        Label titleLabel = new Label("🎰 " + I18n.get("game.roulette.title"));
+        Label titleLabel = new Label(I18n.get("game.roulette.title"));
+        SvgEmoji.setGraphic(titleLabel, "slot-machine", 18);
         titleLabel.setStyle(String.format("-fx-font-size: 18px; -fx-font-weight: 900; -fx-text-fill: %s;", ThemeManager.getAccentHex()));
 
         Label subLabel = new Label(I18n.get("arena.roulette.desc", "Sorteo en vivo de participantes con probabilidades iguales (1:1)."));
@@ -763,7 +772,8 @@ public class ArenaStageFxView extends ScrollPane {
             );
         rouletteStage.setMaxWidth(Double.MAX_VALUE);
 
-        Button closeBtn = new Button("✖ " + I18n.get("arena.confirm.cancel"));
+        Button closeBtn = new Button(I18n.get("arena.confirm.cancel"));
+        SvgEmoji.setGraphic(closeBtn, "close", 14);
         closeBtn.setStyle(String.format(
             "-fx-background-color: %s; -fx-text-fill: %s; -fx-font-weight: bold; -fx-font-size: 12px; -fx-padding: 8px 24px; -fx-background-radius: 10px; -fx-cursor: hand;",
             ThemeManager.getButtonHex(), ThemeManager.getTextOnButtonPrimaryHex()

@@ -9,6 +9,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
+import com.gameshowcenter.offline.util.SvgEmoji;
 
 import java.util.*;
 
@@ -179,6 +180,7 @@ public class TriviaQuizFxStage extends VBox {
         actionsRow.setAlignment(Pos.CENTER);
 
         showAnswerBtn = new Button(I18n.get("game.trivia.show_answer"));
+        SvgEmoji.setGraphic(showAnswerBtn, "eye", 14);
         showAnswerBtn.setTextOverrun(javafx.scene.control.OverrunStyle.CLIP);
         showAnswerBtn.setEllipsisString("");
         showAnswerBtn.setStyle(String.format(
@@ -187,6 +189,7 @@ public class TriviaQuizFxStage extends VBox {
         showAnswerBtn.setOnAction(e -> handleShowAnswer());
 
         nextQuestionBtn = new Button(I18n.get("game.trivia.next_question"));
+        SvgEmoji.setGraphic(nextQuestionBtn, "arrow-right", 14);
         nextQuestionBtn.setStyle(String.format(
                 "-fx-font-size: 12px; -fx-font-weight: 900; -fx-padding: 10px 22px; -fx-background-color: %s; -fx-text-fill: #ffffff; -fx-background-radius: 10px; -fx-cursor: hand;",
                 ThemeManager.getAccentHex()));
@@ -207,8 +210,8 @@ public class TriviaQuizFxStage extends VBox {
         completedBanner.setVisible(false);
         completedBanner.setManaged(false);
 
-        Label cIcon = new Label("🏁");
-        cIcon.setStyle("-fx-font-size: 36px;");
+        Label cIcon = new Label();
+        SvgEmoji.setGraphic(cIcon, "flag", 36);
 
         completedTitle = new Label(I18n.get("game.trivia.completed"));
         completedTitle.setStyle(String.format("-fx-font-size: 16px; -fx-font-weight: 900; -fx-text-fill: %s;",
@@ -220,6 +223,7 @@ public class TriviaQuizFxStage extends VBox {
                 ThemeManager.toHex(ThemeManager.getCurrentPalette().textPrimary)));
 
         startNextRoundBtn = new Button(I18n.get("game.common.restart_round"));
+        SvgEmoji.setGraphic(startNextRoundBtn, "refresh", 14);
         startNextRoundBtn.setStyle(String.format(
                 "-fx-font-size: 13px; -fx-font-weight: 900; -fx-padding: 10px 24px; -fx-background-color: %s; -fx-text-fill: #ffffff; -fx-background-radius: 10px; -fx-cursor: hand;",
                 ThemeManager.getAccentHex()));
@@ -296,15 +300,17 @@ public class TriviaQuizFxStage extends VBox {
         showAnswer = false;
 
         String badge = isBattleRoyale
-                ? String.format("⚔️ Battle Royale • Question %d of %d", Math.min(questionsCount, maxQuestions), maxQuestions)
-                : String.format("❓ Trivia Quiz • Question %d of %d (%d round/player)", Math.min(questionsCount, maxQuestions), maxQuestions, roundsPerPlayer);
+                ? String.format("Battle Royale • Question %d of %d", Math.min(questionsCount, maxQuestions), maxQuestions)
+                : String.format("Trivia Quiz • Question %d of %d (%d round/player)", Math.min(questionsCount, maxQuestions), maxQuestions, roundsPerPlayer);
         questionBadgeLabel.setText(badge);
+        SvgEmoji.setGraphic(questionBadgeLabel, isBattleRoyale ? "swords" : "help", 14);
         poolInfoLabel
                 .setText(String.format("Unseen Questions in Pool: %d of %d", workingPool.size(), initialPool.size()));
 
         if (currentQuestion != null) {
             questionPromptLabel.setText("\"" + currentQuestion.getQuestion() + "\"");
             answerLabel.setText(I18n.get("game.common.answer_hidden"));
+            answerLabel.setGraphic(null);
             answerLabel.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #64748b;");
             answerCard.setStyle(
                     "-fx-background-color: #0f121d; -fx-border-color: #334155; -fx-border-width: 1px; -fx-background-radius: 14px; -fx-border-radius: 14px; -fx-padding: 12px 18px;");
@@ -322,7 +328,8 @@ public class TriviaQuizFxStage extends VBox {
     private void handleShowAnswer() {
         showAnswer = true;
         if (currentQuestion != null) {
-            answerLabel.setText("💡 " + currentQuestion.getAnswer());
+            answerLabel.setText(currentQuestion.getAnswer());
+            SvgEmoji.setGraphic(answerLabel, "lightbulb", 16);
             answerLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: 900; -fx-text-fill: #34d399;");
             answerCard.setStyle(
                     "-fx-background-color: rgba(16, 185, 129, 0.12); -fx-border-color: #10b981; -fx-border-width: 1px; -fx-background-radius: 14px; -fx-border-radius: 14px; -fx-padding: 12px 18px;");

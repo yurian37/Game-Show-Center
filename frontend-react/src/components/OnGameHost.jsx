@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import SvgEmoji from './SvgEmoji';
 import { gamesRegistry } from './games/gamesRegistry';
 
 const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236366f1'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
@@ -53,9 +54,9 @@ export default function OnGameHost({ selectedGames = [], gameMode = '1vs1', init
 
   // Steps list: 0 -> Profiles, 1..N -> Selected Games, N+1 -> Final Confirm
   const steps = [
-    { type: 'profiles', title: '👤 Players & Teams' },
-    ...selectedGames.map(g => ({ type: 'game', name: g.name, game: g, title: `🧩 ${g.name}` })),
-    { type: 'confirm', title: '🎮 Confirm & Launch' }
+    { type: 'profiles', title: 'Players & Teams', icon: 'user' },
+    ...selectedGames.map(g => ({ type: 'game', name: g.name, game: g, title: g.name, icon: 'puzzle' })),
+    { type: 'confirm', title: 'Confirm & Launch', icon: 'gamepad' }
   ];
 
   // --- PROFILE HANDLERS ---
@@ -283,7 +284,7 @@ export default function OnGameHost({ selectedGames = [], gameMode = '1vs1', init
       try { responseData = JSON.parse(responseText); } catch { responseData = responseText; }
 
       if (!response.ok) {
-        setValidationError(`❌ SERVER VALIDATION ERROR:\n${responseData.detail || responseData.detalle || 'Validation failed.'}`);
+        setValidationError(`SERVER VALIDATION ERROR:\n${responseData.detail || responseData.detalle || 'Validation failed.'}`);
         return;
       }
 
@@ -308,9 +309,9 @@ export default function OnGameHost({ selectedGames = [], gameMode = '1vs1', init
         </div>
         <button 
           onClick={() => onNavigate('settings')}
-          className="text-xs font-bold text-slate-400 hover:text-rose-400 flex items-center gap-1 uppercase tracking-wider transition-colors bg-slate-800/40 px-4 py-2 rounded-xl border border-slate-800 cursor-pointer"
+          className="text-xs font-bold text-slate-400 hover:text-rose-400 flex items-center gap-1.5 uppercase tracking-wider transition-colors bg-slate-800/40 px-4 py-2 rounded-xl border border-slate-800 cursor-pointer"
         >
-          ✕ Exit to Settings
+          <SvgEmoji name="close" /> Exit to Settings
         </button>
       </div>
 
@@ -336,7 +337,8 @@ export default function OnGameHost({ selectedGames = [], gameMode = '1vs1', init
                       : 'text-slate-600 opacity-40 cursor-not-allowed'
               }`}
             >
-              <span>{isCompleted ? '✓' : idx + 1}.</span>
+              <span>{isCompleted ? <SvgEmoji name="check" /> : `${idx + 1}.`}</span>
+              <SvgEmoji name={step.icon} />
               <span>{step.title}</span>
             </button>
           );
@@ -346,8 +348,13 @@ export default function OnGameHost({ selectedGames = [], gameMode = '1vs1', init
       {/* VALIDATION ERROR ALERT */}
       {validationError && (
         <div className="mb-6 p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-bold flex justify-between items-center animate-fadeIn">
-          <span>⚠️ {validationError}</span>
-          <button onClick={() => setValidationError('')} className="text-rose-300 hover:text-white font-black text-sm ml-4 cursor-pointer">✕</button>
+          <span className="flex items-center gap-2">
+            <SvgEmoji name="warning" />
+            <span className="whitespace-pre-line">{validationError}</span>
+          </span>
+          <button onClick={() => setValidationError('')} className="text-rose-300 hover:text-white font-black text-sm ml-4 cursor-pointer flex items-center">
+            <SvgEmoji name="close" />
+          </button>
         </div>
       )}
 
@@ -455,7 +462,7 @@ export default function OnGameHost({ selectedGames = [], gameMode = '1vs1', init
         {activeStepIndex === steps.length - 1 && (
           <div className="space-y-6 animate-fadeIn">
             <div className="bg-[#1b2238] p-6 rounded-2xl border border-slate-800 text-center max-w-2xl mx-auto my-4">
-              <div className="text-4xl mb-4">🚀</div>
+              <div className="text-4xl mb-4 flex items-center justify-center"><SvgEmoji name="rocket" size={48} /></div>
               <h3 className="text-xl font-black text-emerald-400 uppercase tracking-wide">All Set for the Big Match!</h3>
               <p className="text-slate-400 text-xs mt-2 leading-relaxed">
                 All participants and games have been configured successfully. Click below to launch the match in the main arena.
@@ -478,7 +485,7 @@ export default function OnGameHost({ selectedGames = [], gameMode = '1vs1', init
                   onClick={handleSaveAllJson}
                   className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-black text-sm py-4 px-8 rounded-xl shadow-lg transform active:scale-[0.99] transition-all uppercase tracking-wider cursor-pointer"
                 >
-                  Enter Arena & Play! 🎮
+                  Enter Arena & Play!
                 </button>
               </div>
             </div>

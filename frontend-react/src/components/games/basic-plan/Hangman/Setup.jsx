@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import SvgEmoji from '../../../SvgEmoji';
 
 export default function HangmanSetup({ value, onChange }) {
   const [newWord, setNewWord] = useState('');
@@ -106,7 +107,7 @@ export default function HangmanSetup({ value, onChange }) {
                 onClick={() => handleRemoveWord(word)}
                 className="text-slate-500 hover:text-rose-400 font-bold transition-colors text-[10px]"
               >
-                ✕
+                <SvgEmoji name="close" />
               </button>
             </span>
           ))}

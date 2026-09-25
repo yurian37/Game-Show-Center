@@ -4,8 +4,10 @@ import com.gameshowcenter.offline.i18n.I18n;
 import com.gameshowcenter.offline.model.Competitor;
 import com.gameshowcenter.offline.model.MatchConfig;
 import com.gameshowcenter.offline.theme.ThemeManager;
+import com.gameshowcenter.offline.util.SvgEmoji;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -40,8 +42,7 @@ public class WinnerStageFxView extends ScrollPane {
         contentBox.setStyle(String.format("-fx-background-color: %s; -fx-background-radius: 20px;", ThemeManager.getCardRgbaString()));
 
         // Celebration Trophy & Title
-        Label trophyIcon = new Label("👑");
-        trophyIcon.setStyle("-fx-font-size: 64px; -fx-effect: dropshadow(three-pass-box, rgba(245, 158, 11, 0.6), 20, 0, 0, 4);");
+        Node trophyIcon = SvgEmoji.create("crown", 64);
 
         Text mainTitle = new Text(I18n.get("winner.title"));
         mainTitle.setStyle("-fx-font-size: 38px; -fx-font-weight: 900; -fx-fill: linear-gradient(to right, #fbbf24, #f59e0b, #d97706);");
@@ -136,7 +137,8 @@ public class WinnerStageFxView extends ScrollPane {
         leaderboardPanel.setMaxWidth(Double.MAX_VALUE);
         leaderboardPanel.setAlignment(Pos.TOP_CENTER);
 
-        Label leaderboardTitle = new Label("📊 " + I18n.get("winner.leaderboard.title"));
+        Label leaderboardTitle = new Label(I18n.get("winner.leaderboard.title"));
+        SvgEmoji.setGraphic(leaderboardTitle, "chart", 18);
         leaderboardTitle.setStyle(String.format("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: %s;", ThemeManager.getTextOnCardPrimaryHex()));
         leaderboardPanel.getChildren().add(leaderboardTitle);
 
@@ -189,13 +191,15 @@ public class WinnerStageFxView extends ScrollPane {
         HBox actionsBox = new HBox(16);
         actionsBox.setAlignment(Pos.CENTER);
 
-        Button restartBtn = new Button("🔄 " + I18n.get("winner.btn.play_again"));
+        Button restartBtn = new Button(I18n.get("winner.btn.play_again"));
+        SvgEmoji.setGraphic(restartBtn, "refresh", 16);
         restartBtn.setStyle(String.format("-fx-background-color: %s; -fx-text-fill: %s; -fx-font-weight: 900; -fx-padding: 12px 24px; -fx-background-radius: 12px; -fx-cursor: hand;", ThemeManager.getAccentHex(), ThemeManager.getTextOnAccentPrimaryHex()));
         restartBtn.setOnAction(e -> {
             if (listener != null) listener.onRestartMatch();
         });
 
         Button homeBtn = new Button(I18n.get("winner.btn.menu"));
+        SvgEmoji.setGraphic(homeBtn, "home", 16);
         homeBtn.setStyle(String.format("-fx-background-color: %s; -fx-text-fill: %s; -fx-font-weight: bold; -fx-padding: 12px 24px; -fx-background-radius: 12px; -fx-cursor: hand;", ThemeManager.getButtonHex(), ThemeManager.getTextOnButtonPrimaryHex()));
         homeBtn.setOnAction(e -> {
             if (listener != null) listener.onReturnHome();

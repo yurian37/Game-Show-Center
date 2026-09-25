@@ -23,6 +23,7 @@ import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
+import com.gameshowcenter.offline.util.SvgEmoji;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Font;
@@ -84,7 +85,8 @@ public class RouletteFxStage extends VBox {
         initAudioAssets();
 
         // 2. Status / Info Header
-        statusLabel = new Label("🎰 " + I18n.get("game.roulette.title"));
+        statusLabel = new Label(I18n.get("game.roulette.title"));
+        SvgEmoji.setGraphic(statusLabel, "slot-machine", 16);
         statusLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: 900; -fx-text-fill: #a5b4fc; -fx-letter-spacing: 1px;");
 
         // 3. Contestant Chips / Removal Panel
@@ -180,7 +182,8 @@ public class RouletteFxStage extends VBox {
                 ? "-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: white;"
                 : "-fx-font-size: 11px; -fx-font-weight: normal; -fx-text-fill: #64748b;");
 
-            Button actionBtn = new Button(isActive ? "✕" : "➕");
+            Button actionBtn = new Button();
+            SvgEmoji.setGraphic(actionBtn, isActive ? "close" : "plus", 10);
             actionBtn.setStyle(isActive
                 ? "-fx-background-color: transparent; -fx-text-fill: #f43f5e; -fx-font-size: 10px; -fx-font-weight: 900; -fx-padding: 0 2 0 2; -fx-cursor: hand;"
                 : "-fx-background-color: transparent; -fx-text-fill: #10b981; -fx-font-size: 10px; -fx-font-weight: 900; -fx-padding: 0 2 0 2; -fx-cursor: hand;");
@@ -269,8 +272,8 @@ public class RouletteFxStage extends VBox {
         );
         centerHubInner.setFill(hubGrad);
 
-        Label centerIcon = new Label("🎯");
-        centerIcon.setStyle("-fx-font-size: 18px;");
+        Label centerIcon = new Label();
+        SvgEmoji.setGraphic(centerIcon, "target", 18);
 
         StackPane centerStack = new StackPane(centerHubOuter, centerHubInner, centerIcon);
 

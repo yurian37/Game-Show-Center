@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import com.gameshowcenter.offline.util.SvgEmoji;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -105,8 +106,8 @@ public class TicTacToeFxStage extends VBox {
         resultBanner.setVisible(false);
         resultBanner.setManaged(false);
 
-        resultIcon = new Label("👑");
-        resultIcon.setStyle("-fx-font-size: 32px;");
+        resultIcon = new Label();
+        SvgEmoji.setGraphic(resultIcon, "crown", 32);
 
         resultTitle = new Label(I18n.get("game.tictactoe.victory"));
         resultTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: 900; -fx-text-fill: #ffffff;");
@@ -192,7 +193,9 @@ public class TicTacToeFxStage extends VBox {
             statusLabel.setText(String.format("Current Turn: %s (%s)", name, symbol));
             statusLabel.setStyle("-fx-font-size: 12px; -fx-font-weight: 900; " + colorStyle + " -fx-background-color: #121624; -fx-padding: 6px 18px; -fx-background-radius: 14px; -fx-border-color: #29334d; -fx-border-radius: 14px;");
         } else {
-            statusLabel.setText(I18n.get("game.tictactoe.match_status") + " " + ("draw".equalsIgnoreCase(winner) ? "🤝 " + I18n.get("game.tictactoe.tie_draw") : "👑 " + I18n.get("game.tictactoe.victory")));
+            boolean isDraw = "draw".equalsIgnoreCase(winner);
+            statusLabel.setText(I18n.get("game.tictactoe.match_status") + " " + (isDraw ? I18n.get("game.tictactoe.tie_draw") : I18n.get("game.tictactoe.victory")));
+            SvgEmoji.setGraphic(statusLabel, isDraw ? "handshake" : "crown", 14);
             statusLabel.setStyle("-fx-font-size: 12px; -fx-font-weight: 900; -fx-text-fill: #fcd34d; -fx-background-color: #121624; -fx-padding: 6px 18px; -fx-background-radius: 14px; -fx-border-color: #29334d; -fx-border-radius: 14px;");
         }
     }
@@ -283,7 +286,8 @@ public class TicTacToeFxStage extends VBox {
         Competitor redP = (profiles.size() > 1) ? profiles.get(1) : new Competitor("p2", "Red Team (P2)", null);
         String name = isBlue ? blueP.getName() : redP.getName();
 
-        resultIcon.setText("👑");
+        resultIcon.setText("");
+        SvgEmoji.setGraphic(resultIcon, "crown", 32);
         resultTitle.setText(String.format("VICTORY FOR %s TEAM!", winningTeam.toUpperCase()));
         resultTitle.setStyle(isBlue ? "-fx-font-size: 16px; -fx-font-weight: 900; -fx-text-fill: #38bdf8;" : "-fx-font-size: 16px; -fx-font-weight: 900; -fx-text-fill: #f43f5e;");
         resultMsg.setText(String.format("%s connected 3 symbols in a row!", name));
@@ -297,7 +301,8 @@ public class TicTacToeFxStage extends VBox {
     }
 
     private void showDrawBanner() {
-        resultIcon.setText("🤝");
+        resultIcon.setText("");
+        SvgEmoji.setGraphic(resultIcon, "handshake", 32);
         resultTitle.setText(I18n.get("game.tictactoe.tie_draw"));
         resultTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: 900; -fx-text-fill: #e2e8f0;");
         resultMsg.setText(I18n.get("game.tictactoe.tie_desc"));

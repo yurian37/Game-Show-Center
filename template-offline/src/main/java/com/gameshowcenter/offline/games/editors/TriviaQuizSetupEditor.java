@@ -23,6 +23,7 @@ import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.gameshowcenter.offline.util.SvgEmoji;
 
 public class TriviaQuizSetupEditor implements IGameSetupEditor {
 
@@ -50,6 +51,7 @@ public class TriviaQuizSetupEditor implements IGameSetupEditor {
 
         // Battle Royale Toggle Row
         battleRoyaleCheckBox = new CheckBox(I18n.get("game.editor.battleroyale.check"));
+        SvgEmoji.setGraphic(battleRoyaleCheckBox, "swords", 16);
         battleRoyaleCheckBox.setSelected(curBattleRoyale);
         battleRoyaleCheckBox.setStyle("-fx-text-fill: #fbbf24; -fx-font-weight: 900; -fx-font-size: 12px; -fx-cursor: hand;");
 
@@ -143,7 +145,8 @@ public class TriviaQuizSetupEditor implements IGameSetupEditor {
         Label qL = new Label(I18n.get("game.common.question") + ":");
         qL.setStyle("-fx-font-weight: bold; -fx-text-fill: #818cf8;");
 
-        Button delBtn = new Button("✕");
+        Button delBtn = new Button();
+        SvgEmoji.setGraphic(delBtn, "close", 8);
         delBtn.getStyleClass().add("btn-accent-rose");
         delBtn.setOnAction(e -> {
             questionItems.remove(q);

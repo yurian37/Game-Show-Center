@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import SvgEmoji from './SvgEmoji';
 import flipMp3 from '../assets/roulette/flip.mp3';
 import winMp3 from '../assets/roulette/win.mp3';
 import soundManager from '../services/soundManager';
@@ -169,15 +170,15 @@ export default function ArenaRouletteModal({ isOpen, onClose, profiles = [] }) {
         <button
           onClick={onClose}
           disabled={isSpinning}
-          className="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-700 px-3 py-1.5 rounded-xl text-xs font-black tracking-wider transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+          className="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-700 px-3 py-1.5 rounded-xl text-xs font-black tracking-wider transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer flex items-center gap-1.5"
         >
-          ✖ Close
+          <SvgEmoji name="close" /> Close
         </button>
 
         {/* MODAL HEADER */}
         <div className="text-center mb-4">
           <div className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 px-3 py-1 rounded-full text-amber-400 text-xs font-black uppercase tracking-widest mb-2">
-            <span>🎰</span>
+            <SvgEmoji name="slot-machine" />
             <span>Arena Roulette</span>
           </div>
           <h3 className="text-xl md:text-2xl font-black text-white">
@@ -230,7 +231,7 @@ export default function ArenaRouletteModal({ isOpen, onClose, profiles = [] }) {
                   />
                   <span className="truncate max-w-[110px]">{p.name}</span>
                   <span
-                    className={`text-[10px] px-1 rounded font-mono ${
+                    className={`text-[10px] px-1 rounded font-mono inline-flex items-center ${
                       isExcluded
                         ? 'text-emerald-400 bg-emerald-500/20'
                         : canRemove
@@ -238,7 +239,7 @@ export default function ArenaRouletteModal({ isOpen, onClose, profiles = [] }) {
                         : 'text-slate-500'
                     }`}
                   >
-                    {isExcluded ? '➕' : canRemove ? '✕' : '🔒'}
+                    {isExcluded ? <SvgEmoji name="plus" /> : canRemove ? <SvgEmoji name="close" /> : <SvgEmoji name="lock" />}
                   </span>
                 </button>
               );
@@ -315,7 +316,7 @@ export default function ArenaRouletteModal({ isOpen, onClose, profiles = [] }) {
               textAnchor="middle"
               dominantBaseline="central"
             >
-              ★
+              <SvgEmoji name="star" />
             </text>
           </svg>
         </div>
@@ -324,8 +325,8 @@ export default function ArenaRouletteModal({ isOpen, onClose, profiles = [] }) {
         <div className="w-full mt-3 flex flex-col items-center">
           {winner ? (
             <div className="w-full bg-gradient-to-r from-amber-500/20 via-yellow-500/20 to-amber-500/20 border border-amber-400/40 rounded-2xl p-3 text-center animate-bounce mb-3">
-              <span className="text-[10px] font-black uppercase tracking-widest text-amber-300">
-                🎉 Contestant Selected!
+              <span className="text-[10px] font-black uppercase tracking-widest text-amber-300 inline-flex items-center gap-1.5">
+                <SvgEmoji name="party" /> Contestant Selected!
               </span>
               <h4 className="text-xl md:text-2xl font-black text-white mt-0.5">
                 {winner.name}
@@ -341,9 +342,21 @@ export default function ArenaRouletteModal({ isOpen, onClose, profiles = [] }) {
             <button
               onClick={spinRoulette}
               disabled={isSpinning || !sliceData || sliceData.length < 2}
-              className="bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-slate-950 font-black text-sm uppercase tracking-wider px-8 py-3 rounded-2xl shadow-lg shadow-amber-500/25 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              className="bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-slate-950 font-black text-sm uppercase tracking-wider px-8 py-3 rounded-2xl shadow-lg shadow-amber-500/25 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2"
             >
-              {isSpinning ? '🌀 Spinning...' : winner ? '🔄 Spin Again' : '🎯 Spin Wheel'}
+              {isSpinning ? (
+                <>
+                  <SvgEmoji name="vortex" /> Spinning...
+                </>
+              ) : winner ? (
+                <>
+                  <SvgEmoji name="refresh" /> Spin Again
+                </>
+              ) : (
+                <>
+                  <SvgEmoji name="target" /> Spin Wheel
+                </>
+              )}
             </button>
             <button
               onClick={onClose}

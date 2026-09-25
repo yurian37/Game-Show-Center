@@ -26,15 +26,15 @@ public class I18n {
 
         @Override
         public String toString() {
-            return flag + " " + name;
+            return name;
         }
     }
 
     public static final List<LanguageOption> SUPPORTED_LANGUAGES = List.of(
-        new LanguageOption("en", "English", "🌐"),
-        new LanguageOption("es", "Español", "🌐"),
-        new LanguageOption("fr", "Français", "🌐"),
-        new LanguageOption("pt", "Português", "🌐")
+        new LanguageOption("en", "English", "flag-us"),
+        new LanguageOption("es", "Español", "flag-es"),
+        new LanguageOption("fr", "Français", "flag-fr"),
+        new LanguageOption("pt", "Português", "flag-br")
     );
 
     private static String currentLanguage = "en";
@@ -160,23 +160,25 @@ public class I18n {
             val = key;
         }
 
+        val = val.replace("\uFE0F", "").replace("\uFE0E", "");
+
         if (args != null && args.length > 0) {
             if (val.contains("{0}") || val.contains("{1}")) {
                 for (int i = 0; i < args.length; i++) {
                     val = val.replace("{" + i + "}", String.valueOf(args[i]));
                 }
-                return val;
+                return val.trim();
             }
             try {
-                return String.format(val, args);
+                return String.format(val, args).trim();
             } catch (Exception e) {
                 try {
-                    return java.text.MessageFormat.format(val, args);
+                    return java.text.MessageFormat.format(val, args).trim();
                 } catch (Exception ignored) {
-                    return val;
+                    return val.trim();
                 }
             }
         }
-        return val;
+        return val.trim();
     }
 }

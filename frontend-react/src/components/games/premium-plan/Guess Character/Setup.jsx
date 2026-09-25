@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import SvgEmoji from '../../../SvgEmoji';
 
 export default function GuessCharacterSetup({ value, onChange }) {
   const [newUrl, setNewUrl] = useState('');
@@ -84,7 +85,7 @@ export default function GuessCharacterSetup({ value, onChange }) {
                 : 'bg-slate-800/50 text-slate-400 border-slate-700'
             }`}
           >
-            <span>{enableTimer ? '⏱️ Timer Enabled' : '⏸️ Timer Disabled'}</span>
+            <span className="inline-flex items-center gap-1.5">{enableTimer ? <><SvgEmoji name="stopwatch" /> Timer Enabled</> : <><SvgEmoji name="pause" /> Timer Disabled</>}</span>
           </button>
         </div>
 
@@ -112,7 +113,7 @@ export default function GuessCharacterSetup({ value, onChange }) {
             Character Image Pool ({mediaPool.length} images)
           </label>
           <span className="text-[10px] font-bold text-slate-400 bg-[#121624] px-2.5 py-1 rounded-md border border-slate-800">
-            📸 Visual Mystery Pool
+            <SvgEmoji name="camera-flash" className="mr-1.5 inline" /> Visual Mystery Pool
           </span>
         </div>
 
@@ -172,7 +173,7 @@ export default function GuessCharacterSetup({ value, onChange }) {
                 className="absolute top-1 right-1 bg-rose-600/90 hover:bg-rose-600 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold transition-all opacity-0 group-hover:opacity-100 shadow"
                 title="Remove Character"
               >
-                ✕
+                <SvgEmoji name="close" />
               </button>
             </div>
           ))}

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import SvgEmoji from '../../../SvgEmoji';
 
 const DEFAULT_POOL = [
   "https://images.unsplash.com/photo-1546182990-dffeafbe841d?auto=format&fit=crop&w=1000&q=80",
@@ -16,10 +17,10 @@ const DEFAULT_POOL = [
 ];
 
 const FILTER_INFO = {
-  displacement: { name: 'Displacement', icon: '〰️' },
-  swirl: { name: 'Swirl', icon: '🌪️' },
-  pixelate: { name: 'Pixelate', icon: '🧱' },
-  blur: { name: 'Blur', icon: '🌫️' }
+  displacement: { name: 'Displacement', icon: 'wave' },
+  swirl: { name: 'Swirl', icon: 'vortex' },
+  pixelate: { name: 'Pixelate', icon: 'bricks' },
+  blur: { name: 'Blur', icon: 'fog' }
 };
 
 const DIFFICULTY_LABELS = [
@@ -261,7 +262,7 @@ export default function SnapSolvePlay({ profiles = [], setupData = {} }) {
     targetCtx.drawImage(image, offsetX, offsetY, renderW, renderH);
   };
 
-  const currentFilterObj = FILTER_INFO[currentFilter] || { name: 'Distortion', icon: '⚡' };
+  const currentFilterObj = FILTER_INFO[currentFilter] || { name: 'Distortion', icon: 'lightning' };
   const currentDiffObj = DIFFICULTY_LABELS[difficulty] || DIFFICULTY_LABELS[0];
 
   return (
@@ -270,7 +271,7 @@ export default function SnapSolvePlay({ profiles = [], setupData = {} }) {
       {/* HEADER STATUS / BADGES */}
       <div className="mb-4 flex flex-wrap items-center justify-center gap-2">
         <span className="text-xs font-black text-amber-400 uppercase tracking-widest bg-amber-500/10 px-3.5 py-1 rounded-full border border-amber-500/20 shadow-sm flex items-center gap-1.5">
-          <span>⚡ Snap Solve</span>
+          <span className="inline-flex items-center gap-1.5"><SvgEmoji name="lightning" /> Snap Solve</span>
           <span>•</span>
           <span>Round {Math.min(roundNumber, totalMatchRounds)} of {totalMatchRounds}</span>
         </span>
@@ -285,7 +286,7 @@ export default function SnapSolvePlay({ profiles = [], setupData = {} }) {
       {isMatchFinished ? (
         <div className="w-full max-w-[680px] h-[380px] bg-[#121624] border-2 border-amber-500/50 rounded-3xl p-8 flex flex-col items-center justify-center gap-4 shadow-2xl animate-fadeIn text-center">
           <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-4xl shadow-inner animate-bounce">
-            🏆
+            <SvgEmoji name="trophy" size={40} />
           </div>
           <h3 className="text-2xl font-black text-amber-300 uppercase tracking-wider">
             ALL SNAP SOLVE ROUNDS COMPLETED!
@@ -294,7 +295,7 @@ export default function SnapSolvePlay({ profiles = [], setupData = {} }) {
             All {totalMatchRounds} visual acuity clues have been presented ({numPlayers} contestant(s) × {roundsPerPlayer} round/player). Adjust final scores above or proceed to the next game!
           </p>
           <div className="flex items-center gap-2 text-[11px] font-bold text-slate-400 mt-2 bg-slate-900/80 px-4 py-2 rounded-xl border border-slate-800">
-            <span>🏁 Ready for Winner Announcement</span>
+            <span className="inline-flex items-center gap-1.5"><SvgEmoji name="flag" /> Ready for Winner Announcement</span>
           </div>
         </div>
       ) : isWaiting ? (
@@ -305,7 +306,7 @@ export default function SnapSolvePlay({ profiles = [], setupData = {} }) {
           <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/10 via-transparent to-purple-500/10 pointer-events-none" />
           
           <div className="w-20 h-20 rounded-3xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-4xl shadow-inner group-hover:scale-105 transition-transform duration-300">
-            ⚡
+            <SvgEmoji name="lightning" size={40} />
           </div>
 
           <div className="space-y-1.5 z-10">
@@ -324,7 +325,7 @@ export default function SnapSolvePlay({ profiles = [], setupData = {} }) {
             onClick={handleStartTurn}
             className="z-10 px-8 py-3.5 rounded-2xl font-black text-xs uppercase tracking-wider bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 hover:to-yellow-200 text-slate-950 shadow-xl shadow-amber-500/20 active:scale-95 transition-all cursor-pointer flex items-center gap-2 font-mono"
           >
-            <span>🚀 Start Turn</span>
+            <span className="inline-flex items-center gap-1.5"><SvgEmoji name="rocket" /> Start Turn</span>
           </button>
         </div>
       ) : (
@@ -369,7 +370,7 @@ export default function SnapSolvePlay({ profiles = [], setupData = {} }) {
             {/* ROUND BADGE (BOTTOM CENTER) */}
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 bg-slate-950/85 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/20 shadow-lg">
               <span className="text-xs font-black text-white tracking-wider">
-                ⚡ Turn {roundNumber} / {totalMatchRounds}
+                <span className="inline-flex items-center gap-1"><SvgEmoji name="lightning" /> Turn {roundNumber} / {totalMatchRounds}</span>
               </span>
             </div>
           </div>
@@ -387,10 +388,10 @@ export default function SnapSolvePlay({ profiles = [], setupData = {} }) {
               }`}
             >
               <span>
-                {difficulty === 0 && "🔍 Continue Guessing... (Medium Difficulty)"}
-                {difficulty === 1 && "🔍 Continue Guessing... (Easy Difficulty)"}
-                {difficulty === 2 && "👁️ Continue Guessing... (View Original)"}
-                {difficulty >= 3 && "🖼️ Original Image Visible"}
+                {difficulty === 0 && <span className="inline-flex items-center gap-1.5"><SvgEmoji name="search" /> Continue Guessing... (Medium Difficulty)</span>}
+                {difficulty === 1 && <span className="inline-flex items-center gap-1.5"><SvgEmoji name="search" /> Continue Guessing... (Easy Difficulty)</span>}
+                {difficulty === 2 && <span className="inline-flex items-center gap-1.5"><SvgEmoji name="eye" /> Continue Guessing... (View Original)</span>}
+                {difficulty >= 3 && <span className="inline-flex items-center gap-1.5"><SvgEmoji name="image" /> Original Image Visible</span>}
               </span>
             </button>
 
@@ -399,7 +400,7 @@ export default function SnapSolvePlay({ profiles = [], setupData = {} }) {
               onClick={handleNextImage}
               className="py-3.5 px-6 rounded-2xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white border border-indigo-400/40 shadow-xl shadow-indigo-500/20 active:scale-95 transition-all cursor-pointer"
             >
-              <span>{roundNumber >= totalMatchRounds ? "🏁 Finish Match" : "Next Image ➔"}</span>
+              <span className="inline-flex items-center gap-1.5">{roundNumber >= totalMatchRounds ? <><SvgEmoji name="flag" /> Finish Match</> : <>Next Image <SvgEmoji name="arrow-right" /></>}</span>
             </button>
           </div>
 

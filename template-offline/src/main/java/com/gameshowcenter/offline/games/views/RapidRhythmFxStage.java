@@ -20,6 +20,7 @@ import javafx.util.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import com.gameshowcenter.offline.util.SvgEmoji;
 
 public class RapidRhythmFxStage extends VBox {
 
@@ -133,9 +134,12 @@ public class RapidRhythmFxStage extends VBox {
 
         String badgeTitle = String.format(I18n.get("game.rhythm.title_song"), 1, totalMatchRounds);
         if (isBattleRoyale) {
-            badgeTitle = "⚔️ BR • " + badgeTitle;
+            badgeTitle = "BR • " + badgeTitle;
         }
         roundBadgeLabel = new Label(badgeTitle);
+        if (isBattleRoyale) {
+            SvgEmoji.setGraphic(roundBadgeLabel, "swords", 12);
+        }
         roundBadgeLabel.setStyle(String.format(
                 "-fx-background-color: rgba(245, 158, 11, 0.15); -fx-text-fill: #f59e0b; -fx-font-weight: 900; -fx-font-size: 12px; -fx-padding: 6px 14px; -fx-background-radius: 20px; -fx-border-color: rgba(245, 158, 11, 0.3); -fx-border-radius: 20px;",
                 ThemeManager.getAccentHex()));
@@ -234,7 +238,8 @@ public class RapidRhythmFxStage extends VBox {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        segmentLabel = new Label("⏱️ 0s ➔ 30s");
+        segmentLabel = new Label("0s - 30s");
+        SvgEmoji.setGraphic(segmentLabel, "timer", 10);
         segmentLabel.setStyle("-fx-background-color: rgba(245, 158, 11, 0.15); -fx-text-fill: #f59e0b; -fx-font-weight: 900; -fx-font-size: 10px; -fx-padding: 3px 8px; -fx-background-radius: 6px;");
 
         topClueBar.getChildren().addAll(clueTag, spacer, segmentLabel);
@@ -246,7 +251,8 @@ public class RapidRhythmFxStage extends VBox {
         answerInnerBox.setPadding(new Insets(10));
         answerInnerBox.setStyle("-fx-background-color: #090c14; -fx-border-color: rgba(255, 255, 255, 0.1); -fx-border-radius: 12px; -fx-background-radius: 12px;");
 
-        answerTextLabel = new Label("🔒 ••••••••••••••••••••");
+        answerTextLabel = new Label("••••••••••••••••••••");
+        SvgEmoji.setGraphic(answerTextLabel, "lock", 16);
         answerTextLabel.setWrapText(true);
         answerTextLabel.setAlignment(Pos.CENTER);
         answerTextLabel.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
@@ -264,6 +270,7 @@ public class RapidRhythmFxStage extends VBox {
 
         // Reveal Toggle Button
         revealAnswerBtn = new Button(I18n.get("game.common.reveal_answer"));
+        SvgEmoji.setGraphic(revealAnswerBtn, "eye", 14);
         revealAnswerBtn.setStyle(String.format(
                 "-fx-background-color: %s; -fx-text-fill: %s; -fx-font-size: 12px; -fx-font-weight: 900; -fx-padding: 8px 24px; -fx-background-radius: 10px; -fx-cursor: hand;",
                 ThemeManager.getAccentHex(), ThemeManager.getTextOnAccentPrimaryHex()));
@@ -323,17 +330,19 @@ public class RapidRhythmFxStage extends VBox {
         controlsRow.setAlignment(Pos.CENTER);
 
         replayBtn = new Button(I18n.get("game.rhythm.btn_replay"));
+        SvgEmoji.setGraphic(replayBtn, "refresh", 14);
         replayBtn.setStyle("-fx-background-color: #1e293b; -fx-text-fill: #cbd5e1; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 8px 16px; -fx-background-radius: 10px; -fx-cursor: hand;");
         replayBtn.setOnAction(e -> handleReplay());
 
         playPauseBtn = new Button(I18n.get("game.rhythm.btn_play"));
+        SvgEmoji.setGraphic(playPauseBtn, "play", 14);
         playPauseBtn.setStyle("-fx-background-color: #10b981; -fx-text-fill: #ffffff; -fx-font-size: 13px; -fx-font-weight: 900; -fx-padding: 10px 28px; -fx-background-radius: 12px; -fx-cursor: hand;");
         playPauseBtn.setOnAction(e -> togglePlayPause());
 
         HBox volBox = new HBox(6);
         volBox.setAlignment(Pos.CENTER);
-        Label volIcon = new Label("🔊");
-        volIcon.setStyle("-fx-font-size: 12px;");
+        Label volIcon = new Label();
+        SvgEmoji.setGraphic(volIcon, "volume", 14);
         volumeSlider = new Slider(0, 1, volume);
         volumeSlider.setPrefWidth(90);
         volumeSlider.valueProperty().addListener((obs, oldV, newV) -> {
@@ -350,6 +359,7 @@ public class RapidRhythmFxStage extends VBox {
 
         // Next Song Button
         nextSongBtn = new Button(I18n.get("game.rhythm.btn_next_song"));
+        SvgEmoji.setGraphic(nextSongBtn, "arrow-right", 16);
         nextSongBtn.setPrefWidth(680);
         nextSongBtn.setStyle(String.format(
                 "-fx-background-color: %s; -fx-text-fill: %s; -fx-font-size: 14px; -fx-font-weight: 900; -fx-padding: 13px 28px; -fx-background-radius: 12px; -fx-cursor: hand;",
@@ -371,8 +381,8 @@ public class RapidRhythmFxStage extends VBox {
                 "-fx-background-color: %s; -fx-border-color: #f59e0b; -fx-border-width: 2px; -fx-border-radius: 24px; -fx-background-radius: 24px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 24, 0, 0, 8);",
                 ThemeManager.getCardHex()));
 
-        Label cup = new Label("🏆");
-        cup.setStyle("-fx-font-size: 54px;");
+        Label cup = new Label();
+        SvgEmoji.setGraphic(cup, "trophy", 54);
 
         Label finTitle = new Label(I18n.get("game.rhythm.completed"));
         finTitle.setStyle("-fx-font-size: 18px; -fx-font-weight: 900; -fx-text-fill: #fbbf24;");
@@ -480,10 +490,12 @@ public class RapidRhythmFxStage extends VBox {
     private void updatePlayPauseButton() {
         if (isPlaying) {
             playPauseBtn.setText(I18n.get("game.rhythm.btn_pause"));
+            SvgEmoji.setGraphic(playPauseBtn, "pause", 14);
             playPauseBtn.setStyle("-fx-background-color: #ef4444; -fx-text-fill: #ffffff; -fx-font-size: 13px; -fx-font-weight: 900; -fx-padding: 10px 28px; -fx-background-radius: 12px; -fx-cursor: hand;");
             if (equalizerAnimation != null) equalizerAnimation.play();
         } else {
             playPauseBtn.setText(I18n.get("game.rhythm.btn_play"));
+            SvgEmoji.setGraphic(playPauseBtn, "play", 14);
             playPauseBtn.setStyle("-fx-background-color: #10b981; -fx-text-fill: #ffffff; -fx-font-size: 13px; -fx-font-weight: 900; -fx-padding: 10px 28px; -fx-background-radius: 12px; -fx-cursor: hand;");
         }
     }
@@ -495,18 +507,22 @@ public class RapidRhythmFxStage extends VBox {
 
     private void updateAnswerCard() {
         if (isAnswerRevealed) {
-            answerTextLabel.setText("✨ " + (currentTrack != null ? currentTrack.answer : "No answer"));
+            answerTextLabel.setText((currentTrack != null ? currentTrack.answer : "No answer"));
+            SvgEmoji.setGraphic(answerTextLabel, "sparkles", 18);
             answerTextLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: 900; -fx-text-fill: #34d399;");
             answerStatusDesc.setText(I18n.get("game.common.answer_revealed"));
             answerStatusDesc.setStyle("-fx-font-size: 10px; -fx-text-fill: #10b981; -fx-font-weight: bold;");
             revealAnswerBtn.setText(I18n.get("game.common.hide_answer"));
+            SvgEmoji.setGraphic(revealAnswerBtn, "monkey-hide", 14);
             revealAnswerBtn.setStyle("-fx-background-color: rgba(16, 185, 129, 0.2); -fx-text-fill: #34d399; -fx-font-size: 12px; -fx-font-weight: 900; -fx-padding: 8px 24px; -fx-background-radius: 10px; -fx-cursor: hand; -fx-border-color: rgba(52, 211, 153, 0.3); -fx-border-radius: 10px;");
         } else {
-            answerTextLabel.setText("🔒 ••••••••••••••••••••");
+            answerTextLabel.setText("••••••••••••••••••••");
+            SvgEmoji.setGraphic(answerTextLabel, "lock", 16);
             answerTextLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: 900; -fx-text-fill: #94a3b8;");
             answerStatusDesc.setText(I18n.get("game.rhythm.answer_hidden_desc"));
             answerStatusDesc.setStyle("-fx-font-size: 10px; -fx-text-fill: #64748b; -fx-font-weight: bold;");
             revealAnswerBtn.setText(I18n.get("game.common.reveal_answer"));
+            SvgEmoji.setGraphic(revealAnswerBtn, "eye", 14);
             revealAnswerBtn.setStyle(String.format(
                     "-fx-background-color: %s; -fx-text-fill: %s; -fx-font-size: 12px; -fx-font-weight: 900; -fx-padding: 8px 24px; -fx-background-radius: 10px; -fx-cursor: hand;",
                     ThemeManager.getAccentHex(), ThemeManager.getTextOnAccentPrimaryHex()));
@@ -550,7 +566,12 @@ public class RapidRhythmFxStage extends VBox {
 
     private void updateUI() {
         String badge = String.format(I18n.get("game.rhythm.title_song"), Math.min(roundNumber, totalMatchRounds), totalMatchRounds);
-        if (isBattleRoyale) badge = "⚔️ BR • " + badge;
+        if (isBattleRoyale) {
+            badge = "BR • " + badge;
+            SvgEmoji.setGraphic(roundBadgeLabel, "swords", 12);
+        } else {
+            roundBadgeLabel.setGraphic(null);
+        }
         roundBadgeLabel.setText(badge);
         poolInfoLabel.setText(String.format(I18n.get("game.rhythm.unseen_pool"), workingPool.size()));
 
@@ -564,12 +585,19 @@ public class RapidRhythmFxStage extends VBox {
         dynamicContainer.getChildren().add(activePlayBox);
 
         if (currentTrack != null) {
-            segmentLabel.setText(String.format("⏱️ %ds ➔ %ds (%ds Clip)", currentTrack.startTime, currentTrack.endTime, currentTrack.spanTime));
+            segmentLabel.setText(String.format("%ds - %ds (%ds Clip)", currentTrack.startTime, currentTrack.endTime, currentTrack.spanTime));
+            SvgEmoji.setGraphic(segmentLabel, "timer", 12);
             timeElapsedLabel.setText(String.format("0s / %ds", currentTrack.spanTime));
             progressBar.setProgress(0);
         }
 
         updateAnswerCard();
-        nextSongBtn.setText(roundNumber >= totalMatchRounds ? "🏁 Finish Match" : "Next Song ➔");
+        if (roundNumber >= totalMatchRounds) {
+            nextSongBtn.setText(I18n.get("game.common.finish_match"));
+            SvgEmoji.setGraphic(nextSongBtn, "trophy", 16);
+        } else {
+            nextSongBtn.setText(I18n.get("game.rhythm.btn_next_song"));
+            SvgEmoji.setGraphic(nextSongBtn, "arrow-right", 16);
+        }
     }
 }

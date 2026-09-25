@@ -20,6 +20,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.*;
 
 import java.util.*;
+import com.gameshowcenter.offline.util.SvgEmoji;
 
 public class SnapSolveFxStage extends VBox {
 
@@ -112,9 +113,12 @@ public class SnapSolveFxStage extends VBox {
 
         String badgeTitle = String.format(I18n.get("game.snapsolve.title_round"), 1, totalMatchRounds);
         if (isBattleRoyale) {
-            badgeTitle = "⚔️ BR • " + badgeTitle;
+            badgeTitle = "BR • " + badgeTitle;
         }
         roundBadgeLabel = new Label(badgeTitle);
+        if (isBattleRoyale) {
+            SvgEmoji.setGraphic(roundBadgeLabel, "swords", 12);
+        }
         roundBadgeLabel.setStyle(String.format(
                 "-fx-background-color: rgba(245, 158, 11, 0.15); -fx-text-fill: #f59e0b; -fx-font-weight: 900; -fx-font-size: 12px; -fx-padding: 6px 14px; -fx-background-radius: 20px; -fx-border-color: rgba(245, 158, 11, 0.3); -fx-border-radius: 20px;",
                 ThemeManager.getAccentHex()));
@@ -188,8 +192,8 @@ public class SnapSolveFxStage extends VBox {
                 "-fx-background-color: %s; -fx-border-color: rgba(99, 102, 241, 0.4); -fx-border-width: 2px; -fx-border-radius: 24px; -fx-background-radius: 24px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.7), 20, 0, 0, 8);",
                 ThemeManager.getCardHex()));
 
-        Label iconLbl = new Label("⚡");
-        iconLbl.setStyle("-fx-font-size: 54px;");
+        Label iconLbl = new Label();
+        SvgEmoji.setGraphic(iconLbl, "lightning", 54);
 
         Label roundTitle = new Label(String.format(I18n.get("game.common.turn_n_of_m"), 1, totalMatchRounds));
         roundTitle.setStyle(String.format("-fx-font-size: 11px; -fx-font-weight: 900; -fx-text-fill: %s;", ThemeManager.getAccentHex()));
@@ -221,7 +225,12 @@ public class SnapSolveFxStage extends VBox {
     private void showWaitingBox() {
         isWaiting = true;
         String badge = String.format(I18n.get("game.snapsolve.title_round"), roundNumber, totalMatchRounds);
-        if (isBattleRoyale) badge = "⚔️ BR • " + badge;
+        if (isBattleRoyale) {
+            badge = "BR • " + badge;
+            SvgEmoji.setGraphic(roundBadgeLabel, "swords", 12);
+        } else {
+            roundBadgeLabel.setGraphic(null);
+        }
         roundBadgeLabel.setText(badge);
         poolInfoLabel.setText(String.format(I18n.get("game.snapsolve.remaining_pool"), workingPool.size()));
 
@@ -280,12 +289,14 @@ public class SnapSolveFxStage extends VBox {
         actionsRow.setAlignment(Pos.CENTER);
 
         continueGuessingBtn = new Button(I18n.get("game.snapsolve.guess_med"));
+        SvgEmoji.setGraphic(continueGuessingBtn, "eye", 16);
         continueGuessingBtn.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(continueGuessingBtn, Priority.ALWAYS);
         continueGuessingBtn.setStyle("-fx-background-color: #f59e0b; -fx-text-fill: #0f172a; -fx-font-weight: 900; -fx-font-size: 12px; -fx-padding: 12px 18px; -fx-background-radius: 14px; -fx-cursor: hand;");
         continueGuessingBtn.setOnAction(e -> handleContinueGuessing());
 
         nextImageBtn = new Button(I18n.get("game.common.next_image"));
+        SvgEmoji.setGraphic(nextImageBtn, "arrow-right", 16);
         nextImageBtn.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(nextImageBtn, Priority.ALWAYS);
         nextImageBtn.setStyle(String.format("-fx-background-color: %s; -fx-text-fill: %s; -fx-font-weight: 900; -fx-font-size: 12px; -fx-padding: 12px 18px; -fx-background-radius: 14px; -fx-cursor: hand;", ThemeManager.getAccentHex(), ThemeManager.getTextOnAccentPrimaryHex()));
@@ -346,13 +357,14 @@ public class SnapSolveFxStage extends VBox {
 
     private void updateFilterLabels() {
         String fName = switch (currentFilter) {
-            case "displacement" -> "〰️ Displacement";
-            case "swirl" -> "🌪️ Swirl";
-            case "pixelate" -> "▦ Pixelate";
-            case "blur" -> "🌫️ Blur";
-            default -> "⚡ Distortion";
+            case "displacement" -> "Displacement";
+            case "swirl" -> "Swirl";
+            case "pixelate" -> "Pixelate";
+            case "blur" -> "Blur";
+            default -> "Distortion";
         };
         filterNameBadge.setText(String.format(I18n.get("game.snapsolve.filter_badge"), fName));
+        SvgEmoji.setGraphic(filterNameBadge, "lightning", 12);
 
         switch (difficulty) {
             case 0 -> {
@@ -383,8 +395,10 @@ public class SnapSolveFxStage extends VBox {
 
         if (roundNumber >= totalMatchRounds) {
             nextImageBtn.setText(I18n.get("game.common.finish_match"));
+            SvgEmoji.setGraphic(nextImageBtn, "trophy", 16);
         } else {
             nextImageBtn.setText(I18n.get("game.common.next_image"));
+            SvgEmoji.setGraphic(nextImageBtn, "arrow-right", 16);
         }
     }
 
@@ -533,8 +547,8 @@ public class SnapSolveFxStage extends VBox {
                 "-fx-background-color: %s; -fx-border-color: rgba(245, 158, 11, 0.5); -fx-border-width: 2px; -fx-border-radius: 24px; -fx-background-radius: 24px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 24, 0, 0, 8);",
                 ThemeManager.getCardHex()));
 
-        Label trophyLbl = new Label("🏆");
-        trophyLbl.setStyle("-fx-font-size: 54px;");
+        Label trophyLbl = new Label();
+        SvgEmoji.setGraphic(trophyLbl, "trophy", 54);
 
         Label title = new Label(I18n.get("game.snapsolve.completed"));
         title.setStyle("-fx-font-size: 20px; -fx-font-weight: 900; -fx-text-fill: #f59e0b;");

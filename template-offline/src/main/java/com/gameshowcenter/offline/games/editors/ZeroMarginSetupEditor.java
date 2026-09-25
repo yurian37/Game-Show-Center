@@ -21,6 +21,7 @@ import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.gameshowcenter.offline.util.SvgEmoji;
 
 public class ZeroMarginSetupEditor implements IGameSetupEditor {
 
@@ -38,6 +39,7 @@ public class ZeroMarginSetupEditor implements IGameSetupEditor {
         // Battle Royale Toggle
         boolean curBR = currentSetup != null && currentSetup.has("battleRoyale") && currentSetup.get("battleRoyale").asBoolean();
         battleRoyaleCheckBox = new CheckBox(I18n.get("game.editor.battleroyale.check"));
+        SvgEmoji.setGraphic(battleRoyaleCheckBox, "swords", 16);
         battleRoyaleCheckBox.setSelected(curBR);
         battleRoyaleCheckBox.setStyle(String.format("-fx-font-weight: 900; -fx-text-fill: #f59e0b; -fx-font-size: 13px; -fx-cursor: hand;"));
 
@@ -136,7 +138,8 @@ public class ZeroMarginSetupEditor implements IGameSetupEditor {
 
         targetTimeFields.add(tf);
 
-        Button delBtn = new Button("✕");
+        Button delBtn = new Button();
+        SvgEmoji.setGraphic(delBtn, "close", 8);
         delBtn.getStyleClass().add("btn-accent-rose");
         delBtn.setOnAction(e -> {
             if (targetTimeFields.size() <= 1) return;

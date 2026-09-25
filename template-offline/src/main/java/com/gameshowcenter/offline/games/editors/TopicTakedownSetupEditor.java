@@ -9,6 +9,7 @@ import com.gameshowcenter.offline.i18n.I18n;
 import com.gameshowcenter.offline.model.Competitor;
 import com.gameshowcenter.offline.theme.ThemeManager;
 import com.gameshowcenter.offline.util.FileChooserHelper;
+import com.gameshowcenter.offline.util.SvgEmoji;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -65,6 +66,7 @@ public class TopicTakedownSetupEditor implements IGameSetupEditor {
         // Battle Royale Toggle
         boolean curBR = currentSetup != null && currentSetup.has("battleRoyale") && currentSetup.get("battleRoyale").asBoolean();
         battleRoyaleCheckBox = new CheckBox(I18n.get("game.editor.battleroyale.check"));
+        SvgEmoji.setGraphic(battleRoyaleCheckBox, "swords", 16);
         battleRoyaleCheckBox.setSelected(curBR);
         battleRoyaleCheckBox.setStyle(String.format("-fx-font-weight: 900; -fx-text-fill: #f59e0b; -fx-font-size: 13px; -fx-cursor: hand;"));
 
@@ -237,7 +239,8 @@ public class TopicTakedownSetupEditor implements IGameSetupEditor {
                 mediaRow.setAlignment(Pos.CENTER_LEFT);
 
                 // Image Field & Browse Button
-                Label imgIcon = new Label("🖼");
+                Label imgIcon = new Label();
+                SvgEmoji.setGraphic(imgIcon, "image", 14);
                 qData.imageField.setPromptText(I18n.get("game.editor.topic.image_placeholder"));
                 HBox.setHgrow(qData.imageField, Priority.ALWAYS);
 
@@ -253,7 +256,8 @@ public class TopicTakedownSetupEditor implements IGameSetupEditor {
                 });
 
                 // Audio Field & Browse Button
-                Label audIcon = new Label("🎵");
+                Label audIcon = new Label();
+                SvgEmoji.setGraphic(audIcon, "musical-notes", 14);
                 qData.audioField.setPromptText(I18n.get("game.editor.topic.audio_placeholder"));
                 HBox.setHgrow(qData.audioField, Priority.ALWAYS);
 

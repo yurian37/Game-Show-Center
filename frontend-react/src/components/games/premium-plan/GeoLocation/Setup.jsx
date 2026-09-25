@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import SvgEmoji from '../../../SvgEmoji';
 
 export default function GeoLocationSetup({ value, onChange }) {
   const [newLocName, setNewLocName] = useState('');
@@ -163,11 +164,11 @@ export default function GeoLocationSetup({ value, onChange }) {
                     />
                     {isMinMet ? (
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                        ✓ {currentImgCount} / {minImagesRequired} min
+                        <span className="inline-flex items-center gap-1"><SvgEmoji name="check" /> {currentImgCount} / {minImagesRequired} min</span>
                       </span>
                     ) : (
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30">
-                        ⚠️ {currentImgCount} / {minImagesRequired} min (Need {minImagesRequired - currentImgCount} more)
+                        <span className="inline-flex items-center gap-1"><SvgEmoji name="warning" /> {currentImgCount} / {minImagesRequired} min</span> (Need {minImagesRequired - currentImgCount} more)
                       </span>
                     )}
                   </div>
@@ -226,7 +227,7 @@ export default function GeoLocationSetup({ value, onChange }) {
                           className="absolute top-1 right-1 bg-rose-600/90 hover:bg-rose-600 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold transition-all opacity-0 group-hover:opacity-100 shadow"
                           title="Remove Image"
                         >
-                          ✕
+                          <SvgEmoji name="close" />
                         </button>
                       </div>
                     ))}
@@ -274,4 +275,3 @@ export function serialize(value) {
     }))
   };
 }
-

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import SvgEmoji from '../../../SvgEmoji';
 
 const DEFAULT_QUESTIONS = [
   { question: "What is the capital of France?", answer: "Paris" },
@@ -92,7 +93,7 @@ export default function TriviaQuizPlay({ profiles = [], setupData = {} }) {
       {/* QUESTION COUNTER & POOL BADGE */}
       <div className="mb-6 flex flex-col items-center gap-2">
         <span className="text-xs font-black text-indigo-400 uppercase tracking-widest bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20">
-          ❓ Trivia Quiz • Question {Math.min(questionNumber, maxQuestions)} of {maxQuestions} ({roundsPerPlayer} round/player)
+          <SvgEmoji name="question" className="mr-1.5 inline" /> Trivia Quiz • Question {Math.min(questionNumber, maxQuestions)} of {maxQuestions} ({roundsPerPlayer} round/player)
         </span>
         <span className="text-[11px] font-bold text-slate-400">
           Unseen Questions in Pool: {workingPool.length} of {initialPool.length}
@@ -102,7 +103,7 @@ export default function TriviaQuizPlay({ profiles = [], setupData = {} }) {
       {/* ROUND COMPLETED BANNER OR QUESTION CARD */}
       {isRoundCompleted ? (
         <div className="w-full bg-[#121624] border-2 border-amber-500/50 p-8 rounded-3xl text-center shadow-2xl animate-fadeIn my-4 flex flex-col items-center gap-4">
-          <div className="text-4xl">🏁</div>
+          <div className="text-4xl flex items-center justify-center"><SvgEmoji name="flag" size={40} /></div>
           <h3 className="text-xl font-black text-amber-300 uppercase tracking-wider">
             TRIVIA MATCH ROUND COMPLETED!
           </h3>
@@ -113,7 +114,7 @@ export default function TriviaQuizPlay({ profiles = [], setupData = {} }) {
             onClick={handleRestartRoundCycle}
             className="mt-2 px-8 py-3.5 rounded-2xl font-black text-xs uppercase tracking-wider bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white cursor-pointer shadow-xl active:scale-95 transition-all"
           >
-            🔄 Start Next Round
+            <SvgEmoji name="refresh" className="mr-1.5" /> Start Next Round
           </button>
         </div>
       ) : (
@@ -139,11 +140,11 @@ export default function TriviaQuizPlay({ profiles = [], setupData = {} }) {
 
               {showAnswer ? (
                 <div className="text-lg md:text-xl font-black text-emerald-300 animate-fadeIn bg-emerald-500/10 border border-emerald-500/30 py-3 px-4 rounded-xl">
-                  💡 {currentQuestion.answer}
+                  <SvgEmoji name="bulb" className="mr-1.5 inline" /> {currentQuestion.answer}
                 </div>
               ) : (
                 <div className="py-3 px-4 rounded-xl bg-slate-900 border border-slate-800 text-slate-500 text-sm font-bold flex items-center justify-center gap-2 select-none">
-                  <span>🔒 Answer Hidden</span>
+                  <span className="inline-flex items-center gap-1.5"><SvgEmoji name="lock" /> Answer Hidden</span>
                 </div>
               )}
             </div>
@@ -155,7 +156,7 @@ export default function TriviaQuizPlay({ profiles = [], setupData = {} }) {
                   onClick={() => setShowAnswer(true)}
                   className="flex-1 max-w-xs bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-slate-950 font-black text-xs uppercase tracking-wider py-3.5 px-6 rounded-xl shadow-lg transition-all active:scale-95 cursor-pointer"
                 >
-                  👁️ Show Answer
+                  <SvgEmoji name="eye" className="mr-1.5" /> Show Answer
                 </button>
               )}
 
@@ -163,7 +164,7 @@ export default function TriviaQuizPlay({ profiles = [], setupData = {} }) {
                 onClick={handleNextQuestion}
                 className="flex-1 max-w-xs bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-black text-xs uppercase tracking-wider py-3.5 px-6 rounded-xl shadow-lg transition-all active:scale-95 cursor-pointer"
               >
-                {questionNumber >= maxQuestions ? "Finish Round 🏁" : "Next Question ➔"}
+                {questionNumber >= maxQuestions ? <span className="inline-flex items-center gap-1.5">Finish Round <SvgEmoji name="flag" /></span> : <span className="inline-flex items-center gap-1.5">Next Question <SvgEmoji name="arrow-right" /></span>}
               </button>
             </div>
           </div>

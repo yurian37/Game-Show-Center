@@ -84,11 +84,11 @@ public class ThemeManager {
         // =========================================================================
         // 5 PALETAS ALOCADAS / CONTRAPUESTAS (Alto Contraste y Colores Opuestos)
         // =========================================================================
-        addPalette("16. Cyberpunk Neon 🔥", "#090014", "#2e0036", "#002b36", "#d946ef", "#00ffff", "#ff007f");
-        addPalette("17. Acid Lime & Purple ⚡", "#0f001c", "#240046", "#80ff00", "#cc00ff", "#ffffff", "#80ff00");
-        addPalette("18. Fire & Ice 🧊🔥", "#021024", "#052659", "#ff3366", "#00f0ff", "#ffffff", "#ff99aa");
-        addPalette("19. Electric Tangerine 🍊", "#030c1d", "#081d42", "#ff6600", "#00ccff", "#ffffff", "#ffaa66");
-        addPalette("20. Toxic Matrix 🧪", "#021206", "#063813", "#ff007f", "#00ff66", "#ffffff", "#ff80bf");
+        addPalette("16. Cyberpunk Neon", "#090014", "#2e0036", "#002b36", "#d946ef", "#00ffff", "#ff007f");
+        addPalette("17. Acid Lime & Purple", "#0f001c", "#240046", "#80ff00", "#cc00ff", "#ffffff", "#80ff00");
+        addPalette("18. Fire & Ice", "#021024", "#052659", "#ff3366", "#00f0ff", "#ffffff", "#ff99aa");
+        addPalette("19. Electric Tangerine", "#030c1d", "#081d42", "#ff6600", "#00ccff", "#ffffff", "#ffaa66");
+        addPalette("20. Toxic Matrix", "#021206", "#063813", "#ff007f", "#00ff66", "#ffffff", "#ff80bf");
 
         currentPalette = PALETTES.get("1. Midnight Indigo");
 
@@ -225,7 +225,7 @@ public class ThemeManager {
 
     public static boolean saveCustomPalette(String rawName, Color bgApp, Color bgMainBox, Color bgCard, Color accent) {
         if (rawName == null || rawName.trim().isEmpty()) return false;
-        String name = "✨ " + rawName.trim().replace("✨ ", "");
+        String name = rawName.trim().replace("✨ ", "");
 
         Color finalBgApp = bgApp != null ? bgApp : (customAppBgColor != null ? customAppBgColor : currentPalette.bgApp);
         Color finalMainBox = bgMainBox != null ? bgMainBox : (customMainBoxColor != null ? customMainBoxColor : currentPalette.bgMainBox);
@@ -390,6 +390,10 @@ public class ThemeManager {
             currentPalette.textPrimary = Color.web("#f8fafc");
             currentPalette.textSecondary = Color.web("#94a3b8");
         }
+
+        try {
+            com.gameshowcenter.offline.util.SvgEmoji.updateContrastColors();
+        } catch (Throwable ignored) {}
     }
 
     // 1. FONDO (Outer Window Background)
@@ -618,6 +622,10 @@ public class ThemeManager {
 
     private static void scaleNode(Node node, double scale) {
         if (node == null) return;
+
+        try {
+            com.gameshowcenter.offline.util.SvgEmoji.applyScale(node, scale);
+        } catch (Throwable ignored) {}
 
         if (node instanceof Labeled labeled) {
             labeled.setTextOverrun(javafx.scene.control.OverrunStyle.CLIP);

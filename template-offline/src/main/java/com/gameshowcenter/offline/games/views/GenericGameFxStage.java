@@ -8,6 +8,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import com.gameshowcenter.offline.util.SvgEmoji;
 
 import java.util.List;
 
@@ -19,8 +20,8 @@ public class GenericGameFxStage extends VBox {
         this.setPadding(new Insets(24));
         this.setStyle(String.format("-fx-background-color: %s; -fx-background-radius: 16px; -fx-border-color: rgba(255, 255, 255, 0.1); -fx-border-radius: 16px; -fx-padding: 30px;", ThemeManager.getCardHex()));
 
-        Label icon = new Label("🎯");
-        icon.setStyle("-fx-font-size: 48px;");
+        Label icon = new Label();
+        SvgEmoji.setGraphic(icon, "target", 48);
 
         Label title = new Label(descriptor != null ? descriptor.getName() : "Custom Minigame");
         title.setStyle(String.format("-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: %s;", ThemeManager.toHex(ThemeManager.getCurrentPalette().textPrimary)));

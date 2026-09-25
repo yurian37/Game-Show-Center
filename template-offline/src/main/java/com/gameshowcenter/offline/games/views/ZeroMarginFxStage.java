@@ -21,6 +21,7 @@ import javafx.scene.layout.*;
 import java.io.File;
 import java.util.*;
 import java.util.function.Consumer;
+import com.gameshowcenter.offline.util.SvgEmoji;
 
 public class ZeroMarginFxStage extends VBox {
 
@@ -134,7 +135,8 @@ public class ZeroMarginFxStage extends VBox {
         turnBadgeLabel = new Label();
         turnBadgeLabel.setStyle(String.format("-fx-font-size: 11px; -fx-font-weight: 900; -fx-text-fill: #ffffff; -fx-background-color: %s; -fx-padding: 4px 14px; -fx-background-radius: 12px;", ThemeManager.getAccentHex()));
 
-        hiddenCheckBox = new CheckBox("🙈 Hidden");
+        hiddenCheckBox = new CheckBox("Hidden");
+        SvgEmoji.setGraphic(hiddenCheckBox, "eye-off", 14);
         hiddenCheckBox.setStyle(String.format("-fx-font-size: 11px; -fx-font-weight: 900; -fx-text-fill: %s; -fx-cursor: hand;", ThemeManager.toHex(ThemeManager.getCurrentPalette().textSecondary)));
 
         HBox turnRow = new HBox(12, turnBadgeLabel, hiddenCheckBox);
@@ -152,7 +154,8 @@ public class ZeroMarginFxStage extends VBox {
         Label tHeaderLabel = new Label(I18n.get("game.zeromargin.target_time"));
         tHeaderLabel.setStyle(String.format("-fx-font-size: 10px; -fx-font-weight: 900; -fx-text-fill: %s; -fx-letter-spacing: 1px;", ThemeManager.getAccentHex()));
 
-        targetTimeLabel = new Label("🎯 5.00s");
+        targetTimeLabel = new Label("5.00s");
+        SvgEmoji.setGraphic(targetTimeLabel, "target", 24);
         targetTimeLabel.setStyle(String.format("-fx-font-size: 26px; -fx-font-weight: 900; -fx-text-fill: %s; -fx-background-color: %s; -fx-padding: 6px 20px; -fx-background-radius: 16px; -fx-border-color: rgba(255, 255, 255, 0.1); -fx-border-radius: 16px;", ThemeManager.toHex(ThemeManager.getCurrentPalette().textPrimary), ThemeManager.getButtonHex()));
 
         VBox targetBox = new VBox(4, tHeaderLabel, targetTimeLabel);
@@ -186,10 +189,12 @@ public class ZeroMarginFxStage extends VBox {
 
         // Action Buttons
         startStopBtn = new Button(I18n.get("game.zeromargin.start_timer"));
+        SvgEmoji.setGraphic(startStopBtn, "play", 14);
         startStopBtn.setStyle(String.format("-fx-font-size: 13px; -fx-font-weight: 900; -fx-padding: 12px 32px; -fx-background-color: %s; -fx-text-fill: #ffffff; -fx-background-radius: 12px; -fx-cursor: hand;", ThemeManager.getAccentHex()));
         startStopBtn.setOnAction(e -> handleStartStop());
 
         nextTurnBtn = new Button(I18n.get("game.common.next_turn") + " (↵ Enter)");
+        SvgEmoji.setGraphic(nextTurnBtn, "arrow-right", 14);
         nextTurnBtn.setStyle(String.format("-fx-font-size: 13px; -fx-font-weight: 900; -fx-padding: 12px 32px; -fx-background-color: %s; -fx-text-fill: #ffffff; -fx-background-radius: 12px; -fx-cursor: hand;", ThemeManager.getAccentHex()));
         nextTurnBtn.setVisible(false);
         nextTurnBtn.setManaged(false);
@@ -209,8 +214,8 @@ public class ZeroMarginFxStage extends VBox {
         completedBanner.setVisible(false);
         completedBanner.setManaged(false);
 
-        Label cIcon = new Label("🏁");
-        cIcon.setStyle("-fx-font-size: 36px;");
+        Label cIcon = new Label();
+        SvgEmoji.setGraphic(cIcon, "flag", 36);
 
         completedTitle = new Label(I18n.get("game.zeromargin.completed"));
         completedTitle.setStyle(String.format("-fx-font-size: 16px; -fx-font-weight: 900; -fx-text-fill: %s;", ThemeManager.getAccentHex()));
@@ -350,13 +355,15 @@ public class ZeroMarginFxStage extends VBox {
         stoppedSeconds = 0.0;
 
         roundBadgeLabel.setText(isBattleRoyale
-                ? String.format("⚔️ BR • Ronda %d de %d (Objetivo #%d)", currentRound, roundsPerPlayer, currentRound)
-                : String.format("⏱️ Zero Margin • Round %d of %d", currentRound, roundsPerPlayer));
+                ? String.format("BR • Ronda %d de %d (Objetivo #%d)", currentRound, roundsPerPlayer, currentRound)
+                : String.format("Zero Margin • Round %d of %d", currentRound, roundsPerPlayer));
+        SvgEmoji.setGraphic(roundBadgeLabel, isBattleRoyale ? "swords" : "timer", 12);
 
         Competitor activeComp = profiles.get(currentPlayerIndex);
         turnBadgeLabel.setText(String.format("Active Turn: %s (%d of %d)", activeComp.getName(), currentPlayerIndex + 1, profiles.size()));
 
-        targetTimeLabel.setText(String.format("🎯 %.2fs", roundTargetTime));
+        targetTimeLabel.setText(String.format("%.2fs", roundTargetTime));
+        SvgEmoji.setGraphic(targetTimeLabel, "target", 24);
 
         renderDigitalDisplay(0.0);
 
@@ -364,6 +371,7 @@ public class ZeroMarginFxStage extends VBox {
         resultBox.setManaged(false);
 
         startStopBtn.setText(I18n.get("game.zeromargin.start_timer"));
+        SvgEmoji.setGraphic(startStopBtn, "play", 14);
         startStopBtn.setStyle("-fx-font-size: 13px; -fx-font-weight: 900; -fx-padding: 12px 32px; -fx-background-color: linear-gradient(to right, #10b981, #059669); -fx-text-fill: #ffffff;");
         startStopBtn.setVisible(true);
         startStopBtn.setManaged(true);
@@ -377,6 +385,7 @@ public class ZeroMarginFxStage extends VBox {
             timerState = "running";
             startTimeNanos = System.nanoTime();
             startStopBtn.setText(I18n.get("game.zeromargin.stop_timer"));
+            SvgEmoji.setGraphic(startStopBtn, "stop", 14);
             startStopBtn.setStyle("-fx-font-size: 13px; -fx-font-weight: 900; -fx-padding: 12px 32px; -fx-background-color: linear-gradient(to right, #f43f5e, #e11d48); -fx-text-fill: #ffffff;");
             timerLoop.start();
         } else if ("running".equals(timerState)) {
@@ -401,10 +410,11 @@ public class ZeroMarginFxStage extends VBox {
                 "-fx-background-color: rgba(245, 158, 11, 0.2); -fx-border-color: #f59e0b; -fx-text-fill: #fcd34d;" :
                 "-fx-background-color: rgba(244, 63, 94, 0.2); -fx-border-color: #f43f5e; -fx-text-fill: #fda4af;");
 
-        String statusMsg = absDiff < 0.2 ? "🎯 AMAZING PRECISION!" : (isTooSlow ? "⌛ TOO SLOW!" : "⚡ TOO FAST!");
+        String statusMsg = absDiff < 0.2 ? "AMAZING PRECISION!" : (isTooSlow ? "TOO SLOW!" : "TOO FAST!");
         String signStr = isTooSlow ? "+" : "";
 
         resultLabel.setText(String.format("%s • Missed by %s%.2fs", statusMsg, signStr, diff));
+        SvgEmoji.setGraphic(resultLabel, absDiff < 0.2 ? "target" : (isTooSlow ? "hourglass" : "lightning"), 16);
         resultLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: 900; -fx-padding: 8px 16px; -fx-background-radius: 12px; -fx-border-radius: 12px; -fx-border-width: 1px; " + styleClass);
 
         resultSubText.setText(String.format("Stopped at %.2fs (Target: %.2fs)", stoppedSeconds, roundTargetTime));
@@ -443,8 +453,13 @@ public class ZeroMarginFxStage extends VBox {
                 mainGameCard.setManaged(false);
 
                 completedMsg.setText(isBattleRoyale
-                        ? String.format("⚔️ ¡BATTLE ROYALE COMPLETADO! Todos los tiempos objetivo (%d) fueron presentados en la arena.", roundsPerPlayer)
+                        ? String.format("¡BATTLE ROYALE COMPLETADO! Todos los tiempos objetivo (%d) fueron presentados en la arena.", roundsPerPlayer)
                         : String.format("All %d rounds for all %d competitor(s) have been completed.", roundsPerPlayer, profiles.size()));
+                if (isBattleRoyale) {
+                    SvgEmoji.setGraphic(completedMsg, "swords", 14);
+                } else {
+                    completedMsg.setGraphic(null);
+                }
 
                 completedBanner.setVisible(true);
                 completedBanner.setManaged(true);

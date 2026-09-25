@@ -22,6 +22,7 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.util.*;
+import com.gameshowcenter.offline.util.SvgEmoji;
 
 public class GuessCharacterFxStage extends VBox {
 
@@ -128,9 +129,12 @@ public class GuessCharacterFxStage extends VBox {
 
         String badgeTitle = String.format(I18n.get("game.guesscharacter.title_image"), 1, totalMatchRounds);
         if (isBattleRoyale) {
-            badgeTitle = "⚔️ BR • " + badgeTitle;
+            badgeTitle = "BR • " + badgeTitle;
         }
         roundBadgeLabel = new Label(badgeTitle);
+        if (isBattleRoyale) {
+            SvgEmoji.setGraphic(roundBadgeLabel, "swords", 12);
+        }
         roundBadgeLabel.setStyle(String.format(
                 "-fx-background-color: rgba(245, 158, 11, 0.15); -fx-text-fill: #f59e0b; -fx-font-weight: 900; -fx-font-size: 12px; -fx-padding: 6px 14px; -fx-background-radius: 20px; -fx-border-color: rgba(245, 158, 11, 0.3); -fx-border-radius: 20px;",
                 ThemeManager.getAccentHex()));
@@ -224,8 +228,8 @@ public class GuessCharacterFxStage extends VBox {
                 "-fx-background-color: %s; -fx-border-color: rgba(99, 102, 241, 0.4); -fx-border-width: 2px; -fx-border-radius: 24px; -fx-background-radius: 24px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.7), 20, 0, 0, 8);",
                 ThemeManager.getCardHex()));
 
-        Label iconLbl = new Label("🎭");
-        iconLbl.setStyle("-fx-font-size: 54px;");
+        Label iconLbl = new Label();
+        SvgEmoji.setGraphic(iconLbl, "masks", 54);
 
         Label roundTitle = new Label(String.format(I18n.get("game.common.turn_n_of_m"), 1, totalMatchRounds));
         roundTitle.setStyle(String.format("-fx-font-size: 11px; -fx-font-weight: 900; -fx-text-fill: %s;",
@@ -296,7 +300,8 @@ public class GuessCharacterFxStage extends VBox {
         loader.setMaxSize(40, 40);
 
         // Image Counter Badge (Bottom-Center)
-        imageCounterBadge = new Label("🎭 1 / " + totalMatchRounds);
+        imageCounterBadge = new Label("1 / " + totalMatchRounds);
+        SvgEmoji.setGraphic(imageCounterBadge, "masks", 14);
         imageCounterBadge.setStyle(
                 "-fx-background-color: rgba(15, 23, 42, 0.88); -fx-text-fill: #ffffff; -fx-font-weight: 900; -fx-font-size: 13px; -fx-padding: 6px 18px; -fx-background-radius: 14px; -fx-border-color: rgba(255, 255, 255, 0.25); -fx-border-radius: 14px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 8, 0, 0, 2);");
         StackPane.setAlignment(imageCounterBadge, Pos.BOTTOM_CENTER);
@@ -312,6 +317,7 @@ public class GuessCharacterFxStage extends VBox {
 
         // 2.2 BUTTON (Rule 4: Next Image Manual Advance)
         nextImageBtn = new Button(I18n.get("game.common.next_image"));
+        SvgEmoji.setGraphic(nextImageBtn, "arrow-right", 16);
         nextImageBtn.setPrefWidth(680);
         nextImageBtn.setStyle(String.format(
                 "-fx-background-color: %s; -fx-text-fill: %s; -fx-font-size: 14px; -fx-font-weight: 900; -fx-padding: 13px 28px; -fx-background-radius: 12px; -fx-cursor: hand;",
@@ -336,8 +342,8 @@ public class GuessCharacterFxStage extends VBox {
                 "-fx-background-color: %s; -fx-border-color: #f59e0b; -fx-border-width: 2px; -fx-border-radius: 24px; -fx-background-radius: 24px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 24, 0, 0, 8);",
                 ThemeManager.getCardHex()));
 
-        Label cup = new Label("🏆");
-        cup.setStyle("-fx-font-size: 54px;");
+        Label cup = new Label();
+        SvgEmoji.setGraphic(cup, "trophy", 54);
 
         Label finTitle = new Label(I18n.get("game.guesscharacter.completed"));
         finTitle.setStyle("-fx-font-size: 18px; -fx-font-weight: 900; -fx-text-fill: #fbbf24;");
@@ -359,7 +365,10 @@ public class GuessCharacterFxStage extends VBox {
     private void updateUI() {
         String badgeText = String.format(I18n.get("game.guesscharacter.title_image"), Math.min(roundNumber, totalMatchRounds), totalMatchRounds);
         if (isBattleRoyale) {
-            badgeText = "⚔️ BR • " + badgeText;
+            badgeText = "BR • " + badgeText;
+            SvgEmoji.setGraphic(roundBadgeLabel, "swords", 12);
+        } else {
+            roundBadgeLabel.setGraphic(null);
         }
         roundBadgeLabel.setText(badgeText);
         poolInfoLabel.setText(String.format(I18n.get("game.guesscharacter.unseen_pool"), workingPool.size()));
@@ -381,8 +390,10 @@ public class GuessCharacterFxStage extends VBox {
 
         dynamicContainer.getChildren().add(activePlayBox);
 
-        imageCounterBadge.setText("🎭 " + roundNumber + " / " + totalMatchRounds);
+        imageCounterBadge.setText(roundNumber + " / " + totalMatchRounds);
+        SvgEmoji.setGraphic(imageCounterBadge, "masks", 14);
         nextImageBtn.setText(roundNumber >= totalMatchRounds ? I18n.get("game.common.finish_match") : I18n.get("game.common.next_image"));
+        SvgEmoji.setGraphic(nextImageBtn, roundNumber >= totalMatchRounds ? "trophy" : "arrow-right", 16);
 
         renderDigitalTimer();
     }

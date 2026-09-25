@@ -13,6 +13,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import com.gameshowcenter.offline.util.SvgEmoji;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +53,7 @@ public class TimeLineSetupEditor implements IGameSetupEditor {
 
         // Battle Royale Toggle Row
         battleRoyaleCheckBox = new CheckBox(I18n.get("game.editor.battleroyale.check"));
+        SvgEmoji.setGraphic(battleRoyaleCheckBox, "swords", 16);
         battleRoyaleCheckBox.setSelected(curBattleRoyale);
         battleRoyaleCheckBox.setStyle("-fx-text-fill: #fbbf24; -fx-font-weight: 900; -fx-font-size: 12px; -fx-cursor: hand;");
 
@@ -76,7 +78,8 @@ public class TimeLineSetupEditor implements IGameSetupEditor {
         Label info = new Label("Hitos Históricos en la Línea de Tiempo:");
         info.setStyle(String.format("-fx-font-weight: 900; -fx-text-fill: %s; -fx-font-size: 13px;", textColor));
 
-        Button addBtn = new Button("➕ Agregar Hito");
+        Button addBtn = new Button("Agregar Hito");
+        SvgEmoji.setGraphic(addBtn, "plus", 12);
         addBtn.getStyleClass().add("btn-accent-emerald");
         addBtn.setOnAction(e -> addEventRow("Nuevo Hito", 2000, "Descripción del evento histórico"));
 
@@ -134,7 +137,8 @@ public class TimeLineSetupEditor implements IGameSetupEditor {
         item.descField.setPromptText("Descripción o pista breve");
         HBox.setHgrow(item.descField, Priority.ALWAYS);
 
-        Button delBtn = new Button("✕");
+        Button delBtn = new Button();
+        SvgEmoji.setGraphic(delBtn, "close", 8);
         delBtn.setStyle("-fx-background-color: #dc2626; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6px; -fx-cursor: hand;");
         delBtn.setOnAction(e -> {
             if (eventItems.size() <= 3) {

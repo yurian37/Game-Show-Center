@@ -8,7 +8,7 @@
     "Before each turn starts, contestants take a brief pause while the character image remains hidden.",
     "Decide which player will guess, then click 'Start Turn' to reveal the mystery character.",
     "Contestants must identify and announce the character's name before the optional countdown timer reaches zero.",
-    "Click 'Next Image ➔' at any point to record scores and advance to the next contestant's turn.",
+    "Click 'Next Image ->' at any point to record scores and advance to the next contestant's turn.",
     "The match concludes once all scheduled rounds per player have been completed."
   ],
   "translations": {
@@ -19,7 +19,7 @@
         "Before each turn starts, contestants take a brief pause while the character image remains hidden.",
         "Decide which player will guess, then click 'Start Turn' to reveal the mystery character.",
         "Contestants must identify and announce the character's name before the optional countdown timer reaches zero.",
-        "Click 'Next Image ➔' at any point to record scores and advance to the next contestant's turn.",
+        "Click 'Next Image ->' at any point to record scores and advance to the next contestant's turn.",
         "The match concludes once all scheduled rounds per player have been completed."
       ]
     },
@@ -30,7 +30,7 @@
         "Antes de iniciar cada turno, los jugadores hacen una pausa mientras la imagen del personaje permanece oculta.",
         "Decidan quién responderá y pulsen 'Iniciar Turno' para revelar el personaje misterioso.",
         "El participante debe decir el nombre correcto antes de que el temporizador opcional llegue a cero.",
-        "Haz clic en 'Siguiente Imagen ➔' para registrar el puntaje y pasar al turno del siguiente jugador.",
+        "Haz clic en 'Siguiente Imagen ->' para registrar el puntaje y pasar al turno del siguiente jugador.",
         "La partida concluye una vez completadas todas las rondas por jugador programadas."
       ]
     },
@@ -41,7 +41,7 @@
         "Avant chaque tour, les participants font une pause pendant que l'image reste cachée.",
         "Désignez le joueur du tour puis cliquez sur 'Démarrer le tour' pour révéler le personnage mystère.",
         "Le joueur doit nommer le personnage avant que le compte à rebours optionnel ne soit écoulé.",
-        "Cliquez sur 'Image suivante ➔' pour enregistrer les points et passer au tour suivant.",
+        "Cliquez sur 'Image suivante ->' pour enregistrer les points et passer au tour suivant.",
         "La partie s'achève une fois toutes les manches par joueur terminées."
       ]
     },
@@ -52,7 +52,7 @@
         "Antes de cada rodada, os participantes aguardam enquanto a imagem permanece oculta.",
         "Definam quem vai jogar e cliquem em 'Iniciar Turno' para revelar o personagem misterioso.",
         "O competidor deve acertar o nome do personagem antes que o cronômetro opcional termine.",
-        "Clique em 'Próxima Imagem ➔' para registrar a pontuação e avançar para o próximo jogador.",
+        "Clique em 'Próxima Imagem ->' para registrar a pontuação e avançar para o próximo jogador.",
         "A partida termina assim que todas as rodadas por participante forem disputadas."
       ]
     }

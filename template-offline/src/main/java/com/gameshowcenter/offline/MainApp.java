@@ -6,6 +6,7 @@ import com.gameshowcenter.offline.model.MatchConfig;
 import com.gameshowcenter.offline.service.GameScannerService;
 import com.gameshowcenter.offline.theme.ThemeManager;
 import com.gameshowcenter.offline.views.*;
+import com.gameshowcenter.offline.util.SvgEmoji;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -299,7 +300,8 @@ public class MainApp extends Application {
         });
 
         // Fullscreen Toggle Button
-        Button fullScreenBtn = new Button("🖥️ " + I18n.get("app.header.fullscreen"));
+        Button fullScreenBtn = new Button(I18n.get("app.header.fullscreen"));
+        SvgEmoji.setGraphic(fullScreenBtn, "monitor", 14);
         fullScreenBtn.setTooltip(new Tooltip(I18n.get("app.header.fullscreen.tooltip")));
         fullScreenBtn.setStyle(String.format(
                 "-fx-background-color: %s; -fx-text-fill: %s; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 7px 14px; -fx-background-radius: 8px; -fx-cursor: hand; -fx-border-color: rgba(255, 255, 255, 0.1); -fx-border-radius: 8px;",
@@ -311,7 +313,8 @@ public class MainApp extends Application {
         });
 
         // Theme Customizer Button
-        themeBtn = new Button("⚙️ " + I18n.get("app.header.theme"));
+        themeBtn = new Button(I18n.get("app.header.theme"));
+        SvgEmoji.setGraphic(themeBtn, "settings", 14);
         themeBtn.setStyle(String.format(
                 "-fx-background-color: %s; -fx-text-fill: %s; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 7px 14px; -fx-background-radius: 8px; -fx-cursor: hand;",
                 ThemeManager.getButtonHex(), ThemeManager.getTextOnButtonPrimaryHex()));
@@ -335,8 +338,8 @@ public class MainApp extends Application {
         if (logoView != null) {
             header.getChildren().addAll(logoView, logoText, spacer, langCombo, fullScreenBtn, themeBtn, badgeBox);
         } else {
-            Label fallbackIcon = new Label("🎯");
-            fallbackIcon.setStyle("-fx-font-size: 26px;");
+            Label fallbackIcon = new Label();
+            SvgEmoji.setGraphic(fallbackIcon, "target", 24);
             header.getChildren().addAll(fallbackIcon, logoText, spacer, langCombo, fullScreenBtn, themeBtn, badgeBox);
         }
 

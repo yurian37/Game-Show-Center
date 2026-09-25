@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import SvgEmoji from './SvgEmoji';
 // Dynamic games list from gamesRegistry
 import { gamesList as allGames } from '../components/games/gamesRegistry';
 import PaymentModal from './PaymentModal';
@@ -259,9 +260,9 @@ export default function Settings({ onNavigate }) {
           }
         }
 
-        alert("✅ Match setup loaded successfully!");
+        alert("Match setup loaded successfully!");
       } catch (err) {
-        alert("❌ Could not read file. Make sure you select a valid match setup JSON file.");
+        alert("Could not read file. Make sure you select a valid match setup JSON file.");
       }
     };
     reader.readAsText(file);
@@ -285,7 +286,7 @@ export default function Settings({ onNavigate }) {
         </div>
         <div className="flex flex-wrap gap-2">
           <label className="text-xs font-bold bg-slate-800 hover:bg-purple-900/40 text-purple-300 px-3.5 py-2 rounded-xl border border-purple-700/60 transition-all uppercase tracking-wider cursor-pointer flex items-center gap-1.5 shadow-sm" title="Load a previously saved match from a file on your device">
-            📥 Load Saved Match
+            <SvgEmoji name="inbox" /> Load Saved Match
             <input type="file" accept=".json" onChange={handleImportSetupJson} className="hidden" />
           </label>
           <button
@@ -293,7 +294,7 @@ export default function Settings({ onNavigate }) {
             title="Save participants and settings to a file to reuse them later"
             className="text-xs font-bold bg-slate-800 hover:bg-indigo-900/40 text-indigo-300 px-3.5 py-2 rounded-xl border border-indigo-700/60 transition-all uppercase tracking-wider flex items-center gap-1.5 cursor-pointer shadow-sm"
           >
-            💾 Save Match
+            <SvgEmoji name="save" /> Save Match
           </button>
           <button
             onClick={handleReset}
@@ -423,8 +424,8 @@ export default function Settings({ onNavigate }) {
           <div className="bg-[#1b2238] p-6 rounded-3xl border border-slate-800 relative overflow-hidden">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
               <div>
-                <label className="block text-xs font-black tracking-widest text-indigo-300 uppercase">
-                  🧩 B) Mini-Games Selection
+                <label className="block text-xs font-black tracking-widest text-indigo-300 uppercase flex items-center gap-1.5">
+                  <SvgEmoji name="puzzle" /> B) Mini-Games Selection
                 </label>
                 <p className="text-slate-400 text-xs mt-1">
                   Click the games you want to include in the order they will be played during the show.
@@ -471,7 +472,7 @@ export default function Settings({ onNavigate }) {
                             {game.name}
                           </span>
                           <span className="text-[10px] text-slate-500 font-bold uppercase mt-0.5">
-                            {isPremium ? '⭐ Premium Game' : '🎮 Basic Game'}
+                            {isPremium ? <span className="inline-flex items-center gap-1"><SvgEmoji name="star" /> Premium Game</span> : <span className="inline-flex items-center gap-1"><SvgEmoji name="gamepad" /> Basic Game</span>}
                           </span>
                         </div>
 
@@ -557,7 +558,7 @@ export default function Settings({ onNavigate }) {
                 {/* SPINE FOOTER STATUS BADGE & ACTION CONTROLS */}
                 <div className="z-10 w-full pt-3 border-t border-slate-800/80 space-y-3">
                   <span className="text-[9px] font-mono text-slate-500 uppercase tracking-widest block">
-                    {selectedGames.length > 0 ? '⚡ READY TO BEGIN' : '⏳ SELECT AT LEAST ONE GAME'}
+                    {selectedGames.length > 0 ? <span className="inline-flex items-center gap-1.5"><SvgEmoji name="lightning" /> READY TO BEGIN</span> : <span className="inline-flex items-center gap-1.5"><SvgEmoji name="hourglass" /> SELECT AT LEAST ONE GAME</span>}
                   </span>
 
                   {/* MATCH CENTRAL DECK ACTION BUTTONS */}
@@ -568,7 +569,7 @@ export default function Settings({ onNavigate }) {
                       className="w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 hover:via-teal-400 hover:to-emerald-500 text-slate-950 font-black text-sm py-3 px-4 rounded-xl shadow-[0_4px_18px_rgba(16,185,129,0.35)] hover:shadow-[0_6px_22px_rgba(16,185,129,0.5)] active:scale-95 transform transition-all duration-150 uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer"
                     >
                       <span>Start Match</span>
-                      <span className="text-base">🚀</span>
+                      <span className="text-base flex items-center"><SvgEmoji name="rocket" /></span>
                     </button>
 
                     <button
@@ -576,7 +577,7 @@ export default function Settings({ onNavigate }) {
                       onClick={() => onNavigate('home')}
                       className="w-full py-2.5 px-4 rounded-xl bg-[#1b2238] hover:bg-[#252f4c] border border-slate-700/80 text-slate-300 hover:text-white font-black text-xs uppercase tracking-wider transition-all duration-150 shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
                     >
-                      <span className="text-sm">🠔</span>
+                      <span className="text-sm flex items-center"><SvgEmoji name="back" /></span>
                       <span>Main Menu</span>
                     </button>
                   </div>
@@ -623,7 +624,7 @@ export default function Settings({ onNavigate }) {
                             {game.name}
                           </span>
                           <span className="text-[10px] text-slate-500 font-bold uppercase mt-0.5">
-                            {isPremium ? '⭐ Premium Game' : '🎮 Basic Game'}
+                            {isPremium ? <span className="inline-flex items-center gap-1"><SvgEmoji name="star" /> Premium Game</span> : <span className="inline-flex items-center gap-1"><SvgEmoji name="gamepad" /> Basic Game</span>}
                           </span>
                         </div>
                       </button>
@@ -691,7 +692,7 @@ export default function Settings({ onNavigate }) {
         <div className="space-y-6">
           {/* MAINTENANCE ALERT BANNER */}
           <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-4 flex items-center gap-3 text-amber-300 text-xs font-bold">
-            <span className="text-xl">🚧</span>
+            <span className="text-xl flex items-center justify-center"><SvgEmoji name="construction" /></span>
             <div>
               <p className="font-black uppercase tracking-wider">En Mantenimiento</p>
               <p className="text-slate-400 font-normal mt-0.5">Las descargas y pasarelas de pago del Plan Premium se encuentran temporalmente en mantenimiento. Vuelve a consultar pronto.</p>
@@ -711,10 +712,10 @@ export default function Settings({ onNavigate }) {
                 Get the full offline standalone system packaged in a <strong>.zip</strong> archive. Includes the independent desktop application, folder structure, and the 5 core mini-games (Zero Margin, Hangman, TicTacToe, Roulette, Trivia Quiz) with local resources.
               </p>
               <button
-                onClick={() => alert("🚧 En Mantenimiento: Las descargas y pagos del Plan Premium se encuentran temporalmente en mantenimiento. Vuelve a consultar pronto.")}
+                onClick={() => alert("En Mantenimiento: Las descargas y pagos del Plan Premium se encuentran temporalmente en mantenimiento. Vuelve a consultar pronto.")}
                 className="mt-4 bg-gradient-to-r from-amber-600/80 to-purple-600/80 hover:from-amber-600 hover:to-purple-600 text-white text-xs font-black py-3 px-6 rounded-xl uppercase tracking-wider shadow-lg transition-all active:scale-95 cursor-pointer flex items-center gap-2"
               >
-                🚧 En Mantenimiento (Descargas no disponibles)
+                En Mantenimiento (Descargas no disponibles)
               </button>
             </div>
             <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-4 text-center shrink-0 min-w-[130px]">
@@ -736,10 +737,10 @@ export default function Settings({ onNavigate }) {
                 Expand your mini-game library with individual premium modules. Each module downloads into its own folder ready to drop into your catalog.
               </p>
               <button
-                onClick={() => alert("🚧 En Mantenimiento: La descarga de módulos individuales Premium se encuentra temporalmente en mantenimiento.")}
+                onClick={() => alert("En Mantenimiento: La descarga de módulos individuales Premium se encuentra temporalmente en mantenimiento.")}
                 className="mt-4 bg-gradient-to-r from-amber-600/80 to-rose-600/80 hover:from-amber-600 hover:to-rose-600 text-white text-xs font-black py-3 px-6 rounded-xl uppercase tracking-wider shadow-lg transition-all active:scale-95 cursor-pointer flex items-center gap-2"
               >
-                🚧 En Mantenimiento: Módulos Premium
+                En Mantenimiento: Módulos Premium
               </button>
             </div>
             <div className="bg-pink-500/10 border border-pink-500/30 rounded-xl p-4 text-center shrink-0 min-w-[130px]">

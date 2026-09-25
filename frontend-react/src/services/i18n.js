@@ -3,10 +3,10 @@
 const STORAGE_KEY = 'gsc_language_preference';
 
 export const SUPPORTED_LANGUAGES = [
-  { code: 'es', name: 'Español', flag: '🇪🇸' },
-  { code: 'en', name: 'English', flag: '🇺🇸' },
-  { code: 'fr', name: 'Français', flag: '🇫🇷' },
-  { code: 'pt', name: 'Português', flag: '🇧🇷' }
+  { code: 'es', name: 'Español', flagIcon: 'flag-es' },
+  { code: 'en', name: 'English', flagIcon: 'flag-us' },
+  { code: 'fr', name: 'Français', flagIcon: 'flag-fr' },
+  { code: 'pt', name: 'Português', flagIcon: 'flag-br' }
 ];
 
 let currentLang = 'es';

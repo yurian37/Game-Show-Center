@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import blueTeamImg from '../../../../assets/tictactoe/blueteam.png';
 import redTeamImg from '../../../../assets/tictactoe/redteam.png';
+import SvgEmoji from '../../../SvgEmoji';
 
 const WINNING_COMBOS = [
   [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
@@ -105,7 +106,7 @@ export default function TicTacToePlay({ profiles = [], setupData = {}, onSelectW
           </div>
         ) : (
           <div className="text-xs font-black uppercase tracking-widest text-slate-400 mt-1">
-            Match Status: {winner === 'draw' ? '🤝 DRAW GAME' : '👑 VICTORY'}
+            Match Status: {winner === 'draw' ? 'DRAW GAME' : 'VICTORY'}
           </div>
         )}
       </div>
@@ -159,7 +160,7 @@ export default function TicTacToePlay({ profiles = [], setupData = {}, onSelectW
               ? 'bg-gradient-to-r from-sky-500/20 via-blue-500/30 to-sky-500/20 border-sky-400 text-sky-200 shadow-sky-500/20'
               : 'bg-gradient-to-r from-rose-500/20 via-red-500/30 to-rose-500/20 border-rose-400 text-rose-200 shadow-rose-500/20'
         }`}>
-          <div className="text-3xl mb-1">{winner === 'draw' ? '🤝' : '👑'}</div>
+          <div className="text-3xl mb-1 flex items-center justify-center">{winner === 'draw' ? <SvgEmoji name="handshake" size={32} /> : <SvgEmoji name="crown" size={32} />}</div>
           <h3 className="text-xl font-black uppercase mb-1">
             {winner === 'draw' ? 'IT\'S A TIE / DRAW!' : `VICTORY FOR ${winner.toUpperCase()} TEAM!`}
           </h3>
@@ -180,7 +181,7 @@ export default function TicTacToePlay({ profiles = [], setupData = {}, onSelectW
           }}
           className="px-8 py-3.5 rounded-2xl font-black text-xs uppercase tracking-wider transition-all duration-200 shadow-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white cursor-pointer active:scale-95 flex items-center gap-2"
         >
-          <span>🔄 Start New Round</span>
+          <span className="flex items-center gap-1.5"><SvgEmoji name="refresh" /> Start New Round</span>
         </button>
       </div>
 

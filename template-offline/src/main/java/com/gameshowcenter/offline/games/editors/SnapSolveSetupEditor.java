@@ -10,6 +10,7 @@ import com.gameshowcenter.offline.model.Competitor;
 import com.gameshowcenter.offline.theme.ThemeManager;
 import com.gameshowcenter.offline.util.FileChooserHelper;
 import com.gameshowcenter.offline.util.ImageLoaderHelper;
+import com.gameshowcenter.offline.util.SvgEmoji;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -91,6 +92,7 @@ public class SnapSolveSetupEditor implements IGameSetupEditor {
 
         // Battle Royale Toggle Row
         battleRoyaleCheckBox = new CheckBox(I18n.get("game.editor.battleroyale.check"));
+        SvgEmoji.setGraphic(battleRoyaleCheckBox, "swords", 16);
         battleRoyaleCheckBox.setSelected(curBattleRoyale);
         battleRoyaleCheckBox.setStyle("-fx-text-fill: #fbbf24; -fx-font-weight: 900; -fx-font-size: 12px; -fx-cursor: hand;");
 
@@ -131,19 +133,19 @@ public class SnapSolveSetupEditor implements IGameSetupEditor {
         HBox filterChecksBox = new HBox(16);
         filterChecksBox.setAlignment(Pos.CENTER_LEFT);
 
-        displacementCheck = new CheckBox("〰️ Displacement");
+        displacementCheck = new CheckBox("Displacement");
         displacementCheck.setSelected(curFilters.contains("displacement"));
         displacementCheck.setStyle("-fx-text-fill: #e2e8f0; -fx-font-weight: bold; -fx-font-size: 11px;");
 
-        swirlCheck = new CheckBox("🌪️ Swirl");
+        swirlCheck = new CheckBox("Swirl");
         swirlCheck.setSelected(curFilters.contains("swirl"));
         swirlCheck.setStyle("-fx-text-fill: #e2e8f0; -fx-font-weight: bold; -fx-font-size: 11px;");
 
-        pixelateCheck = new CheckBox("▦ Pixelate");
+        pixelateCheck = new CheckBox("Pixelate");
         pixelateCheck.setSelected(curFilters.contains("pixelate"));
         pixelateCheck.setStyle("-fx-text-fill: #e2e8f0; -fx-font-weight: bold; -fx-font-size: 11px;");
 
-        blurCheck = new CheckBox("🌫️ Blur");
+        blurCheck = new CheckBox("Blur");
         blurCheck.setSelected(curFilters.contains("blur"));
         blurCheck.setStyle("-fx-text-fill: #e2e8f0; -fx-font-weight: bold; -fx-font-size: 11px;");
 
@@ -254,8 +256,8 @@ public class SnapSolveSetupEditor implements IGameSetupEditor {
             ImageLoaderHelper.loadImageAsync(imgRef, 68, 68, true, true,
                     iv::setImage,
                     () -> {
-                        Label errLbl = new Label("🖼️");
-                        errLbl.setStyle("-fx-font-size: 18px;");
+                        Label errLbl = new Label();
+                        SvgEmoji.setGraphic(errLbl, "image", 18);
                         tile.getChildren().setAll(errLbl);
                     }
             );
@@ -265,7 +267,8 @@ public class SnapSolveSetupEditor implements IGameSetupEditor {
             StackPane.setAlignment(numBadge, Pos.BOTTOM_LEFT);
             StackPane.setMargin(numBadge, new Insets(3));
 
-            Button removeBtn = new Button("✕");
+            Button removeBtn = new Button();
+            SvgEmoji.setGraphic(removeBtn, "close", 8);
             removeBtn.setStyle("-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-size: 9px; -fx-font-weight: bold; -fx-padding: 1px 5px; -fx-background-radius: 10px; -fx-cursor: hand;");
             StackPane.setAlignment(removeBtn, Pos.TOP_RIGHT);
             StackPane.setMargin(removeBtn, new Insets(2));
@@ -278,7 +281,8 @@ public class SnapSolveSetupEditor implements IGameSetupEditor {
             tile.getChildren().addAll(numBadge, removeBtn);
 
             if (copyrightWarnings.contains(mediaPool.get(i))) {
-                Label warnBadge = new Label("⚠️");
+                Label warnBadge = new Label();
+                SvgEmoji.setGraphic(warnBadge, "warning", 9);
                 warnBadge.setStyle("-fx-background-color: rgba(245, 158, 11, 0.9); -fx-text-fill: #000; -fx-font-size: 9px; -fx-padding: 1px 3px; -fx-background-radius: 3px; -fx-cursor: hand;");
                 Tooltip.install(warnBadge, new Tooltip(I18n.get("settings.ai.copyright_badge")));
                 StackPane.setAlignment(warnBadge, Pos.TOP_LEFT);

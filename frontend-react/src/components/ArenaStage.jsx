@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import SvgEmoji from './SvgEmoji';
 import GameArenaDriver from './games/GameArenaDriver';
 import soundManager from '../services/soundManager';
 import ArenaRouletteModal from './ArenaRouletteModal';
@@ -100,8 +101,8 @@ export default function ArenaStage({ matchData, onNavigate }) {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 border-b border-slate-800/60 pb-6">
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-black tracking-widest text-indigo-400 uppercase bg-indigo-500/10 px-2.5 py-1 rounded-md border border-indigo-500/20">
-              🔴 Live Game Show Arena
+            <span className="text-[10px] font-black tracking-widest text-indigo-400 uppercase bg-indigo-500/10 px-2.5 py-1 rounded-md border border-indigo-500/20 inline-flex items-center gap-1.5">
+              <SvgEmoji name="circle-dot" /> Live Game Show Arena
             </span>
             <span className="text-[10px] font-black tracking-widest text-purple-400 uppercase bg-purple-500/10 px-2.5 py-1 rounded-md border border-purple-500/20">
               Mode: {gameMode}
@@ -120,19 +121,19 @@ export default function ArenaStage({ matchData, onNavigate }) {
             onClick={() => setIsRouletteModalOpen(true)}
             className="text-xs font-black text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 flex items-center gap-1.5 uppercase tracking-wider transition-all px-4 py-2.5 rounded-xl border border-amber-500/30 shadow-md shadow-amber-500/10 active:scale-95 cursor-pointer"
           >
-            🎰 Roulette
+            <SvgEmoji name="slot-machine" /> Roulette
           </button>
           <button 
             onClick={() => setShowEndMatchModal(true)}
             className="text-xs font-black text-slate-950 bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 hover:to-yellow-200 flex items-center gap-1.5 uppercase tracking-wider transition-all px-4 py-2.5 rounded-xl border border-yellow-200 shadow-md shadow-amber-500/20 active:scale-95 cursor-pointer"
           >
-            🏁 End Match & Announce Winner
+            <SvgEmoji name="flag" /> End Match & Announce Winner
           </button>
           <button 
             onClick={() => onNavigate('settings')}
-            className="text-xs font-bold text-slate-400 hover:text-slate-200 flex items-center gap-1 uppercase tracking-wider transition-colors bg-slate-800/50 px-4 py-2.5 rounded-xl border border-slate-700/60 cursor-pointer"
+            className="text-xs font-bold text-slate-400 hover:text-slate-200 flex items-center gap-1.5 uppercase tracking-wider transition-colors bg-slate-800/50 px-4 py-2.5 rounded-xl border border-slate-700/60 cursor-pointer"
           >
-            ⚙️ Match Settings
+            <SvgEmoji name="gear" /> Match Settings
           </button>
         </div>
       </div>
@@ -170,7 +171,9 @@ export default function ArenaStage({ matchData, onNavigate }) {
                   {p.avatar ? (
                     <img src={p.avatar} alt={p.name} className="w-full h-full object-cover" />
                   ) : (
-                    <span className="text-xl text-slate-500 font-bold">👤</span>
+                    <span className="text-xl text-slate-500 font-bold flex items-center justify-center">
+                      <SvgEmoji name="user" />
+                    </span>
                   )}
                   {isSelected && (
                     <span className="absolute top-0 right-0 w-3.5 h-3.5 bg-indigo-500 rounded-bl-lg border-b border-l border-indigo-400 animate-pulse" />
@@ -189,7 +192,7 @@ export default function ArenaStage({ matchData, onNavigate }) {
                       ? 'bg-rose-500/20 text-rose-300 border-rose-500/30' 
                       : 'bg-slate-800/80 text-slate-300 border-slate-700/60'
                 }`}>
-                  🏆 {currentScore} pts
+                  <span className="inline-flex items-center gap-1"><SvgEmoji name="trophy" /> {currentScore} pts</span>
                 </div>
               </div>
             );
@@ -208,7 +211,7 @@ export default function ArenaStage({ matchData, onNavigate }) {
                 {activeProfile.avatar ? (
                   <img src={activeProfile.avatar} alt={activeProfile.name} className="w-full h-full object-cover" />
                 ) : (
-                  <span className="w-full h-full flex items-center justify-center text-xl text-slate-400 font-bold">👤</span>
+                  <span className="w-full h-full flex items-center justify-center text-xl text-slate-400 font-bold"><SvgEmoji name="user" /></span>
                 )}
               </div>
               <div>
@@ -233,7 +236,7 @@ export default function ArenaStage({ matchData, onNavigate }) {
           {/* LOS 4 BOTONES DE PUNTOS */}
           <div>
             <span className="block text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-3">
-              ⚡ Quick Score Adjuster (4 Score Action Buttons)
+              <span className="inline-flex items-center gap-1.5"><SvgEmoji name="lightning" /> Quick Score Adjuster (4 Score Action Buttons)</span>
             </span>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {fourScoreButtons.map((btn, idx) => {
@@ -325,7 +328,7 @@ export default function ArenaStage({ matchData, onNavigate }) {
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn">
           <div className="bg-[#141929] border-2 border-indigo-500/50 rounded-3xl p-6 w-[350px] h-[350px] shadow-2xl flex flex-col justify-between items-center text-center">
             <div className="w-16 h-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-3xl shadow-inner mt-2">
-              🏆
+              <SvgEmoji name="trophy" size={32} />
             </div>
             <div>
               <h3 className="text-lg font-black text-slate-100">End Match?</h3>

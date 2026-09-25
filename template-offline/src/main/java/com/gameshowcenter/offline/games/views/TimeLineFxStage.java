@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.util.Duration;
+import com.gameshowcenter.offline.util.SvgEmoji;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -122,10 +123,14 @@ public class TimeLineFxStage extends VBox {
         topBar.setPadding(new Insets(10, 20, 10, 20));
         topBar.setStyle("-fx-background-color: #131726; -fx-border-color: #2e3856; -fx-border-radius: 16px; -fx-background-radius: 16px; -fx-max-width: 960px;");
 
-        Label gameTitle = new Label(isBattleRoyale ? "⏳ TIMELINE [⚔️ BATTLE ROYALE]" : "⏳ TIMELINE");
+        Label gameTitle = new Label(isBattleRoyale ? "TIMELINE [BATTLE ROYALE]" : "TIMELINE");
+        SvgEmoji.setGraphic(gameTitle, "hourglass", 16);
         gameTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: 900; -fx-text-fill: #f59e0b; -fx-letter-spacing: 1px;");
 
-        remainingBadge = new Label(isBattleRoyale ? "⚔️ BR: Hitos pendientes" : "Hitos pendientes");
+        remainingBadge = new Label(isBattleRoyale ? "BR: Hitos pendientes" : "Hitos pendientes");
+        if (isBattleRoyale) {
+            SvgEmoji.setGraphic(remainingBadge, "swords", 12);
+        }
         remainingBadge.setStyle("-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #cbd5e1; -fx-background-color: #1e293b; -fx-padding: 4px 10px; -fx-background-radius: 8px;");
 
         Region spacer = new Region();
@@ -190,7 +195,8 @@ public class TimeLineFxStage extends VBox {
         getChildren().add(mysteryCardBox);
 
         // Next Turn Button
-        nextTurnBtn = new Button("Continuar ➔");
+        nextTurnBtn = new Button("Continuar");
+        SvgEmoji.setGraphic(nextTurnBtn, "arrow-right", 12);
         nextTurnBtn.setStyle("-fx-background-color: linear-gradient(to right, #f59e0b, #d97706); -fx-text-fill: #0f172a; -fx-font-weight: 900; -fx-font-size: 13px; -fx-padding: 8px 24px; -fx-background-radius: 12px; -fx-cursor: hand;");
         nextTurnBtn.setTextOverrun(javafx.scene.control.OverrunStyle.CLIP);
         nextTurnBtn.setEllipsisString("");
@@ -281,8 +287,13 @@ public class TimeLineFxStage extends VBox {
     private void renderTurn() {
         int pending = deck.size() + (currentMystery != null ? 1 : 0);
         remainingBadge.setText(isBattleRoyale 
-                ? String.format("⚔️ BR: %d hitos restantes", pending)
+                ? String.format("BR: %d hitos restantes", pending)
                 : String.format("%d hitos pendientes", pending));
+        if (isBattleRoyale) {
+            SvgEmoji.setGraphic(remainingBadge, "swords", 12);
+        } else {
+            remainingBadge.setGraphic(null);
+        }
 
 
         if (currentMystery != null) {
@@ -388,7 +399,10 @@ public class TimeLineFxStage extends VBox {
         HBox topRow = new HBox(4);
         topRow.setAlignment(Pos.CENTER_LEFT);
 
-        Label tag = new Label(isNewlyPlaced ? "✨ Recién Colocado" : "Hito");
+        Label tag = new Label(isNewlyPlaced ? "Recién Colocado" : "Hito");
+        if (isNewlyPlaced) {
+            SvgEmoji.setGraphic(tag, "sparkles", 10);
+        }
         tag.setStyle(isNewlyPlaced
             ? "-fx-font-size: 9px; -fx-font-weight: 900; -fx-text-fill: #0f172a; -fx-background-color: #f59e0b; -fx-padding: 2px 6px; -fx-background-radius: 4px;"
             : "-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #94a3b8; -fx-background-color: rgba(255, 255, 255, 0.08); -fx-padding: 2px 6px; -fx-background-radius: 4px;");
@@ -499,18 +513,22 @@ public class TimeLineFxStage extends VBox {
         winnerBox.setVisible(true);
         winnerBox.setManaged(true);
 
-        Label trophy = new Label("📜");
-        trophy.setStyle("-fx-font-size: 44px;");
+        Label trophy = new Label();
+        SvgEmoji.setGraphic(trophy, "scroll", 44);
 
         Label congrats = new Label("¡LÍNEA DE TIEMPO COMPLETADA!");
         congrats.setStyle("-fx-font-size: 20px; -fx-font-weight: 900; -fx-text-fill: white;");
 
         Label champ = new Label(isBattleRoyale
-                ? "⚔️ ¡BATTLE ROYALE COMPLETADO! Todos los elementos fueron presentados en la arena."
+                ? "¡BATTLE ROYALE COMPLETADO! Todos los elementos fueron presentados en la arena."
                 : "Todos los hitos han sido colocados en orden cronológico.");
+        if (isBattleRoyale) {
+            SvgEmoji.setGraphic(champ, "swords", 14);
+        }
         champ.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #f59e0b; -fx-background-color: rgba(245, 158, 11, 0.15); -fx-padding: 6px 16px; -fx-border-color: rgba(245, 158, 11, 0.4); -fx-border-radius: 10px; -fx-background-radius: 10px;");
 
-        Button restartBtn = new Button("Jugar Otra Vez ↺");
+        Button restartBtn = new Button("Jugar Otra Vez");
+        SvgEmoji.setGraphic(restartBtn, "refresh", 13);
         restartBtn.setStyle("-fx-background-color: linear-gradient(to right, #f59e0b, #d97706); -fx-text-fill: #0f172a; -fx-font-weight: 900; -fx-font-size: 13px; -fx-padding: 8px 20px; -fx-background-radius: 10px; -fx-cursor: hand;");
         restartBtn.setOnAction(e -> {
             mysteryCardBox.setVisible(true);

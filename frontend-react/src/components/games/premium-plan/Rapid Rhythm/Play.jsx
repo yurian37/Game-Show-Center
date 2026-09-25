@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import soundManager from '../../../../services/soundManager';
+import SvgEmoji from '../../../SvgEmoji';
 
 const DEFAULT_TRACKS = [
   {
@@ -237,7 +238,7 @@ export default function RapidRhythmPlay({ profiles = [], setupData = {}, onSelec
       {/* HEADER STATUS / BADGES */}
       <div className="mb-4 flex flex-wrap items-center justify-center gap-2">
         <span className="text-xs font-black text-amber-400 uppercase tracking-widest bg-amber-500/10 px-3.5 py-1 rounded-full border border-amber-500/20 shadow-sm flex items-center gap-1.5">
-          <span>🎵 Rapid Rhythm</span>
+          <span className="inline-flex items-center gap-1.5"><SvgEmoji name="music" /> Rapid Rhythm</span>
           <span>•</span>
           <span>Song {Math.min(roundNumber, totalMatchRounds)} of {totalMatchRounds}</span>
         </span>
@@ -252,7 +253,7 @@ export default function RapidRhythmPlay({ profiles = [], setupData = {}, onSelec
       {isMatchFinished ? (
         <div className="w-full max-w-[680px] min-h-[380px] bg-[#121624] border-2 border-amber-500/50 rounded-3xl p-8 flex flex-col items-center justify-center gap-4 shadow-2xl animate-fadeIn text-center">
           <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-4xl shadow-inner animate-bounce">
-            🏆
+            <SvgEmoji name="trophy" size={40} />
           </div>
           <h3 className="text-2xl font-black text-amber-300 uppercase tracking-wider">
             ALL RAPID RHYTHM ROUNDS COMPLETED!
@@ -261,7 +262,7 @@ export default function RapidRhythmPlay({ profiles = [], setupData = {}, onSelec
             All {totalMatchRounds} scheduled song clips have been played ({numPlayers} competitor(s) × {roundsPerPlayer} round/player). Award points above or proceed to the winner stage!
           </p>
           <div className="flex items-center gap-2 text-[11px] font-bold text-slate-400 mt-2 bg-slate-900/80 px-4 py-2 rounded-xl border border-slate-800">
-            <span>🏁 Ready for Winner Announcement or Next Minigame</span>
+            <span className="inline-flex items-center gap-1.5"><SvgEmoji name="flag" /> Ready for Winner Announcement or Next Minigame</span>
           </div>
         </div>
       ) : (
@@ -273,13 +274,13 @@ export default function RapidRhythmPlay({ profiles = [], setupData = {}, onSelec
           {/* AUDIO ERROR ALERT */}
           {audioError && (
             <div className="w-full bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs p-3 rounded-2xl font-bold flex items-center justify-between">
-              <span>⚠️ {audioError}</span>
+              <span className="inline-flex items-center gap-1.5"><SvgEmoji name="warning" /> {audioError}</span>
               <button
                 type="button"
                 onClick={() => setAudioError('')}
                 className="text-rose-400 hover:text-white font-bold ml-2 cursor-pointer"
               >
-                ✕
+                <SvgEmoji name="close" />
               </button>
             </div>
           )}
@@ -295,7 +296,7 @@ export default function RapidRhythmPlay({ profiles = [], setupData = {}, onSelec
                 Track #{roundNumber} Clue
               </span>
               <span className="text-[10px] font-black text-amber-400 bg-amber-500/10 px-3 py-1 rounded-lg border border-amber-500/20">
-                ⏱️ {startSec}s ➔ {endSec}s ({spanSec}s Clip)
+                <span className="inline-flex items-center gap-1"><SvgEmoji name="stopwatch" /> {startSec}s <SvgEmoji name="arrow-right" /> {endSec}s ({spanSec}s Clip)</span>
               </span>
             </div>
 
@@ -308,7 +309,7 @@ export default function RapidRhythmPlay({ profiles = [], setupData = {}, onSelec
               {isAnswerRevealed ? (
                 <div className="animate-fadeIn space-y-1">
                   <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest block">
-                    ✨ Correct Answer:
+                    <SvgEmoji name="sparkles" className="mr-1.5 inline" /> Correct Answer:
                   </span>
                   <h4 className="text-xl md:text-2xl font-black text-emerald-200 tracking-wide">
                     {currentTrack?.answer || "No answer configured"}
@@ -316,7 +317,7 @@ export default function RapidRhythmPlay({ profiles = [], setupData = {}, onSelec
                 </div>
               ) : (
                 <div className="flex items-center gap-3">
-                  <span className="text-2xl">🔒</span>
+                  <span className="text-2xl inline-flex items-center justify-center"><SvgEmoji name="lock" /></span>
                   <div className="text-left">
                     <span className="text-base font-black text-slate-300 tracking-widest">
                       ••••••••••••••••••••
@@ -338,7 +339,7 @@ export default function RapidRhythmPlay({ profiles = [], setupData = {}, onSelec
                   : 'bg-amber-400 hover:bg-yellow-300 text-slate-950 border-yellow-300 shadow-lg shadow-amber-500/20 active:scale-95'
               }`}
             >
-              <span>{isAnswerRevealed ? '🙈 Hide Answer' : '👁️ Reveal Answer'}</span>
+              <span className="inline-flex items-center gap-1.5">{isAnswerRevealed ? <><SvgEmoji name="monkey-hide" /> Hide Answer</> : <><SvgEmoji name="eye" /> Reveal Answer</>}</span>
             </button>
           </div>
 
@@ -389,7 +390,7 @@ export default function RapidRhythmPlay({ profiles = [], setupData = {}, onSelec
                 className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-colors cursor-pointer border border-slate-700"
                 title="Restart clip from configured start time"
               >
-                <span>⏮ Replay ({startSec}s)</span>
+                <span className="inline-flex items-center gap-1.5"><SvgEmoji name="previous" /> Replay ({startSec}s)</span>
               </button>
 
               {/* BIG PLAY / PAUSE BUTTON */}
@@ -401,12 +402,12 @@ export default function RapidRhythmPlay({ profiles = [], setupData = {}, onSelec
                     : 'bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white shadow-emerald-500/30 active:scale-95'
                 }`}
               >
-                <span>{isPlaying ? '⏸ Pause Clip' : '▶ Play Clip'}</span>
+                <span className="inline-flex items-center gap-1.5">{isPlaying ? <><SvgEmoji name="pause" /> Pause Clip</> : <><SvgEmoji name="play" /> Play Clip</>}</span>
               </button>
 
               {/* VOLUME SLIDER */}
               <div className="flex items-center gap-2 bg-[#090c14] px-3 py-1.5 rounded-xl border border-slate-800">
-                <span className="text-xs">🔊</span>
+                <SvgEmoji name="speaker" className="text-xs" />
                 <input
                   type="range"
                   min="0"
@@ -427,7 +428,7 @@ export default function RapidRhythmPlay({ profiles = [], setupData = {}, onSelec
               onClick={handleNextTrack}
               className="w-full py-4 px-8 rounded-2xl font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white border border-indigo-400/40 shadow-xl shadow-indigo-500/20 active:scale-95 transition-all cursor-pointer"
             >
-              <span>{roundNumber >= totalMatchRounds ? "🏁 Finish Match" : "Next Song ➔"}</span>
+              <span className="inline-flex items-center gap-1.5">{roundNumber >= totalMatchRounds ? <><SvgEmoji name="flag" /> Finish Match</> : <>Next Song <SvgEmoji name="arrow-right" /></>}</span>
             </button>
           </div>
 

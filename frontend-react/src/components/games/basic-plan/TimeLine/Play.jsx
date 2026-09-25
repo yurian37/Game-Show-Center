@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
+import SvgEmoji from '../../../SvgEmoji';
 
 // Format year for display (e.g. -450 -> 450 BC, 1969 -> 1969 AD)
 const formatYear = (year) => {
@@ -159,7 +160,7 @@ export default function TimeLinePlay({ profiles = [], setupData = {}, onSelectWi
       {/* Header Banner: Game Title & Milestones Remaining */}
       <div className="w-full max-w-4xl flex items-center justify-between gap-3 bg-[#131726]/80 backdrop-blur-md px-6 py-3 rounded-2xl border border-slate-800 shadow-lg mb-4">
         <div className="flex items-center gap-2">
-          <span className="text-xl">⏳</span>
+          <span className="text-xl flex items-center justify-center"><SvgEmoji name="hourglass" /></span>
           <span className="font-black text-amber-400 text-lg uppercase tracking-wider">TimeLine</span>
         </div>
         <span className="text-xs bg-slate-800/80 px-3 py-1.5 rounded-full font-mono text-slate-300 font-bold">
@@ -221,11 +222,11 @@ export default function TimeLinePlay({ profiles = [], setupData = {}, onSelectWi
               className="px-8 py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-sm rounded-2xl shadow-xl shadow-amber-500/20 transition-all active:scale-95 cursor-pointer flex items-center gap-2"
             >
               <span>Continue</span>
-              <span className="text-base">➔</span>
+              <span className="text-base flex items-center"><SvgEmoji name="arrow-right" /></span>
             </button>
           ) : (
             <div className="text-xs font-bold text-slate-400 bg-slate-900/60 px-4 py-1.5 rounded-full border border-slate-800">
-              👇 Click a slot <span className="text-amber-300 font-black">[ + ]</span> to place the event in history:
+              <SvgEmoji name="arrow-down" className="mr-1 inline" /> Click a slot <span className="text-amber-300 font-black">[ + ]</span> to place the event in history:
             </div>
           )}
 
@@ -273,7 +274,7 @@ export default function TimeLinePlay({ profiles = [], setupData = {}, onSelectWi
                         <div className="flex items-center justify-between mb-1.5">
                           {isNewlyPlaced ? (
                             <span className="px-2 py-0.5 rounded bg-amber-400 text-slate-950 text-[10px] font-black animate-pulse">
-                              ✨ Just Placed
+                              <SvgEmoji name="sparkles" className="mr-1 inline" /> Just Placed
                             </span>
                           ) : (
                             <span className="text-[10px] text-slate-400 font-bold">Milestone</span>
@@ -322,7 +323,7 @@ export default function TimeLinePlay({ profiles = [], setupData = {}, onSelectWi
       ) : (
         /* Match Finished Summary */
         <div className="w-full max-w-lg bg-gradient-to-br from-[#1e2544] to-[#121626] border-2 border-amber-400/80 rounded-3xl p-8 text-center shadow-2xl animate-fadeIn">
-          <span className="text-5xl block mb-3 animate-bounce">📜</span>
+          <span className="text-5xl block mb-3 animate-bounce flex items-center justify-center"><SvgEmoji name="scroll" size={48} /></span>
           <h3 className="text-2xl font-black text-white mb-1">Timeline Completed!</h3>
           <p className="text-xs text-slate-400 mb-6">
             All configured historical milestones have been placed in history successfully.

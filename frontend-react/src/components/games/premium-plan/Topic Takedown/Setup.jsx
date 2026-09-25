@@ -1,4 +1,5 @@
 import React from 'react';
+import SvgEmoji from '../../../SvgEmoji';
 
 export default function TopicTakedownSetup({ value, onChange }) {
   const numCategories = Math.min(3, Math.max(1, parseInt(value?.num_categories ?? value?.numCategories ?? 3) || 1));
@@ -104,7 +105,7 @@ export default function TopicTakedownSetup({ value, onChange }) {
       {/* Title & Badge */}
       <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
         <h3 className="text-lg font-black text-amber-400 flex items-center gap-2">
-          <span>🎯 Topic Takedown</span>
+          <span className="inline-flex items-center gap-1.5"><SvgEmoji name="target" /> Topic Takedown</span>
           <span className="text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded-full uppercase font-bold tracking-wider">
             Online Mode (Texto)
           </span>

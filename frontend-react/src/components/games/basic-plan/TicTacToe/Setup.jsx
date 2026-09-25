@@ -1,4 +1,5 @@
 import React from 'react';
+import SvgEmoji from '../../../SvgEmoji';
 
 export default function TicTacToeSetup({ value, onChange }) {
   const currentTeam = value?.starting_team || 'random';
@@ -11,9 +12,9 @@ export default function TicTacToeSetup({ value, onChange }) {
   };
 
   const options = [
-    { key: 'red', label: '🔴 Red Team', style: 'border-rose-500/20 hover:border-rose-500/50 text-rose-300 bg-rose-500/5' },
-    { key: 'blue', label: '🔵 Blue Team', style: 'border-sky-500/20 hover:border-sky-500/50 text-sky-300 bg-sky-500/5' },
-    { key: 'random', label: '🎲 Random', style: 'border-amber-500/20 hover:border-amber-500/50 text-amber-300 bg-amber-500/5' }
+    { key: 'red', label: 'Red Team', icon: 'circle-dot', style: 'border-rose-500/20 hover:border-rose-500/50 text-rose-300 bg-rose-500/5' },
+    { key: 'blue', label: 'Blue Team', icon: 'circle-dot', style: 'border-sky-500/20 hover:border-sky-500/50 text-sky-300 bg-sky-500/5' },
+    { key: 'random', label: 'Random', icon: 'dice', style: 'border-amber-500/20 hover:border-amber-500/50 text-amber-300 bg-amber-500/5' }
   ];
 
   return (
@@ -40,7 +41,7 @@ export default function TicTacToeSetup({ value, onChange }) {
                   : 'opacity-70 hover:opacity-100'
               }`}
             >
-              {opt.label}
+              {opt.icon ? <span className="flex items-center justify-center gap-1.5"><SvgEmoji name={opt.icon} /> {opt.label}</span> : opt.label}
             </button>
           );
         })}

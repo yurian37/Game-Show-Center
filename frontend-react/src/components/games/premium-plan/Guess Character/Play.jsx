@@ -10,6 +10,7 @@ import digit6 from '../../../../assets/guessthecharacter/digits/6.png';
 import digit7 from '../../../../assets/guessthecharacter/digits/7.png';
 import digit8 from '../../../../assets/guessthecharacter/digits/8.png';
 import digit9 from '../../../../assets/guessthecharacter/digits/9.png';
+import SvgEmoji from '../../../SvgEmoji';
 
 const DIGIT_IMGS = [digit0, digit1, digit2, digit3, digit4, digit5, digit6, digit7, digit8, digit9];
 
@@ -202,7 +203,7 @@ export default function GuessCharacterPlay({ profiles = [], setupData = {}, onSe
       {/* HEADER STATUS / BADGES */}
       <div className="mb-4 flex flex-wrap items-center justify-center gap-2">
         <span className="text-xs font-black text-amber-400 uppercase tracking-widest bg-amber-500/10 px-3.5 py-1 rounded-full border border-amber-500/20 shadow-sm flex items-center gap-1.5">
-          <span>🎭 Guess The Character</span>
+          <span className="inline-flex items-center gap-1.5"><SvgEmoji name="masks" /> Guess The Character</span>
           <span>•</span>
           <span>Image {Math.min(roundNumber, totalMatchRounds)} of {totalMatchRounds}</span>
         </span>
@@ -217,7 +218,7 @@ export default function GuessCharacterPlay({ profiles = [], setupData = {}, onSe
       {isMatchFinished ? (
         <div className="w-full max-w-[680px] h-[380px] bg-[#121624] border-2 border-amber-500/50 rounded-3xl p-8 flex flex-col items-center justify-center gap-4 shadow-2xl animate-fadeIn text-center">
           <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-4xl shadow-inner animate-bounce">
-            🏆
+            <SvgEmoji name="trophy" size={40} />
           </div>
           <h3 className="text-2xl font-black text-amber-300 uppercase tracking-wider">
             ALL GUESS THE CHARACTER ROUNDS COMPLETED!
@@ -226,7 +227,7 @@ export default function GuessCharacterPlay({ profiles = [], setupData = {}, onSe
             All {totalMatchRounds} scheduled character clues have been presented ({numPlayers} competitor(s) × {roundsPerPlayer} round/player). Adjust final scores above or proceed to the next game!
           </p>
           <div className="flex items-center gap-2 text-[11px] font-bold text-slate-400 mt-2 bg-slate-900/80 px-4 py-2 rounded-xl border border-slate-800">
-            <span>🏁 Ready for Winner Announcement or Next Minigame</span>
+            <span className="inline-flex items-center gap-1.5"><SvgEmoji name="flag" /> Ready for Winner Announcement or Next Minigame</span>
           </div>
         </div>
       ) : !isRoundActive ? (
@@ -237,7 +238,7 @@ export default function GuessCharacterPlay({ profiles = [], setupData = {}, onSe
           <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/10 via-transparent to-purple-500/10 pointer-events-none" />
           
           <div className="w-20 h-20 rounded-3xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-4xl shadow-inner group-hover:scale-105 transition-transform duration-300">
-            🎭
+            <SvgEmoji name="masks" size={40} />
           </div>
 
           <div className="space-y-1.5 z-10">
@@ -256,7 +257,7 @@ export default function GuessCharacterPlay({ profiles = [], setupData = {}, onSe
             onClick={handleStartTurn}
             className="z-10 px-8 py-3.5 rounded-2xl font-black text-xs uppercase tracking-wider bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 hover:to-yellow-200 text-slate-950 shadow-xl shadow-amber-500/20 active:scale-95 transition-all cursor-pointer flex items-center gap-2 font-mono"
           >
-            <span>🚀 Start Turn</span>
+            <span className="inline-flex items-center gap-1.5"><SvgEmoji name="rocket" /> Start Turn</span>
           </button>
         </div>
       ) : (
@@ -301,7 +302,7 @@ export default function GuessCharacterPlay({ profiles = [], setupData = {}, onSe
             {/* IMAGE NUMBER / TOTAL PER ROUND BADGE (BOTTOM CENTER) */}
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 bg-slate-950/85 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/20 shadow-lg">
               <span className="text-xs font-black text-white tracking-wider">
-                🎭 {roundNumber} / {totalMatchRounds}
+                <SvgEmoji name="masks" className="mr-1.5 inline" /> {roundNumber} / {totalMatchRounds}
               </span>
             </div>
           </div>
@@ -312,7 +313,7 @@ export default function GuessCharacterPlay({ profiles = [], setupData = {}, onSe
               onClick={handleNextImage}
               className="w-full py-4 px-8 rounded-2xl font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white border border-indigo-400/40 shadow-xl shadow-indigo-500/20 active:scale-95 transition-all cursor-pointer"
             >
-              <span>{roundNumber >= totalMatchRounds ? "🏁 Finish Match" : "Next Image ➔"}</span>
+              <span className="inline-flex items-center gap-1.5">{roundNumber >= totalMatchRounds ? <><SvgEmoji name="flag" /> Finish Match</> : <>Next Image <SvgEmoji name="arrow-right" /></>}</span>
             </button>
           </div>
 

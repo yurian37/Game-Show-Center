@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import soundManager from '../../../../services/soundManager';
+import SvgEmoji from '../../../SvgEmoji';
 
 export default function RapidRhythmSetup({ value, onChange }) {
   const [newUrl, setNewUrl] = useState('');
@@ -259,7 +260,7 @@ export default function RapidRhythmSetup({ value, onChange }) {
     <div className="bg-[#1b2238] p-6 rounded-2xl border border-slate-800 animate-fadeIn text-slate-200">
       <div className="flex justify-between items-center mb-2">
         <h3 className="text-lg font-black text-amber-400 flex items-center gap-2">
-          <span>🎵 Rapid Rhythm Setup</span>
+          <span className="inline-flex items-center gap-1.5"><SvgEmoji name="music" /> Rapid Rhythm Setup</span>
           <span className="text-[10px] bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded uppercase font-bold">Premium</span>
         </h3>
         <span className="text-xs font-bold text-slate-400 bg-slate-800/80 px-3 py-1 rounded-full border border-slate-700">
@@ -294,13 +295,13 @@ export default function RapidRhythmSetup({ value, onChange }) {
       {/* ERROR ALERT */}
       {errorMessage && (
         <div className="mb-4 bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs p-3 rounded-xl font-bold flex items-center justify-between animate-fadeIn">
-          <span>⚠️ {errorMessage}</span>
+          <span className="inline-flex items-center gap-1.5"><SvgEmoji name="warning" /> {errorMessage}</span>
           <button
             type="button"
             onClick={() => setErrorMessage('')}
             className="text-rose-400 hover:text-white font-bold ml-2 text-sm cursor-pointer"
           >
-            ✕
+            <SvgEmoji name="close" />
           </button>
         </div>
       )}
@@ -308,7 +309,7 @@ export default function RapidRhythmSetup({ value, onChange }) {
       {/* MANDATORY ANSWER NOTICE ALERT IF ANY TRACK HAS EMPTY ANSWER */}
       {hasEmptyAnswers && (
         <div className="mb-4 bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs p-3 rounded-xl font-bold flex items-center gap-2">
-          <span>⚠️ Every audio track must have a non-empty Answer. Please fill in the missing answers below.</span>
+          <span className="inline-flex items-center gap-1.5"><SvgEmoji name="warning" /> Every audio track must have a non-empty Answer. Please fill in the missing answers below.</span>
         </div>
       )}
 
@@ -318,13 +319,13 @@ export default function RapidRhythmSetup({ value, onChange }) {
             Audio Tracks Pool & Trimming Controls
           </label>
           <span className="text-[10px] font-bold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-md border border-amber-500/20">
-            ⏱️ Online Max Window: 30s | Mandatory Answers
+            <span className="inline-flex items-center gap-1.5"><SvgEmoji name="stopwatch" /> Online Max Window: 30s | Mandatory Answers</span>
           </span>
         </div>
 
         {/* MP3 FILE UPLOAD DROPZONE */}
         <label className="w-full p-4 rounded-xl bg-[#121624] border-2 border-dashed border-slate-700 hover:border-purple-500 transition-colors flex items-center justify-center gap-3 cursor-pointer text-slate-400 hover:text-purple-300 mb-4 group">
-          <span className="text-2xl">🎵</span>
+          <span className="text-2xl inline-flex items-center justify-center"><SvgEmoji name="music" /></span>
           <div className="text-left">
             <span className="text-xs font-bold uppercase tracking-wider block text-slate-300 group-hover:text-purple-300">
               {isLoading ? 'Analyzing Audio Files & Metadata...' : 'Upload MP3 Tracks'}
@@ -423,7 +424,7 @@ export default function RapidRhythmSetup({ value, onChange }) {
                           : 'bg-indigo-600/30 hover:bg-indigo-600 text-indigo-300 hover:text-white border border-indigo-500/30'
                       }`}
                     >
-                      <span>{isPreviewing ? '⏹ Stop Clip' : '▶ Preview Clip'}</span>
+                      <span className="inline-flex items-center gap-1.5">{isPreviewing ? <><SvgEmoji name="stop" /> Stop Clip</> : <><SvgEmoji name="play" /> Preview Clip</>}</span>
                       <span className="font-mono text-[10px]">({start}s - {end}s)</span>
                     </button>
 
@@ -434,7 +435,7 @@ export default function RapidRhythmSetup({ value, onChange }) {
                       className="bg-rose-500/20 hover:bg-rose-600 text-rose-400 hover:text-white p-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer"
                       title="Remove track"
                     >
-                      ✕
+                      <SvgEmoji name="close" />
                     </button>
                   </div>
                 </div>
@@ -442,7 +443,7 @@ export default function RapidRhythmSetup({ value, onChange }) {
                 {/* MANDATORY ANSWER ROW */}
                 <div className="grid grid-cols-1 md:grid-cols-[120px_1fr] items-center gap-2 bg-[#121624] p-2.5 rounded-xl border border-slate-800">
                   <label className="text-[11px] font-black uppercase tracking-wider flex items-center gap-1 text-emerald-400">
-                    <span>💡 Answer:</span>
+                    <span className="inline-flex items-center gap-1.5"><SvgEmoji name="bulb" /> Answer:</span>
                     <span className="text-rose-400">*</span>
                   </label>
                   <div className="relative">
@@ -467,8 +468,8 @@ export default function RapidRhythmSetup({ value, onChange }) {
                 <div className="bg-[#121624] p-3 rounded-xl border border-slate-800 space-y-3">
                   <div className="flex flex-wrap items-center justify-between text-[11px] font-bold text-slate-400 gap-2">
                     <div className="flex items-center gap-2">
-                      <span className="text-indigo-400">⏱️ Playback Segment:</span>
-                      <span className="text-slate-200 font-mono font-black">{start}s ➔ {end}s</span>
+                      <span className="text-indigo-400 inline-flex items-center gap-1"><SvgEmoji name="stopwatch" /> Playback Segment:</span>
+                      <span className="text-slate-200 font-mono font-black inline-flex items-center gap-1">{start}s <SvgEmoji name="arrow-right" /> {end}s</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded border border-purple-500/30 text-[10px] font-black">

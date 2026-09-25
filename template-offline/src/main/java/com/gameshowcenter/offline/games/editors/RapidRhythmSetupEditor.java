@@ -10,6 +10,7 @@ import com.gameshowcenter.offline.model.Competitor;
 import com.gameshowcenter.offline.theme.ThemeManager;
 import com.gameshowcenter.offline.util.FileChooserHelper;
 import com.gameshowcenter.offline.util.ImageLoaderHelper;
+import com.gameshowcenter.offline.util.SvgEmoji;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -79,6 +80,7 @@ public class RapidRhythmSetupEditor implements IGameSetupEditor {
 
         // Battle Royale Toggle Row
         battleRoyaleCheckBox = new CheckBox(I18n.get("game.editor.battleroyale.check"));
+        SvgEmoji.setGraphic(battleRoyaleCheckBox, "swords", 16);
         battleRoyaleCheckBox.setSelected(curBattleRoyale);
         battleRoyaleCheckBox.setStyle("-fx-text-fill: #fbbf24; -fx-font-weight: 900; -fx-font-size: 12px; -fx-cursor: hand;");
 
@@ -253,7 +255,8 @@ public class RapidRhythmSetupEditor implements IGameSetupEditor {
         entry.previewBtn.setStyle("-fx-background-color: rgba(99, 102, 241, 0.25); -fx-text-fill: #a5b4fc; -fx-font-size: 10px; -fx-font-weight: 900; -fx-padding: 5px 10px; -fx-background-radius: 6px; -fx-cursor: hand;");
         entry.previewBtn.setOnAction(e -> togglePreview(entry));
 
-        Button delBtn = new Button("✕");
+        Button delBtn = new Button();
+        SvgEmoji.setGraphic(delBtn, "close", 10);
         delBtn.setStyle("-fx-background-color: rgba(239, 68, 68, 0.2); -fx-text-fill: #ef4444; -fx-font-size: 10px; -fx-font-weight: 900; -fx-padding: 5px 8px; -fx-background-radius: 6px; -fx-cursor: hand;");
         delBtn.setOnAction(e -> {
             stopPreview();
@@ -328,7 +331,7 @@ public class RapidRhythmSetupEditor implements IGameSetupEditor {
             int s = entry.startSpinner.getValue() != null ? entry.startSpinner.getValue() : 0;
             int e = entry.endSpinner.getValue() != null ? entry.endSpinner.getValue() : 30;
             int span = Math.max(0, e - s);
-            entry.spanInfoLabel.setText(I18n.get("game.editor.rhythm.segment_prefix") + s + "s ➔ " + e + "s (" + span + "s clip)");
+            entry.spanInfoLabel.setText(I18n.get("game.editor.rhythm.segment_prefix") + s + "s - " + e + "s (" + span + "s clip)");
         }
     }
 

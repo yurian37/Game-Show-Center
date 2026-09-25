@@ -10,6 +10,7 @@ import com.gameshowcenter.offline.model.Competitor;
 import com.gameshowcenter.offline.theme.ThemeManager;
 import com.gameshowcenter.offline.util.FileChooserHelper;
 import com.gameshowcenter.offline.util.ImageLoaderHelper;
+import com.gameshowcenter.offline.util.SvgEmoji;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -87,6 +88,7 @@ public class GuessCharacterSetupEditor implements IGameSetupEditor {
 
         // Battle Royale Toggle Row
         battleRoyaleCheckBox = new CheckBox(I18n.get("game.editor.battleroyale.check"));
+        SvgEmoji.setGraphic(battleRoyaleCheckBox, "swords", 16);
         battleRoyaleCheckBox.setSelected(curBattleRoyale);
         battleRoyaleCheckBox.setStyle("-fx-text-fill: #fbbf24; -fx-font-weight: 900; -fx-font-size: 12px; -fx-cursor: hand;");
 
@@ -243,8 +245,8 @@ public class GuessCharacterSetupEditor implements IGameSetupEditor {
             ImageLoaderHelper.loadImageAsync(imgUrl, 85, 85, true, true,
                     iv::setImage,
                     () -> {
-                        Label err = new Label("🎭");
-                        err.setStyle("-fx-font-size: 24px;");
+                        Label err = new Label();
+                        SvgEmoji.setGraphic(err, "masks", 24);
                         thumbCard.getChildren().setAll(err);
                     }
             );
@@ -254,7 +256,8 @@ public class GuessCharacterSetupEditor implements IGameSetupEditor {
             StackPane.setAlignment(numBadge, Pos.BOTTOM_LEFT);
             StackPane.setMargin(numBadge, new Insets(3));
 
-            Button delBtn = new Button("✕");
+            Button delBtn = new Button();
+            SvgEmoji.setGraphic(delBtn, "close", 8);
             delBtn.setStyle("-fx-background-color: #ef4444; -fx-text-fill: #ffffff; -fx-font-size: 9px; -fx-font-weight: 900; -fx-padding: 1px 5px; -fx-background-radius: 10px; -fx-cursor: hand;");
             StackPane.setAlignment(delBtn, Pos.TOP_RIGHT);
             StackPane.setMargin(delBtn, new Insets(3));
@@ -266,7 +269,8 @@ public class GuessCharacterSetupEditor implements IGameSetupEditor {
             thumbCard.getChildren().addAll(numBadge, delBtn);
 
             if (copyrightWarnings.contains(imgUrl)) {
-                Label warnBadge = new Label("⚠️");
+                Label warnBadge = new Label();
+                SvgEmoji.setGraphic(warnBadge, "warning", 9);
                 warnBadge.setStyle("-fx-background-color: rgba(245, 158, 11, 0.9); -fx-text-fill: #000; -fx-font-size: 9px; -fx-padding: 1px 3px; -fx-background-radius: 3px; -fx-cursor: hand;");
                 Tooltip.install(warnBadge, new Tooltip(I18n.get("settings.ai.copyright_badge")));
                 StackPane.setAlignment(warnBadge, Pos.TOP_LEFT);

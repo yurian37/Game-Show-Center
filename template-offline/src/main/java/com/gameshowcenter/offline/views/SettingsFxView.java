@@ -14,6 +14,7 @@ import com.gameshowcenter.offline.service.AIService;
 import com.gameshowcenter.offline.theme.ImageSourcesConfigManager;
 import com.gameshowcenter.offline.theme.ThemeManager;
 import com.gameshowcenter.offline.util.FileChooserHelper;
+import com.gameshowcenter.offline.util.SvgEmoji;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -339,7 +340,8 @@ public class SettingsFxView extends ScrollPane {
         Region scoreSpacer = new Region();
         HBox.setHgrow(scoreSpacer, Priority.ALWAYS);
 
-        resetPresetsBtn = new Button("🔄 " + I18n.get("settings.score.reset_btn"));
+        resetPresetsBtn = new Button(I18n.get("settings.score.reset_btn"));
+        SvgEmoji.setGraphic(resetPresetsBtn, "refresh", 13);
         resetPresetsBtn.setFocusTraversable(false);
         resetPresetsBtn.setStyle(String.format(
                 "-fx-background-color: %s; -fx-text-fill: %s; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 4px 10px; -fx-background-radius: 8px; -fx-border-color: rgba(255, 255, 255, 0.15); -fx-border-radius: 8px; -fx-cursor: hand;",
@@ -383,7 +385,8 @@ public class SettingsFxView extends ScrollPane {
             return null;
         }));
 
-        addPresetBtn = new Button("➕ " + I18n.get("settings.score.add_btn"));
+        addPresetBtn = new Button(I18n.get("settings.score.add_btn"));
+        SvgEmoji.setGraphic(addPresetBtn, "plus", 13);
         addPresetBtn.setStyle(String.format(
                 "-fx-background-color: %s; -fx-text-fill: %s; -fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 8px 16px; -fx-background-radius: 8px; -fx-cursor: hand;",
                 ThemeManager.getAccentHex(), ThemeManager.getTextOnAccentPrimaryHex()));
@@ -632,13 +635,11 @@ public class SettingsFxView extends ScrollPane {
                 imgView.setPreserveRatio(true);
                 iconCircle.getChildren().add(imgView);
             } catch (Exception e) {
-                Label fallBackIcon = new Label("😢");
-                fallBackIcon.setStyle("-fx-font-size: 32px;");
+                Label fallBackIcon = SvgEmoji.createLabel("sad", 36);
                 iconCircle.getChildren().add(fallBackIcon);
             }
         } else {
-            Label fallBackIcon = new Label("😢");
-            fallBackIcon.setStyle("-fx-font-size: 32px;");
+            Label fallBackIcon = SvgEmoji.createLabel("sad", 36);
             iconCircle.getChildren().add(fallBackIcon);
         }
 
@@ -718,13 +719,11 @@ public class SettingsFxView extends ScrollPane {
                 imgView.setPreserveRatio(true);
                 iconCircle.getChildren().add(imgView);
             } catch (Exception e) {
-                Label fallBackIcon = new Label("⚠️");
-                fallBackIcon.setStyle("-fx-font-size: 32px;");
+                Label fallBackIcon = SvgEmoji.createLabel("warning", 36);
                 iconCircle.getChildren().add(fallBackIcon);
             }
         } else {
-            Label fallBackIcon = new Label("⚠️");
-            fallBackIcon.setStyle("-fx-font-size: 32px;");
+            Label fallBackIcon = SvgEmoji.createLabel("warning", 36);
             iconCircle.getChildren().add(fallBackIcon);
         }
 
@@ -798,7 +797,8 @@ public class SettingsFxView extends ScrollPane {
 
         String gameName = activeGame.getName();
         String rulesWord = I18n.get("arena.btn.rules").replace("📖", "").trim();
-        Label titleLabel = new Label("📖 " + gameName.toUpperCase() + " - " + rulesWord);
+        Label titleLabel = new Label(gameName.toUpperCase() + " - " + rulesWord);
+        SvgEmoji.setGraphic(titleLabel, "book", 18);
         titleLabel.setStyle(String.format("-fx-font-size: 18px; -fx-font-weight: 900; -fx-text-fill: %s;", ThemeManager.getTextOnCardPrimaryHex()));
 
         HBox langRow = new HBox(8);
@@ -901,7 +901,8 @@ public class SettingsFxView extends ScrollPane {
         };
 
         for (I18n.LanguageOption opt : I18n.SUPPORTED_LANGUAGES) {
-            Button lBtn = new Button(opt.flag + " " + opt.code.toUpperCase());
+            Button lBtn = new Button(opt.code.toUpperCase());
+            SvgEmoji.setGraphic(lBtn, opt.flag, 16);
             lBtn.setUserData(opt.code);
             lBtn.setOnAction(e -> {
                 selectedLang[0] = opt.code;
@@ -1007,7 +1008,8 @@ public class SettingsFxView extends ScrollPane {
 
         Node gifNode = createLoadingGifNode(90);
 
-        Label titleLabel = new Label("✨ " + I18n.get("settings.ai.loading_message"));
+        Label titleLabel = new Label(I18n.get("settings.ai.loading_message"));
+        SvgEmoji.setGraphic(titleLabel, "sparkles", 18);
         titleLabel.setStyle(String.format(
                 "-fx-font-size: 14px; -fx-font-weight: 900; -fx-text-fill: %s; -fx-text-alignment: center;",
                 ThemeManager.getTextOnCardPrimaryHex()));
@@ -1090,13 +1092,11 @@ public class SettingsFxView extends ScrollPane {
                 imgView.setPreserveRatio(true);
                 iconCircle.getChildren().add(imgView);
             } catch (Exception e) {
-                Label fallBackIcon = new Label("⚠️");
-                fallBackIcon.setStyle("-fx-font-size: 32px;");
+                Label fallBackIcon = SvgEmoji.createLabel("warning", 36);
                 iconCircle.getChildren().add(fallBackIcon);
             }
         } else {
-            Label fallBackIcon = new Label("⚠️");
-            fallBackIcon.setStyle("-fx-font-size: 32px;");
+            Label fallBackIcon = SvgEmoji.createLabel("warning", 36);
             iconCircle.getChildren().add(fallBackIcon);
         }
 
@@ -1534,7 +1534,8 @@ public class SettingsFxView extends ScrollPane {
                 }
             }
             if (gSetup != null && gSetup.has("battleRoyale") && gSetup.get("battleRoyale").asBoolean()) {
-                Label brBadge = new Label("⚔️ BR");
+                Label brBadge = new Label("BR");
+                SvgEmoji.setGraphic(brBadge, "swords", 11);
                 brBadge.setStyle("-fx-background-color: rgba(245, 158, 11, 0.25); -fx-text-fill: #fbbf24; -fx-font-size: 9px; -fx-font-weight: 900; -fx-padding: 2px 6px; -fx-background-radius: 6px; -fx-border-color: #f59e0b; -fx-border-radius: 6px;");
                 titleRow.getChildren().add(brBadge);
             }
@@ -1666,7 +1667,8 @@ public class SettingsFxView extends ScrollPane {
             }
         });
 
-        Button saveBtn = new Button("💾 " + I18n.get("settings.modal.save_changes"));
+        Button saveBtn = new Button(I18n.get("settings.modal.save_changes"));
+        SvgEmoji.setGraphic(saveBtn, "save", 15);
         saveBtn.setStyle(String.format(
                 "-fx-background-color: %s; -fx-text-fill: #ffffff; -fx-font-weight: bold; -fx-padding: 10px 20px; -fx-background-radius: 10px; -fx-cursor: hand;",
                 ThemeManager.getAccentHex()));
@@ -1674,7 +1676,8 @@ public class SettingsFxView extends ScrollPane {
         StackPane modalRoot = new StackPane(rootBox);
 
         if (isGameSupportedByAI(game.getName())) {
-            Button aiBtn = new Button("✨ " + I18n.get("settings.btn.ai"));
+            Button aiBtn = new Button(I18n.get("settings.btn.ai"));
+            SvgEmoji.setGraphic(aiBtn, "sparkles", 15);
             boolean hasRam = AIService.hasMinimumMemory();
             boolean hasNet = AIService.hasInternetConnection();
             boolean aiEnabled = hasRam && hasNet;
@@ -1791,7 +1794,8 @@ public class SettingsFxView extends ScrollPane {
                 ThemeManager.getMainBoxHex()));
 
         // Title
-        Label headerTitle = new Label("✨ " + String.format(I18n.get("settings.ai.modal_title"), game.getName()));
+        Label headerTitle = new Label(String.format(I18n.get("settings.ai.modal_title"), game.getName()));
+        SvgEmoji.setGraphic(headerTitle, "sparkles", 18);
         headerTitle.setStyle("-fx-font-size: 17px; -fx-font-weight: 900; -fx-text-fill: #c084fc;");
 
         Label headerSubtitle = new Label(I18n.get("settings.ai.modal_subtitle"));
@@ -1825,7 +1829,8 @@ public class SettingsFxView extends ScrollPane {
 
         HBox metaHeader = new HBox(8);
         metaHeader.setAlignment(Pos.CENTER_LEFT);
-        Label metaTitle = new Label("📋 " + I18n.get("settings.ai.existing_metadata_title"));
+        Label metaTitle = new Label(I18n.get("settings.ai.existing_metadata_title"));
+        SvgEmoji.setGraphic(metaTitle, "clipboard", 14);
         metaTitle.setStyle("-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #34d399;");
         Label metaBadge = new Label(existingItems.size() + " " + (existingItems.size() == 1 ? "item" : "items"));
         metaBadge.setStyle("-fx-font-size: 10px; -fx-font-weight: bold; -fx-text-fill: #a7f3d0; -fx-background-color: #064e3b; -fx-padding: 1 6; -fx-background-radius: 6;");
@@ -1914,7 +1919,8 @@ public class SettingsFxView extends ScrollPane {
         cancelBtn.setStyle("-fx-background-color: rgba(255,255,255,0.08); -fx-text-fill: #e2e8f0; -fx-font-weight: bold; -fx-padding: 8px 16px; -fx-background-radius: 8px; -fx-cursor: hand;");
         cancelBtn.setOnAction(e -> aiStage.close());
 
-        Button generateBtn = new Button("✨ " + I18n.get("settings.ai.btn_generate"));
+        Button generateBtn = new Button(I18n.get("settings.ai.btn_generate"));
+        SvgEmoji.setGraphic(generateBtn, "sparkles", 15);
         generateBtn.setStyle("-fx-background-color: linear-gradient(to right, #8b5cf6, #ec4899); -fx-text-fill: #ffffff; -fx-font-weight: 900; -fx-padding: 9px 20px; -fx-background-radius: 8px; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(236,72,153,0.4), 8, 0, 0, 2);");
 
         final int finalImagesPerRound = curImagesPerRound;
@@ -1936,7 +1942,7 @@ public class SettingsFxView extends ScrollPane {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.initOwner(aiStage);
                 alert.setTitle("Game Show Center - Moderación");
-                alert.setHeaderText("🚫 Tema No Permitido");
+                alert.setHeaderText("Tema No Permitido");
                 alert.setContentText(I18n.get("settings.ai.error_prohibited_theme"));
                 alert.showAndWait();
                 return;
@@ -1951,7 +1957,7 @@ public class SettingsFxView extends ScrollPane {
                 Alert fatalAlert = new Alert(Alert.AlertType.ERROR);
                 fatalAlert.initOwner(aiStage);
                 fatalAlert.setTitle(I18n.get("settings.ai.sources.fatal_title"));
-                fatalAlert.setHeaderText("🚫 " + I18n.get("settings.ai.sources.fatal_header"));
+                fatalAlert.setHeaderText(I18n.get("settings.ai.sources.fatal_header"));
                 fatalAlert.setContentText(I18n.get("settings.ai.sources.fatal_desc"));
                 fatalAlert.showAndWait();
                 return;
@@ -1984,7 +1990,7 @@ public class SettingsFxView extends ScrollPane {
                         Alert errAlert = new Alert(Alert.AlertType.ERROR);
                         errAlert.initOwner(parentDialog);
                         errAlert.setTitle("Game Show Center - Error IA");
-                        errAlert.setHeaderText("PROHIBITED_THEME".equals(result.getErrorCode()) ? "🚫 Tema Prohibido" : "Error en Generación de IA");
+                        errAlert.setHeaderText("PROHIBITED_THEME".equals(result.getErrorCode()) ? "Tema Prohibido" : "Error en Generación de IA");
                         errAlert.setContentText(result.getErrorMessage());
                         errAlert.showAndWait();
                     } else {
@@ -2494,7 +2500,8 @@ public class SettingsFxView extends ScrollPane {
                 battleRoyaleBadge.setStyle("-fx-background-color: rgba(245, 158, 11, 0.25); -fx-text-fill: #fbbf24; -fx-font-size: 10px; -fx-font-weight: 900; -fx-padding: 3px 8px; -fx-background-radius: 6px; -fx-border-color: #f59e0b; -fx-border-radius: 6px;");
             }
             if (battleRoyaleToggleBtn != null) {
-                battleRoyaleToggleBtn.setText("🔥 " + I18n.get("settings.mode.battleroyale.btn_on"));
+                battleRoyaleToggleBtn.setText(I18n.get("settings.mode.battleroyale.btn_on"));
+                SvgEmoji.setGraphic(battleRoyaleToggleBtn, "fire", 14);
                 battleRoyaleToggleBtn.setStyle("-fx-background-color: linear-gradient(to right, #f59e0b, #e11d48); -fx-text-fill: #ffffff; -fx-font-size: 11px; -fx-font-weight: 900; -fx-padding: 6px 14px; -fx-background-radius: 10px; -fx-border-color: #fbbf24; -fx-border-radius: 10px; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(245,158,11,0.4), 8, 0, 0, 2);");
             }
             if (gamesSubtitle != null) {
@@ -2508,7 +2515,8 @@ public class SettingsFxView extends ScrollPane {
                 battleRoyaleBadge.setStyle("-fx-background-color: rgba(148, 163, 184, 0.15); -fx-text-fill: #94a3b8; -fx-font-size: 10px; -fx-font-weight: 800; -fx-padding: 3px 8px; -fx-background-radius: 6px; -fx-border-color: rgba(148, 163, 184, 0.3); -fx-border-radius: 6px;");
             }
             if (battleRoyaleToggleBtn != null) {
-                battleRoyaleToggleBtn.setText("⚪ " + I18n.get("settings.mode.battleroyale.btn_off"));
+                battleRoyaleToggleBtn.setText(I18n.get("settings.mode.battleroyale.btn_off"));
+                SvgEmoji.setGraphic(battleRoyaleToggleBtn, "circle-outline", 14);
                 battleRoyaleToggleBtn.setStyle(String.format(
                         "-fx-background-color: %s; -fx-text-fill: #94a3b8; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 6px 14px; -fx-background-radius: 10px; -fx-border-color: rgba(255, 255, 255, 0.15); -fx-border-radius: 10px; -fx-cursor: hand;",
                         ThemeManager.getButtonHex()));
@@ -2706,12 +2714,18 @@ public class SettingsFxView extends ScrollPane {
         }
 
         if (scorePresetsTitle != null) scorePresetsTitle.setText(I18n.get("settings.score.title"));
-        if (resetPresetsBtn != null) resetPresetsBtn.setText("🔄 " + I18n.get("settings.score.reset_btn"));
+        if (resetPresetsBtn != null) {
+            resetPresetsBtn.setText(I18n.get("settings.score.reset_btn"));
+            SvgEmoji.setGraphic(resetPresetsBtn, "refresh", 13);
+        }
         if (scorePresetsSubtitle != null) scorePresetsSubtitle.setText(I18n.get("settings.score.subtitle"));
         if (scoreHelpLabel != null) scoreHelpLabel.setText(I18n.get("settings.score.help"));
 
         if (newPresetInput != null) newPresetInput.setPromptText(I18n.get("settings.score.input_placeholder"));
-        if (addPresetBtn != null) addPresetBtn.setText("➕ " + I18n.get("settings.score.add_btn"));
+        if (addPresetBtn != null) {
+            addPresetBtn.setText(I18n.get("settings.score.add_btn"));
+            SvgEmoji.setGraphic(addPresetBtn, "plus", 13);
+        }
 
         if (gamesTitle != null) gamesTitle.setText(I18n.get("settings.games.title"));
         if (gamesSubtitle != null) gamesSubtitle.setText(I18n.get("settings.games.help"));
@@ -2743,7 +2757,8 @@ public class SettingsFxView extends ScrollPane {
                     "-fx-font-size: 13px; -fx-font-weight: 900; -fx-text-fill: %s;",
                     chipTextColor));
 
-            Button delBtn = new Button("✕");
+            Button delBtn = new Button();
+            SvgEmoji.setGraphic(delBtn, "close", 10);
             delBtn.setFocusTraversable(false);
             delBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #94a3b8; -fx-font-size: 11px; -fx-font-weight: 900; -fx-padding: 0 2; -fx-cursor: hand;");
             delBtn.setOnMouseEntered(e -> delBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #ef4444; -fx-font-size: 11px; -fx-font-weight: 900; -fx-padding: 0 2; -fx-cursor: hand;"));

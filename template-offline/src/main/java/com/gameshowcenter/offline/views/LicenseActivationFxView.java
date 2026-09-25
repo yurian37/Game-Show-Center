@@ -4,8 +4,10 @@ import com.gameshowcenter.offline.MainApp;
 import com.gameshowcenter.offline.i18n.I18n;
 import com.gameshowcenter.offline.security.HardwareIdUtil;
 import com.gameshowcenter.offline.security.LicenseManager;
+import com.gameshowcenter.offline.util.SvgEmoji;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
@@ -38,8 +40,7 @@ public class LicenseActivationFxView extends VBox {
         );
 
         // Header Title
-        Label lockIcon = new Label("🔒");
-        lockIcon.setStyle("-fx-font-size: 48px;");
+        Node lockIcon = SvgEmoji.create("lock", 48);
 
         Label title = new Label(I18n.get("license.title"));
         title.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #f8fafc;");

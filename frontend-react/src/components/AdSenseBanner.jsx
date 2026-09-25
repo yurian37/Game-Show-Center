@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 
+import SvgEmoji from './SvgEmoji';
+
 // Google AdSense Publisher ID provided by user
 const PUBLISHER_ID = "ca-pub-9455310542591934";
 
@@ -28,8 +30,8 @@ export default function AdSenseBanner({
     <div className="w-full bg-[#111625]/90 border border-slate-800/80 rounded-2xl p-4 my-4 shadow-lg text-center relative overflow-hidden">
       {/* LABEL */}
       <div className="flex items-center justify-between mb-2">
-        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 bg-slate-800/60 px-2.5 py-0.5 rounded-md border border-slate-700/50">
-          📢 {label}
+        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 bg-slate-800/60 px-2.5 py-0.5 rounded-md border border-slate-700/50 inline-flex items-center gap-1.5">
+          <SvgEmoji name="megaphone" /> {label}
         </span>
         <span className="text-[9px] font-bold text-slate-400">
           Google AdSense Verified

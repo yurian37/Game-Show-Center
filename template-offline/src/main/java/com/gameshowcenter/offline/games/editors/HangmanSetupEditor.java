@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import com.gameshowcenter.offline.util.SvgEmoji;
 import java.util.Set;
 
 public class HangmanSetupEditor implements IGameSetupEditor {
@@ -45,6 +46,7 @@ public class HangmanSetupEditor implements IGameSetupEditor {
 
         // Battle Royale Toggle Row
         battleRoyaleCheckBox = new CheckBox(I18n.get("game.editor.battleroyale.check"));
+        SvgEmoji.setGraphic(battleRoyaleCheckBox, "swords", 16);
         battleRoyaleCheckBox.setSelected(curBattleRoyale);
         battleRoyaleCheckBox.setStyle("-fx-text-fill: #fbbf24; -fx-font-weight: 900; -fx-font-size: 12px; -fx-cursor: hand;");
 
@@ -109,7 +111,8 @@ public class HangmanSetupEditor implements IGameSetupEditor {
         Label wordsLabel = new Label(I18n.get("game.editor.hangman.word_pool"));
         wordsLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #a5b4fc; -fx-font-size: 13px;");
 
-        Button cleanDupesBtn = new Button(I18n.get("game.editor.hangman.clean_duplicates", "✨ Limpiar Duplicados"));
+        Button cleanDupesBtn = new Button(I18n.get("game.editor.hangman.clean_duplicates", "Limpiar Duplicados"));
+        SvgEmoji.setGraphic(cleanDupesBtn, "sparkles", 12);
         cleanDupesBtn.setStyle("-fx-background-color: #334155; -fx-text-fill: #f8fafc; -fx-font-size: 11px; -fx-padding: 3px 10px; -fx-background-radius: 6px; -fx-cursor: hand;");
         cleanDupesBtn.setVisible(false);
 

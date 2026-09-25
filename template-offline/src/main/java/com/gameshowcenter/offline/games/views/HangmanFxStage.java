@@ -12,6 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import com.gameshowcenter.offline.util.SvgEmoji;
 
 import java.io.File;
 import java.util.*;
@@ -229,8 +230,8 @@ public class HangmanFxStage extends VBox {
         endBanner.setMaxWidth(Double.MAX_VALUE);
         endBanner.setVisible(false);
 
-        endBannerIcon = new Label("👑");
-        endBannerIcon.setStyle("-fx-font-size: 36px;");
+        endBannerIcon = new Label();
+        SvgEmoji.setGraphic(endBannerIcon, "crown", 36);
 
         endBannerTitle = new Label(I18n.get("game.hangman.round_victory"));
         endBannerTitle.setStyle("-fx-font-size: 18px; -fx-font-weight: 900; -fx-text-fill: #ffffff;");
@@ -239,6 +240,7 @@ public class HangmanFxStage extends VBox {
         endBannerMsg.setStyle(String.format("-fx-font-size: 13px; -fx-text-fill: %s; -fx-wrap-text: true; -fx-alignment: center;", ThemeManager.toHex(ThemeManager.getCurrentPalette().textPrimary)));
 
         nextRoundBtn = new Button(I18n.get("game.common.next_round"));
+        SvgEmoji.setGraphic(nextRoundBtn, "arrow-right", 16);
         nextRoundBtn.setStyle(String.format("-fx-font-size: 14px; -fx-padding: 10px 28px; -fx-background-color: %s; -fx-text-fill: #ffffff; -fx-font-weight: 900; -fx-background-radius: 12px; -fx-cursor: hand;", ThemeManager.getAccentHex()));
         nextRoundBtn.setOnAction(e -> {
             if (currentRoundNumber < totalRounds) {
@@ -248,6 +250,7 @@ public class HangmanFxStage extends VBox {
         });
 
         matchCompletedLabel = new Label(I18n.get("game.hangman.match_completed"));
+        SvgEmoji.setGraphic(matchCompletedLabel, "trophy", 16);
         matchCompletedLabel.setStyle(String.format("-fx-font-size: 13px; -fx-font-weight: 900; -fx-text-fill: %s; -fx-background-color: %s; -fx-padding: 8px 20px; -fx-background-radius: 12px; -fx-border-color: rgba(255, 255, 255, 0.1); -fx-border-radius: 12px;", ThemeManager.getAccentHex(), ThemeManager.getCardHex()));
         matchCompletedLabel.setVisible(false);
 
@@ -296,9 +299,11 @@ public class HangmanFxStage extends VBox {
         fullWordInput.setText("");
 
         if (isBattleRoyale) {
-            roundCounterLabel.setText(String.format("⚔️ Battle Royale • Word %d of %d", currentRoundNumber, totalRounds));
+            roundCounterLabel.setText(String.format("Battle Royale • Word %d of %d", currentRoundNumber, totalRounds));
+            SvgEmoji.setGraphic(roundCounterLabel, "swords", 12);
         } else {
             roundCounterLabel.setText(String.format("Round %d of %d (%d round/player)", currentRoundNumber, totalRounds, roundsPerPlayer));
+            roundCounterLabel.setGraphic(null);
         }
 
         inputControlsBox.setVisible(true);
@@ -329,8 +334,9 @@ public class HangmanFxStage extends VBox {
                 iv.setOpacity(0.4);
                 heartsBar.getChildren().add(iv);
             } else {
-                Label heart = new Label(isFilled ? "❤️" : "🖤");
-                heart.setStyle(isFilled ? "-fx-font-size: 22px;" : "-fx-font-size: 22px; -fx-opacity: 0.3;");
+                Label heart = new Label();
+                SvgEmoji.setGraphic(heart, "heart", 22);
+                if (!isFilled) heart.setOpacity(0.3);
                 heartsBar.getChildren().add(heart);
             }
         }
@@ -372,7 +378,8 @@ public class HangmanFxStage extends VBox {
 
     private void renderUsedLetters() {
         String title = I18n.get("game.hangman.used_letters", "LETRAS USADAS / USED LETTERS");
-        usedLettersTitleLabel.setText(String.format("🔠 %s (%d)", title, usedLetters.size()));
+        usedLettersTitleLabel.setText(String.format("%s (%d)", title, usedLetters.size()));
+        SvgEmoji.setGraphic(usedLettersTitleLabel, "letters-case", 14);
 
         usedLettersFlow.getChildren().clear();
 
@@ -395,15 +402,15 @@ public class HangmanFxStage extends VBox {
                     chip.setStyle("-fx-background-color: rgba(16, 185, 129, 0.2); -fx-border-color: rgba(16, 185, 129, 0.5); -fx-border-width: 1px; -fx-background-radius: 8px; -fx-border-radius: 8px;");
                     Label letterLbl = new Label(String.valueOf(ch));
                     letterLbl.setStyle("-fx-font-weight: 900; -fx-font-size: 12px; -fx-text-fill: #6ee7b7;");
-                    Label markLbl = new Label("✓");
-                    markLbl.setStyle("-fx-font-weight: 900; -fx-font-size: 10px; -fx-text-fill: #10b981;");
+                    Label markLbl = new Label();
+                    SvgEmoji.setGraphic(markLbl, "check", 10);
                     chip.getChildren().addAll(letterLbl, markLbl);
                 } else {
                     chip.setStyle("-fx-background-color: rgba(244, 63, 94, 0.2); -fx-border-color: rgba(244, 63, 94, 0.4); -fx-border-width: 1px; -fx-background-radius: 8px; -fx-border-radius: 8px;");
                     Label letterLbl = new Label(String.valueOf(ch));
                     letterLbl.setStyle("-fx-font-weight: 900; -fx-font-size: 12px; -fx-text-fill: #fda4af;");
-                    Label markLbl = new Label("✕");
-                    markLbl.setStyle("-fx-font-weight: 900; -fx-font-size: 10px; -fx-text-fill: #f43f5e;");
+                    Label markLbl = new Label();
+                    SvgEmoji.setGraphic(markLbl, "close", 10);
                     chip.getChildren().addAll(letterLbl, markLbl);
                 }
 
@@ -459,7 +466,7 @@ public class HangmanFxStage extends VBox {
         }
 
         if (complete) {
-            showWinBanner(String.format("👑 CONGRATULATIONS! You solved the word with %d heart(s) remaining!", livesLeft));
+            showWinBanner(String.format("CONGRATULATIONS! You solved the word with %d heart(s) remaining!", livesLeft));
         }
     }
 
@@ -476,7 +483,7 @@ public class HangmanFxStage extends VBox {
             }
             renderWordTiles(false);
             renderUsedLetters();
-            showWinBanner(String.format("👑 BRILLIANT! You guessed the entire word correctly with %d heart(s) remaining!", livesLeft));
+            showWinBanner(String.format("BRILLIANT! You guessed the entire word correctly with %d heart(s) remaining!", livesLeft));
         } else {
             // LOSS: Lose ALL hearts immediately
             livesLeft = 0;
@@ -488,7 +495,8 @@ public class HangmanFxStage extends VBox {
     private void showWinBanner(String message) {
         inputControlsBox.setVisible(false);
 
-        endBannerIcon.setText("👑");
+        endBannerIcon.setText("");
+        SvgEmoji.setGraphic(endBannerIcon, "crown", 36);
         endBannerTitle.setText(I18n.get("game.hangman.round_victory"));
         endBannerTitle.setStyle("-fx-font-size: 18px; -fx-font-weight: 900; -fx-text-fill: #34d399;");
         endBannerMsg.setText(message);
@@ -510,7 +518,8 @@ public class HangmanFxStage extends VBox {
         inputControlsBox.setVisible(false);
         renderWordTiles(true); // Reveal full word in red
 
-        endBannerIcon.setText("💀");
+        endBannerIcon.setText("");
+        SvgEmoji.setGraphic(endBannerIcon, "skull", 36);
         endBannerTitle.setText(I18n.get("game.hangman.round_over"));
         endBannerTitle.setStyle("-fx-font-size: 18px; -fx-font-weight: 900; -fx-text-fill: #f43f5e;");
         endBannerMsg.setText(message);

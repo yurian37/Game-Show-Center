@@ -10,6 +10,7 @@ import digit6 from '../../../../assets/zeromargin/digits/6.png';
 import digit7 from '../../../../assets/zeromargin/digits/7.png';
 import digit8 from '../../../../assets/zeromargin/digits/8.png';
 import digit9 from '../../../../assets/zeromargin/digits/9.png';
+import SvgEmoji from '../../../SvgEmoji';
 
 const DIGIT_IMGS = [digit0, digit1, digit2, digit3, digit4, digit5, digit6, digit7, digit8, digit9];
 const DEFAULT_POOL = [5.0, 10.0, 15.0, 7.5, 20.0];
@@ -207,7 +208,7 @@ export default function ZeroMarginPlay({ profiles = [], setupData = {}, onSelect
       return (
         <div className="flex items-center justify-center gap-2 bg-[#0b0e17] px-8 py-5 rounded-2xl border border-amber-500/40 shadow-inner my-2 font-mono">
           <span className="text-xl md:text-2xl font-black text-amber-400 animate-pulse flex items-center gap-2">
-            🙈 HIDDEN TIMER (Running...)
+            <SvgEmoji name="monkey-hide" className="mr-1.5 inline" /> HIDDEN TIMER (Running...)
           </span>
         </div>
       );
@@ -261,7 +262,7 @@ export default function ZeroMarginPlay({ profiles = [], setupData = {}, onSelect
       {/* ROUND & PLAYER BADGES + HIDDEN TIMER CHECKBOX */}
       <div className="mb-6 flex flex-col items-center gap-3">
         <span className="text-xs font-black text-indigo-400 uppercase tracking-widest bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20">
-          ⏱️ Zero Margin • Round {currentRound} of {roundsPerPlayer}
+          <SvgEmoji name="stopwatch" className="mr-1.5 inline" /> Zero Margin • Round {currentRound} of {roundsPerPlayer}
         </span>
         
         <div className="flex flex-wrap items-center justify-center gap-3">
@@ -276,7 +277,7 @@ export default function ZeroMarginPlay({ profiles = [], setupData = {}, onSelect
               onChange={(e) => setIsHiddenMode(e.target.checked)}
               className="w-4 h-4 accent-indigo-500 rounded cursor-pointer"
             />
-            <span>🙈 Hidden</span>
+            <span className="inline-flex items-center gap-1"><SvgEmoji name="monkey-hide" /> Hidden</span>
           </label>
         </div>
       </div>
@@ -284,7 +285,7 @@ export default function ZeroMarginPlay({ profiles = [], setupData = {}, onSelect
       {/* MATCH COMPLETED VIEW */}
       {timerState === 'match_completed' ? (
         <div className="w-full bg-[#121624] border-2 border-amber-500/50 p-8 rounded-3xl text-center shadow-2xl animate-fadeIn my-4 flex flex-col items-center gap-4">
-          <div className="text-4xl">🏁</div>
+          <div className="text-4xl flex items-center justify-center"><SvgEmoji name="flag" size={40} /></div>
           <h3 className="text-xl font-black text-amber-300 uppercase tracking-wider">
             ZERO MARGIN MATCH COMPLETED!
           </h3>
@@ -309,7 +310,7 @@ export default function ZeroMarginPlay({ profiles = [], setupData = {}, onSelect
             onClick={startMatch}
             className="mt-2 px-8 py-3.5 rounded-2xl font-black text-xs uppercase tracking-wider bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white cursor-pointer shadow-xl active:scale-95 transition-all"
           >
-            🔄 Start Next Round
+            <SvgEmoji name="refresh" className="mr-1.5" /> Start Next Round
           </button>
         </div>
       ) : (
@@ -323,7 +324,7 @@ export default function ZeroMarginPlay({ profiles = [], setupData = {}, onSelect
               TARGET TIME TO HIT
             </span>
             <div className="text-3xl md:text-4xl font-black text-amber-300 bg-amber-500/10 px-6 py-2 rounded-2xl border border-amber-500/30 inline-block font-mono">
-              🎯 {roundTargetTime.toFixed(2)}s
+              <SvgEmoji name="target" className="mr-1.5 inline" /> {roundTargetTime.toFixed(2)}s
             </div>
           </div>
 
@@ -349,7 +350,7 @@ export default function ZeroMarginPlay({ profiles = [], setupData = {}, onSelect
                     ? 'bg-amber-500/20 border-amber-400 text-amber-300'
                     : 'bg-rose-500/20 border-rose-400 text-rose-300'
               }`}>
-                <span>{absDiff < 0.2 ? '🎯 AMAZING PRECISION!' : isTooSlow ? '⌛ TOO SLOW!' : '⚡ TOO FAST!'}</span>
+                <span>{absDiff < 0.2 ? <span className="inline-flex items-center gap-1"><SvgEmoji name="target" /> AMAZING PRECISION!</span> : isTooSlow ? <span className="inline-flex items-center gap-1"><SvgEmoji name="hourglass" /> TOO SLOW!</span> : <span className="inline-flex items-center gap-1"><SvgEmoji name="lightning" /> TOO FAST!</span>}</span>
                 <span>•</span>
                 <span>Missed by {isTooSlow ? `+${currentDiff.toFixed(2)}` : `${currentDiff.toFixed(2)}`}s</span>
               </div>
@@ -377,7 +378,7 @@ export default function ZeroMarginPlay({ profiles = [], setupData = {}, onSelect
                 onClick={() => handleStopTimer()}
                 className="w-full max-w-xs bg-gradient-to-r from-rose-600 to-red-500 hover:from-rose-500 hover:to-red-400 text-white font-black text-sm uppercase tracking-wider py-4 px-8 rounded-2xl shadow-xl transition-all active:scale-95 cursor-pointer animate-pulse flex items-center justify-center gap-2"
               >
-                <span>⏹️ Stop Timer</span>
+                <span className="inline-flex items-center gap-1.5"><SvgEmoji name="stop" /> Stop Timer</span>
                 <span className="text-[10px] bg-black/30 px-2 py-0.5 rounded-md font-mono">↵ Enter</span>
               </button>
             )}
@@ -387,7 +388,7 @@ export default function ZeroMarginPlay({ profiles = [], setupData = {}, onSelect
                 onClick={handleNextTurn}
                 className="w-full max-w-xs bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-black text-xs uppercase tracking-wider py-4 px-8 rounded-2xl shadow-xl transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-2"
               >
-                <span>Next Turn ➔</span>
+                <span className="inline-flex items-center gap-1.5">Next Turn <SvgEmoji name="arrow-right" /></span>
                 <span className="text-[10px] bg-black/30 px-2 py-0.5 rounded-md font-mono">↵ Enter</span>
               </button>
             )}

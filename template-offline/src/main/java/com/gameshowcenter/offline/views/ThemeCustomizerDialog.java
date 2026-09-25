@@ -5,6 +5,7 @@ import com.gameshowcenter.offline.theme.ImageSourcesConfigManager;
 import com.gameshowcenter.offline.theme.RagDocumentsConfigManager;
 import com.gameshowcenter.offline.theme.ThemeManager;
 import com.gameshowcenter.offline.util.FileChooserHelper;
+import com.gameshowcenter.offline.util.SvgEmoji;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -42,6 +43,7 @@ public class ThemeCustomizerDialog {
 
         // Header
         Label titleLabel = new Label(I18n.get("theme.header.title"));
+        SvgEmoji.setGraphic(titleLabel, "gear", 20);
         titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: 900; -fx-text-fill: #f8fafc;");
         
         Label subtitleLabel = new Label(I18n.get("theme.header.subtitle"));
@@ -51,7 +53,8 @@ public class ThemeCustomizerDialog {
         VBox titleBox = new VBox(4, titleLabel, subtitleLabel);
         HBox.setHgrow(titleBox, Priority.ALWAYS);
 
-        Button topCloseBtn = new Button("✕");
+        Button topCloseBtn = new Button();
+        SvgEmoji.setGraphic(topCloseBtn, "close", 14);
         topCloseBtn.setStyle("-fx-background-color: #1e293b; -fx-text-fill: #94a3b8; -fx-font-weight: 900; -fx-font-size: 14px; -fx-background-radius: 8px; -fx-cursor: hand; -fx-padding: 6px 12px;");
         topCloseBtn.setOnAction(e -> dialog.close());
 
@@ -126,6 +129,7 @@ public class ThemeCustomizerDialog {
 
         // TAB 1: 20 PALETTES + CUSTOM THEMES
         Tab palettesTab = new Tab(I18n.get("theme.tab.palettes"));
+        palettesTab.setGraphic(SvgEmoji.create("palette", 16));
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setFitToWidth(true);
         scrollPane.setStyle("-fx-background-color: transparent; -fx-background: transparent;");
@@ -149,14 +153,18 @@ public class ThemeCustomizerDialog {
             HBox cardHeader = new HBox(8);
             cardHeader.setAlignment(Pos.CENTER_LEFT);
 
-            Label nameLbl = new Label((pal.isCustom ? "⭐ " : "") + name);
+            Label nameLbl = new Label(name);
+            if (pal.isCustom) {
+                SvgEmoji.setGraphic(nameLbl, "star", 12);
+            }
             nameLbl.setStyle("-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #f8fafc;");
             HBox.setHgrow(nameLbl, Priority.ALWAYS);
 
             cardHeader.getChildren().add(nameLbl);
 
             if (pal.isCustom) {
-                Button delBtn = new Button("🗑️");
+                Button delBtn = new Button();
+                SvgEmoji.setGraphic(delBtn, "trash", 12);
                 delBtn.setStyle("-fx-background-color: #ef4444; -fx-text-fill: #ffffff; -fx-font-size: 10px; -fx-padding: 3 7; -fx-background-radius: 6; -fx-cursor: hand;");
                 delBtn.setOnAction(e -> {
                     e.consume();
@@ -208,6 +216,7 @@ public class ThemeCustomizerDialog {
 
         // TAB 2: CUSTOM BACKGROUND & BOXES
         Tab customTab = new Tab(I18n.get("theme.tab.custom"));
+        customTab.setGraphic(SvgEmoji.create("gear", 16));
         VBox customBox = new VBox(20);
         customBox.setPadding(new Insets(20));
 
@@ -217,6 +226,7 @@ public class ThemeCustomizerDialog {
         bgSectionTitle.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #38bdf8;");
 
         Button chooseImgBtn = new Button(I18n.get("theme.btn.choose_img"));
+        SvgEmoji.setGraphic(chooseImgBtn, "image", 14);
         chooseImgBtn.setStyle("-fx-background-color: #1e293b; -fx-text-fill: #f8fafc; -fx-font-weight: bold; -fx-padding: 8 16; -fx-background-radius: 8; -fx-cursor: hand;");
         chooseImgBtn.setOnAction(e -> {
             FileChooser chooser = FileChooserHelper.createChooser(I18n.get("theme.chooser.img_title"));
@@ -230,6 +240,7 @@ public class ThemeCustomizerDialog {
         });
 
         Button clearImgBtn = new Button(I18n.get("theme.btn.clear_img"));
+        SvgEmoji.setGraphic(clearImgBtn, "trash", 12);
         clearImgBtn.setStyle("-fx-background-color: #334155; -fx-text-fill: #f8fafc; -fx-font-size: 11px; -fx-padding: 6 12; -fx-background-radius: 8; -fx-cursor: hand;");
         clearImgBtn.setOnAction(e -> {
             ThemeManager.setCustomBackgroundImagePath(null);
@@ -310,7 +321,8 @@ public class ThemeCustomizerDialog {
         customTab.setContent(customScroll);
 
         // TAB 3: ACCESSIBILITY & FONT SCALING
-        Tab accessibilityTab = new Tab(I18n.get("theme.tab.accessibility", "👁️ Accesibilidad"));
+        Tab accessibilityTab = new Tab(I18n.get("theme.tab.accessibility", "Accesibilidad"));
+        accessibilityTab.setGraphic(SvgEmoji.create("eye", 16));
         VBox accessBox = new VBox(16);
         accessBox.setPadding(new Insets(20));
 
@@ -332,13 +344,16 @@ public class ThemeCustomizerDialog {
         scaleHeader.setAlignment(Pos.CENTER_LEFT);
 
         // Quick A- / Default / A+ buttons
-        Button shrinkBtn = new Button("🔍 " + I18n.get("theme.accessibility.shrink", "Achicar (A-)"));
+        Button shrinkBtn = new Button(I18n.get("theme.accessibility.shrink", "Achicar (A-)"));
+        SvgEmoji.setGraphic(shrinkBtn, "search", 14);
         shrinkBtn.setStyle("-fx-background-color: #1e293b; -fx-text-fill: #f8fafc; -fx-font-weight: bold; -fx-padding: 8px 16px; -fx-background-radius: 8px; -fx-cursor: hand;");
 
-        Button defaultScaleBtn = new Button("↺ " + I18n.get("theme.accessibility.default", "Predeterminado (100%)"));
+        Button defaultScaleBtn = new Button(I18n.get("theme.accessibility.default", "Predeterminado (100%)"));
+        SvgEmoji.setGraphic(defaultScaleBtn, "refresh", 14);
         defaultScaleBtn.setStyle("-fx-background-color: #334155; -fx-text-fill: #f8fafc; -fx-font-weight: bold; -fx-padding: 8px 16px; -fx-background-radius: 8px; -fx-cursor: hand;");
 
-        Button enlargeBtn = new Button("🔎 " + I18n.get("theme.accessibility.enlarge", "Agrandar (A+)"));
+        Button enlargeBtn = new Button(I18n.get("theme.accessibility.enlarge", "Agrandar (A+)"));
+        SvgEmoji.setGraphic(enlargeBtn, "search-plus", 14);
         enlargeBtn.setStyle("-fx-background-color: #1e293b; -fx-text-fill: #f8fafc; -fx-font-weight: bold; -fx-padding: 8px 16px; -fx-background-radius: 8px; -fx-cursor: hand;");
 
         HBox quickButtons = new HBox(10, shrinkBtn, defaultScaleBtn, enlargeBtn);
@@ -367,7 +382,8 @@ public class ThemeCustomizerDialog {
         // Interactive Live Preview Box
         VBox previewBox = new VBox(10);
         previewBox.setStyle("-fx-background-color: #141929; -fx-border-color: #334155; -fx-border-radius: 12px; -fx-padding: 16px; -fx-background-radius: 12px;");
-        Label prevTitle = new Label("🎯 " + I18n.get("theme.accessibility.prev_title", "Vista Previa de Lectura"));
+        Label prevTitle = new Label(I18n.get("theme.accessibility.prev_title", "Vista Previa de Lectura"));
+        SvgEmoji.setGraphic(prevTitle, "target", 18);
         prevTitle.setStyle("-fx-font-weight: 900; -fx-font-size: 16px; -fx-text-fill: #f8fafc;");
         Label prevDesc = new Label(I18n.get("theme.accessibility.prev_desc", "Todo el texto de los menús, pantallas y juegos se adaptará inmediatamente a este tamaño."));
         prevDesc.setStyle("-fx-font-size: 12px; -fx-text-fill: #94a3b8; -fx-wrap-text: true;");
@@ -499,6 +515,7 @@ public class ThemeCustomizerDialog {
 
     private static Tab createAiSourcesTab(Stage parentStage, Stage dialog) {
         Tab tab = new Tab(I18n.get("theme.tab.ai_sources"));
+        tab.setGraphic(SvgEmoji.create("image", 16));
 
         VBox rootBox = new VBox(20);
         rootBox.setPadding(new Insets(20));
@@ -540,7 +557,8 @@ public class ThemeCustomizerDialog {
         HBox strictnessHeader = new HBox(12);
         strictnessHeader.setAlignment(Pos.CENTER_LEFT);
 
-        Label strictnessTitle = new Label("🎯 " + I18n.get("settings.ai.sources.strictness_title", "UMBRAL DE ESTRICTEZ DE BÚSQUEDA (BASE 10)"));
+        Label strictnessTitle = new Label(I18n.get("settings.ai.sources.strictness_title", "UMBRAL DE ESTRICTEZ DE BÚSQUEDA (BASE 10)"));
+        SvgEmoji.setGraphic(strictnessTitle, "target", 14);
         strictnessTitle.setStyle("-fx-font-size: 12px; -fx-font-weight: 900; -fx-text-fill: #f59e0b;");
         HBox.setHgrow(strictnessTitle, Priority.ALWAYS);
 
@@ -595,11 +613,12 @@ public class ThemeCustomizerDialog {
 
             HBox cardTop = new HBox(6);
             cardTop.setAlignment(Pos.CENTER_LEFT);
-            Label nameLbl = new Label("🌐 " + fis.name());
+            Label nameLbl = new Label(fis.name());
+            SvgEmoji.setGraphic(nameLbl, "globe", 14);
             nameLbl.setStyle("-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #f8fafc;");
             HBox.setHgrow(nameLbl, Priority.ALWAYS);
-            Label lockLbl = new Label("🔒");
-            lockLbl.setStyle("-fx-font-size: 10px;");
+            Label lockLbl = new Label();
+            SvgEmoji.setGraphic(lockLbl, "lock", 12);
             cardTop.getChildren().addAll(nameLbl, lockLbl);
 
             Label descLbl = new Label(fis.description());
@@ -664,11 +683,13 @@ public class ThemeCustomizerDialog {
                     rowCard.setPadding(new Insets(8, 12, 8, 12));
                     rowCard.setStyle("-fx-background-color: #141929; -fx-border-color: #1e293b; -fx-border-radius: 8px; -fx-background-radius: 8px;");
 
-                    Label pathLbl = new Label("📁 " + folder);
+                    Label pathLbl = new Label(folder);
+                    SvgEmoji.setGraphic(pathLbl, "folder", 14);
                     pathLbl.setStyle("-fx-font-size: 11px; -fx-text-fill: #f1f5f9;");
                     HBox.setHgrow(pathLbl, Priority.ALWAYS);
 
-                    Button delBtn = new Button("🗑️");
+                    Button delBtn = new Button();
+                    SvgEmoji.setGraphic(delBtn, "trash", 12);
                     delBtn.setStyle("-fx-background-color: #ef4444; -fx-text-fill: #ffffff; -fx-font-size: 10px; -fx-padding: 4 8; -fx-background-radius: 6; -fx-cursor: hand;");
                     delBtn.setOnAction(e -> {
                         ImageSourcesConfigManager.removeLocalFolder(folder);
@@ -744,11 +765,13 @@ public class ThemeCustomizerDialog {
                     rowCard.setPadding(new Insets(8, 12, 8, 12));
                     rowCard.setStyle("-fx-background-color: #141929; -fx-border-color: #1e293b; -fx-border-radius: 8px; -fx-background-radius: 8px;");
 
-                    Label urlLbl = new Label("🔗 " + url);
+                    Label urlLbl = new Label(url);
+                    SvgEmoji.setGraphic(urlLbl, "link", 14);
                     urlLbl.setStyle("-fx-font-size: 11px; -fx-text-fill: #f1f5f9;");
                     HBox.setHgrow(urlLbl, Priority.ALWAYS);
 
-                    Button delBtn = new Button("🗑️");
+                    Button delBtn = new Button();
+                    SvgEmoji.setGraphic(delBtn, "trash", 12);
                     delBtn.setStyle("-fx-background-color: #ef4444; -fx-text-fill: #ffffff; -fx-font-size: 10px; -fx-padding: 4 8; -fx-background-radius: 6; -fx-cursor: hand;");
                     delBtn.setOnAction(e -> {
                         ImageSourcesConfigManager.removeSchoolUrl(url);
@@ -795,6 +818,7 @@ public class ThemeCustomizerDialog {
 
     private static Tab createRagDocumentsTab(Stage parentStage, Stage dialog) {
         Tab tab = new Tab(I18n.get("theme.tab.rag_documents"));
+        tab.setGraphic(SvgEmoji.create("document", 16));
 
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setFitToWidth(true);
@@ -856,8 +880,7 @@ public class ThemeCustomizerDialog {
                     rowCard.setPadding(new Insets(10, 14, 10, 14));
                     rowCard.setStyle("-fx-background-color: #141929; -fx-border-color: #1e293b; -fx-border-radius: 8px; -fx-background-radius: 8px;");
 
-                    Label iconLbl = new Label("📄");
-                    iconLbl.setStyle("-fx-font-size: 16px;");
+                    javafx.scene.Node iconLbl = SvgEmoji.create("document", 16);
 
                     VBox infoBox = new VBox(2);
                     HBox.setHgrow(infoBox, Priority.ALWAYS);
@@ -872,7 +895,8 @@ public class ThemeCustomizerDialog {
 
                     infoBox.getChildren().addAll(nameLbl, pathLbl);
 
-                    Button delBtn = new Button("🗑️");
+                    Button delBtn = new Button();
+                    SvgEmoji.setGraphic(delBtn, "trash", 12);
                     delBtn.setTooltip(new Tooltip(I18n.get("theme.rag.delete_tooltip")));
                     delBtn.setStyle("-fx-background-color: #ef4444; -fx-text-fill: #ffffff; -fx-font-size: 10px; -fx-padding: 5 10; -fx-background-radius: 6; -fx-cursor: hand;");
                     delBtn.setOnAction(e -> {

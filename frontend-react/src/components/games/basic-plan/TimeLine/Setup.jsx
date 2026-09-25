@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import SvgEmoji from '../../../SvgEmoji';
 
 const formatYear = (year) => {
   const y = parseInt(year, 10);
@@ -64,7 +65,7 @@ export default function TimeLineSetup({ value, onChange, numPlayers, players }) 
   return (
     <div className="bg-[#1b2238] p-6 rounded-2xl border border-slate-800 animate-fadeIn text-slate-200">
       <div className="flex items-center gap-3 mb-2">
-        <span className="text-2xl">⏳</span>
+        <span className="text-2xl flex items-center justify-center"><SvgEmoji name="hourglass" /></span>
         <h3 className="text-xl font-black text-amber-300">TimeLine Settings</h3>
       </div>
       <p className="text-xs text-slate-400 mb-6">
@@ -74,7 +75,7 @@ export default function TimeLineSetup({ value, onChange, numPlayers, players }) 
       {/* Add New Event Card Form */}
       <div className="bg-[#121624]/90 p-5 rounded-2xl border border-slate-800/80 mb-6">
         <h4 className="text-sm font-black text-amber-400 uppercase tracking-wide mb-3 flex items-center gap-2">
-          <span>➕</span> Add Historical Milestone
+          <SvgEmoji name="plus" className="mr-1" /> Add Historical Milestone
         </h4>
         <form onSubmit={handleAddEvent} className="space-y-3">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -163,7 +164,7 @@ export default function TimeLineSetup({ value, onChange, numPlayers, players }) 
                 className="text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 p-1.5 rounded-lg transition-colors text-xs cursor-pointer"
                 title="Delete milestone"
               >
-                🗑️
+                <SvgEmoji name="trash" />
               </button>
             </div>
           ))}

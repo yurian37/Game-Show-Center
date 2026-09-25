@@ -1,4 +1,5 @@
 import React from 'react';
+import SvgEmoji from './SvgEmoji';
 
 export default function WinnerStage({ matchData, onNavigate }) {
   const profiles = Array.isArray(matchData?.profiles) ? matchData.profiles : [];
@@ -27,8 +28,8 @@ export default function WinnerStage({ matchData, onNavigate }) {
 
       {/* CELEBRATION HEADER */}
       <div className="text-center mb-8 relative z-10">
-        <span className="text-xs font-black tracking-[0.3em] text-amber-400 uppercase bg-amber-500/10 px-4 py-1.5 rounded-full border border-amber-500/20 shadow-md">
-          👑 Grand Finale — Match Champion
+        <span className="text-xs font-black tracking-[0.3em] text-amber-400 uppercase bg-amber-500/10 px-4 py-1.5 rounded-full border border-amber-500/20 shadow-md inline-flex items-center gap-1.5">
+          <SvgEmoji name="crown" /> Grand Finale — Match Champion
         </span>
         <h2 className="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-500 mt-3 drop-shadow-[0_4px_12px_rgba(245,158,11,0.4)]">
           {winners.length > 1 ? 'CO-CHAMPIONS OF THE ARENA!' : 'CHAMPION OF THE ARENA!'}
@@ -43,7 +44,7 @@ export default function WinnerStage({ matchData, onNavigate }) {
         <div className="relative group">
           {/* CROWN BADGE */}
           <div className="absolute -top-6 left-1/2 -translate-x-1/2 z-20 bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 font-black text-xs px-4 py-1 rounded-full shadow-lg border border-yellow-200 uppercase tracking-wider flex items-center gap-1.5 animate-bounce">
-            <span>👑</span> <span>{winners.length > 1 ? 'Co-Winner' : 'Winner'}</span>
+            <SvgEmoji name="crown" /> <span>{winners.length > 1 ? 'Co-Winner' : 'Winner'}</span>
           </div>
 
           {/* MAIN SPOTLIGHT CIRCLE */}
@@ -56,7 +57,9 @@ export default function WinnerStage({ matchData, onNavigate }) {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <span className="text-6xl text-amber-400 font-bold">👤</span>
+                <span className="text-6xl text-amber-400 font-bold flex items-center justify-center">
+                  <SvgEmoji name="user" />
+                </span>
               )}
             </div>
           </div>
@@ -70,7 +73,7 @@ export default function WinnerStage({ matchData, onNavigate }) {
               : (primaryWinner?.name || 'Winner')}
           </h3>
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500/20 to-yellow-500/20 border border-amber-500/40 px-5 py-2 rounded-2xl mt-3 shadow-lg">
-            <span className="text-xl">🏆</span>
+            <SvgEmoji name="trophy" className="text-xl" />
             <span className="text-lg font-black text-amber-300 font-mono tracking-wider">
               {topScore} POINTS
             </span>
@@ -80,8 +83,8 @@ export default function WinnerStage({ matchData, onNavigate }) {
 
       {/* FINAL STANDINGS LEADERBOARD */}
       <div className="w-full mb-10 relative z-10">
-        <h4 className="text-xs font-black text-indigo-300 uppercase tracking-widest mb-4 text-center">
-          📊 Final Match Standings & Leaderboard
+        <h4 className="text-xs font-black text-indigo-300 uppercase tracking-widest mb-4 text-center flex items-center justify-center gap-1.5">
+          <SvgEmoji name="chart" /> Final Match Standings & Leaderboard
         </h4>
 
         <div className="space-y-3 max-w-2xl mx-auto">
@@ -93,13 +96,13 @@ export default function WinnerStage({ matchData, onNavigate }) {
             let rankBg = 'bg-slate-800/60 border-slate-700 text-slate-400';
 
             if (rank === 1) {
-              rankBadge = '🥇 1st Place';
+              rankBadge = <span className="inline-flex items-center gap-1"><SvgEmoji name="medal-gold" /> 1st Place</span>;
               rankBg = 'bg-amber-500/20 border-amber-500/40 text-amber-300 font-bold';
             } else if (rank === 2) {
-              rankBadge = '🥈 2nd Place';
+              rankBadge = <span className="inline-flex items-center gap-1"><SvgEmoji name="medal-silver" /> 2nd Place</span>;
               rankBg = 'bg-slate-400/20 border-slate-400/40 text-slate-200 font-bold';
             } else if (rank === 3) {
-              rankBadge = '🥉 3rd Place';
+              rankBadge = <span className="inline-flex items-center gap-1"><SvgEmoji name="medal-bronze" /> 3rd Place</span>;
               rankBg = 'bg-amber-700/20 border-amber-700/40 text-amber-400 font-bold';
             }
 
@@ -121,7 +124,9 @@ export default function WinnerStage({ matchData, onNavigate }) {
                     {comp.avatar ? (
                       <img src={comp.avatar} alt={comp.name} className="w-full h-full object-cover" />
                     ) : (
-                      <span className="text-base text-slate-500 font-bold">👤</span>
+                      <span className="text-base text-slate-500 font-bold flex items-center justify-center">
+                        <SvgEmoji name="user" />
+                      </span>
                     )}
                   </div>
 
@@ -145,14 +150,14 @@ export default function WinnerStage({ matchData, onNavigate }) {
           onClick={() => onNavigate('settings')}
           className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs uppercase tracking-wider px-6 py-3.5 rounded-2xl transition-all shadow-lg flex items-center gap-2 cursor-pointer"
         >
-          <span>🔄</span> Play Again / Configure Match
+          <SvgEmoji name="refresh" /> Play Again / Configure Match
         </button>
         
         <button
           onClick={() => onNavigate('home')}
           className="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs uppercase tracking-wider px-6 py-3.5 rounded-2xl transition-all border border-slate-700 flex items-center gap-2 cursor-pointer"
         >
-          <span>🏠</span> Return to Home
+          <SvgEmoji name="home" /> Return to Home
         </button>
       </div>
 

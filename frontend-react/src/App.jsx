@@ -6,6 +6,7 @@ import OnGameHost from './components/OnGameHost';
 import ArenaStage from './components/ArenaStage';
 import WinnerStage from './components/WinnerStage';
 import AdSenseBanner from './components/AdSenseBanner';
+import SvgEmoji from './components/SvgEmoji';
 
 import soundManager from './services/soundManager';
 
@@ -27,7 +28,7 @@ class ErrorBoundary extends React.Component {
     if (this.state.hasError) {
       return (
         <div className="bg-[#1b2238] border-2 border-rose-500/50 p-8 rounded-3xl text-center max-w-lg mx-auto shadow-2xl my-8">
-          <span className="text-4xl mb-4 block">⚠️</span>
+          <span className="text-4xl mb-4 block"><SvgEmoji name="warning" size={40} /></span>
           <h3 className="text-xl font-black text-rose-400 mb-2 uppercase">Render Error Caught</h3>
           <p className="text-xs text-slate-300 mb-4 bg-slate-900/80 p-3 rounded-xl font-mono text-left overflow-auto max-h-40 border border-slate-800">
             {this.state.error?.toString()}

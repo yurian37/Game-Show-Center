@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import SvgEmoji from '../../../SvgEmoji';
 
 // Default rich landmarks pool with 3 high-quality, verified public images per location
 const DEFAULT_LOCATIONS = [
@@ -196,7 +197,7 @@ export default function GeoLocationPlay({ profiles = [], setupData = {}, onSelec
       {/* HEADER STATUS / BADGES */}
       <div className="mb-4 flex flex-wrap items-center justify-center gap-2">
         <span className="text-xs font-black text-amber-400 uppercase tracking-widest bg-amber-500/10 px-3.5 py-1 rounded-full border border-amber-500/20 shadow-sm flex items-center gap-1.5">
-          <span>🌍 GeoLocation Premium</span>
+          <span className="inline-flex items-center gap-1.5"><SvgEmoji name="globe" /> GeoLocation Premium</span>
           <span>•</span>
           <span>Round {Math.min(roundNumber, totalMatchRounds)} of {totalMatchRounds}</span>
         </span>
@@ -211,7 +212,7 @@ export default function GeoLocationPlay({ profiles = [], setupData = {}, onSelec
       {isMatchFinished ? (
         <div className="w-full max-w-[680px] h-[380px] bg-[#121624] border-2 border-amber-500/50 rounded-3xl p-8 flex flex-col items-center justify-center gap-4 shadow-2xl animate-fadeIn text-center">
           <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-4xl shadow-inner animate-bounce">
-            🏆
+            <SvgEmoji name="trophy" size={40} />
           </div>
           <h3 className="text-2xl font-black text-amber-300 uppercase tracking-wider">
             ALL GEOLOCATION ROUNDS COMPLETED!
@@ -220,7 +221,7 @@ export default function GeoLocationPlay({ profiles = [], setupData = {}, onSelec
             All {totalMatchRounds} scheduled rounds have concluded ({numPlayers} competitor(s) × {roundsPerPlayer} round/player). Adjust final scores above or proceed to the next game!
           </p>
           <div className="flex items-center gap-2 text-[11px] font-bold text-slate-400 mt-2 bg-slate-900/80 px-4 py-2 rounded-xl border border-slate-800">
-            <span>🏁 Ready for Winner Announcement or Next Minigame</span>
+            <span className="inline-flex items-center gap-1.5"><SvgEmoji name="flag" /> Ready for Winner Announcement or Next Minigame</span>
           </div>
         </div>
       ) : !isRoundActive ? (
@@ -231,7 +232,7 @@ export default function GeoLocationPlay({ profiles = [], setupData = {}, onSelec
           <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/10 via-transparent to-purple-500/10 pointer-events-none" />
           
           <div className="w-20 h-20 rounded-3xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-4xl shadow-inner group-hover:scale-105 transition-transform duration-300">
-            🧭
+            <SvgEmoji name="compass" size={40} />
           </div>
 
           <div className="space-y-1.5 z-10">
@@ -250,7 +251,7 @@ export default function GeoLocationPlay({ profiles = [], setupData = {}, onSelec
             onClick={handleStartRound}
             className="z-10 px-8 py-3.5 rounded-2xl font-black text-xs uppercase tracking-wider bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 hover:to-yellow-200 text-slate-950 shadow-xl shadow-amber-500/20 active:scale-95 transition-all cursor-pointer flex items-center gap-2 font-mono"
           >
-            <span>🚀 Start Round</span>
+            <span className="inline-flex items-center gap-1.5"><SvgEmoji name="rocket" /> Start Round</span>
           </button>
         </div>
       ) : (
@@ -288,7 +289,7 @@ export default function GeoLocationPlay({ profiles = [], setupData = {}, onSelec
             {/* IMAGE NUMBER / TOTAL PER ROUND BADGE (BOTTOM CENTER) */}
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 bg-slate-950/85 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/20 shadow-lg">
               <span className="text-xs font-black text-white tracking-wider">
-                📷 {currentImageIndex + 1} / {imagesCount}
+                <SvgEmoji name="camera" className="mr-1.5 inline" /> {currentImageIndex + 1} / {imagesCount}
               </span>
             </div>
           </div>
@@ -302,13 +303,13 @@ export default function GeoLocationPlay({ profiles = [], setupData = {}, onSelec
             {isAnswerRevealed ? (
               <div className="w-full text-center py-2.5 px-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 animate-fadeIn">
                 <span className="text-lg md:text-xl font-black text-emerald-300 tracking-wide flex items-center justify-center gap-2">
-                  <span>🏛️</span>
+                  <SvgEmoji name="monument" />
                   <span>{currentLocation?.location_name || 'Secret Location'}</span>
                 </span>
               </div>
             ) : (
               <div className="w-full text-center py-2.5 px-4 rounded-xl bg-slate-900 border border-slate-800 text-slate-500 text-sm font-bold flex items-center justify-center gap-2 select-none">
-                <span>🔒 Answer Hidden</span>
+                <span className="inline-flex items-center gap-1.5"><SvgEmoji name="lock" /> Answer Hidden</span>
               </div>
             )}
           </div>
@@ -329,12 +330,12 @@ export default function GeoLocationPlay({ profiles = [], setupData = {}, onSelec
               {isLastImage ? (
                 <>
                   <span>Last Image</span>
-                  <span>🚫</span>
+                  <SvgEmoji name="prohibited" />
                 </>
               ) : (
                 <>
                   <span>Next Image</span>
-                  <span>➔</span>
+                  <SvgEmoji name="arrow-right" />
                 </>
               )}
             </button>
@@ -345,14 +346,14 @@ export default function GeoLocationPlay({ profiles = [], setupData = {}, onSelec
                 onClick={handleRevealAnswer}
                 className="py-3.5 px-6 rounded-2xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 hover:to-yellow-200 text-slate-950 border border-yellow-200 shadow-md shadow-amber-500/20 active:scale-95 transition-all cursor-pointer"
               >
-                <span>👁️ Reveal Answer</span>
+                <span className="inline-flex items-center gap-1.5"><SvgEmoji name="eye" /> Reveal Answer</span>
               </button>
             ) : (
               <button
                 onClick={handleNextRound}
                 className="py-3.5 px-6 rounded-2xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white border border-emerald-300/40 shadow-md shadow-emerald-500/20 active:scale-95 transition-all cursor-pointer animate-pulse"
               >
-                <span>{roundNumber >= totalMatchRounds ? "🏁 Finish Match" : "➔ Next Round"}</span>
+                <span className="inline-flex items-center gap-1.5">{roundNumber >= totalMatchRounds ? <><SvgEmoji name="flag" /> Finish Match</> : <>Next Round <SvgEmoji name="arrow-right" /></>}</span>
               </button>
             )}
 

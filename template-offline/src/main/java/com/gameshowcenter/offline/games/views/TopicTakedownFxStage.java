@@ -21,6 +21,7 @@ import javafx.scene.shape.Rectangle;
 
 import java.io.File;
 import java.util.*;
+import com.gameshowcenter.offline.util.SvgEmoji;
 
 public class TopicTakedownFxStage extends VBox {
 
@@ -190,8 +191,8 @@ public class TopicTakedownFxStage extends VBox {
         headerBar.setPadding(new Insets(10, 16, 10, 16));
         headerBar.getStyleClass().add("sponsor-card");
 
-        Label iconLabel = new Label("🎯");
-        iconLabel.setStyle("-fx-font-size: 24px;");
+        Label iconLabel = new Label();
+        SvgEmoji.setGraphic(iconLabel, "target", 24);
 
         VBox titleBox = new VBox(2);
         Label titleLabel = new Label("Topic Takedown");
@@ -221,8 +222,8 @@ public class TopicTakedownFxStage extends VBox {
         completedBanner.setVisible(false);
         completedBanner.setManaged(false);
 
-        Label trophyIcon = new Label("🏆");
-        trophyIcon.setStyle("-fx-font-size: 28px;");
+        Label trophyIcon = new Label();
+        SvgEmoji.setGraphic(trophyIcon, "trophy", 28);
         Label compTitle = new Label(I18n.get("game.topic.board_completed"));
         compTitle.setStyle("-fx-font-weight: 900; -fx-font-size: 18px; -fx-text-fill: #FDE68A;");
         Label compSubtitle = new Label(I18n.get("game.topic.all_cleared"));
@@ -371,8 +372,8 @@ public class TopicTakedownFxStage extends VBox {
 
         HBox audioControls = new HBox(12);
         audioControls.setAlignment(Pos.CENTER);
-        Label audIcon = new Label("🎵");
-        audIcon.setStyle("-fx-font-size: 18px;");
+        Label audIcon = new Label();
+        SvgEmoji.setGraphic(audIcon, "musical-notes", 18);
         audioStatusLabel = new Label(I18n.get("game.topic.audio_attached"));
         audioStatusLabel.setStyle("-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #C084FC;");
         audioPlayPauseBtn = new Button(I18n.get("game.topic.play_audio"));
@@ -425,6 +426,7 @@ public class TopicTakedownFxStage extends VBox {
         actionsBox.setPadding(new Insets(8, 0, 0, 0));
 
         revealAnswerBtn = new Button(I18n.get("game.common.reveal_answer"));
+        SvgEmoji.setGraphic(revealAnswerBtn, "eye", 16);
         revealAnswerBtn.getStyleClass().add("btn-accent-amber");
         revealAnswerBtn.setMinWidth(180);
         revealAnswerBtn.setMinHeight(44);
@@ -432,6 +434,7 @@ public class TopicTakedownFxStage extends VBox {
         revealAnswerBtn.setOnAction(e -> revealAnswer());
 
         backToBoardBtn = new Button(I18n.get("game.topic.btn_back"));
+        SvgEmoji.setGraphic(backToBoardBtn, "back", 16);
         backToBoardBtn.getStyleClass().add("btn-secondary");
         backToBoardBtn.setMinWidth(140);
         backToBoardBtn.setMinHeight(44);
@@ -543,7 +546,8 @@ public class TopicTakedownFxStage extends VBox {
         if (activeQuestion == null) return;
 
         isAnswerRevealed = true;
-        answerValueLabel.setText("💡 " + activeQuestion.answer);
+        answerValueLabel.setText(activeQuestion.answer);
+        SvgEmoji.setGraphic(answerValueLabel, "lightbulb", 14);
 
         answerStatusLabel.setVisible(false);
         answerStatusLabel.setManaged(false);

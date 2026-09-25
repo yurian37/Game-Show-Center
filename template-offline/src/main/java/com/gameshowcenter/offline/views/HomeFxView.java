@@ -3,8 +3,10 @@ package com.gameshowcenter.offline.views;
 import com.gameshowcenter.offline.MainApp;
 import com.gameshowcenter.offline.i18n.I18n;
 import com.gameshowcenter.offline.theme.ThemeManager;
+import com.gameshowcenter.offline.util.SvgEmoji;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -82,8 +84,7 @@ public class HomeFxView extends ScrollPane {
         if (logoView != null) {
             heroSection.getChildren().addAll(logoView, titleText, subtitleLabel, descLabel);
         } else {
-            Label emojiBadge = new Label("🎯");
-            emojiBadge.setStyle("-fx-font-size: 54px;");
+            Node emojiBadge = SvgEmoji.create("target", 54);
             heroSection.getChildren().addAll(emojiBadge, titleText, subtitleLabel, descLabel);
         }
 
@@ -93,9 +94,9 @@ public class HomeFxView extends ScrollPane {
         featureGrid.prefWidthProperty().bind(contentBox.widthProperty().multiply(0.95));
         featureGrid.maxWidthProperty().bind(contentBox.widthProperty().multiply(0.95));
 
-        VBox card1 = createFeatureCard("⚡", I18n.get("home.card.offline.title"), I18n.get("home.card.offline.desc"));
-        VBox card2 = createFeatureCard("👥", I18n.get("home.card.modes.title"), I18n.get("home.card.modes.desc"));
-        VBox card3 = createFeatureCard("🏆", I18n.get("home.card.arena.title"), I18n.get("home.card.arena.desc"));
+        VBox card1 = createFeatureCard("lightning", I18n.get("home.card.offline.title"), I18n.get("home.card.offline.desc"));
+        VBox card2 = createFeatureCard("users", I18n.get("home.card.modes.title"), I18n.get("home.card.modes.desc"));
+        VBox card3 = createFeatureCard("trophy", I18n.get("home.card.arena.title"), I18n.get("home.card.arena.desc"));
 
         HBox.setHgrow(card1, Priority.ALWAYS);
         HBox.setHgrow(card2, Priority.ALWAYS);
@@ -117,7 +118,8 @@ public class HomeFxView extends ScrollPane {
                 listener.onStartClicked();
         });
 
-        customizeThemeBtn = new Button("⚙️ " + I18n.get("home.btn.theme"));
+        customizeThemeBtn = new Button(I18n.get("home.btn.theme"));
+        SvgEmoji.setGraphic(customizeThemeBtn, "gear", 16);
         customizeThemeBtn.setStyle(String.format(
                 "-fx-background-color: %s; -fx-text-fill: %s; -fx-font-size: 13px; -fx-font-weight: bold; -fx-border-color: rgba(255, 255, 255, 0.15); -fx-border-radius: 14px; -fx-background-radius: 14px; -fx-padding: 13px 24px; -fx-cursor: hand;",
                 ThemeManager.getCardHex(), ThemeManager.toHex(ThemeManager.getCurrentPalette().textPrimary)));
@@ -201,14 +203,13 @@ public class HomeFxView extends ScrollPane {
     }
 
     private VBox createFeatureCard(String emoji, String title, String desc) {
-        VBox card = new VBox(6);
+        VBox card = new VBox(8);
         card.getStyleClass().add("sponsor-card");
         card.setMaxWidth(Double.MAX_VALUE);
         card.setAlignment(Pos.CENTER);
         card.setPadding(new Insets(16, 12, 16, 12));
 
-        Label icon = new Label(emoji);
-        icon.setStyle("-fx-font-size: 26px;");
+        javafx.scene.Node icon = SvgEmoji.create(emoji, 30);
 
         Label titleL = new Label(title);
         titleL.setStyle(String.format("-fx-font-weight: 900; -fx-text-fill: %s; -fx-font-size: 12px;",

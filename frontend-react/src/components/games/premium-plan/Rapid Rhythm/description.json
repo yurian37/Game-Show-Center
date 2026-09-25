@@ -9,7 +9,7 @@
     "Click the 'Play' button to listen to the mystery song clip or soundtrack.",
     "Contestants buzz in or announce their guess for song title, artist, or movie theme.",
     "Click 'Reveal Answer' to uncover the verified song information.",
-    "Click 'Next Track ➔' to move to the next audio clue until all tracks are finished."
+    "Click 'Next Track ->' to move to the next audio clue until all tracks are finished."
   ],
   "translations": {
     "en": {
@@ -20,7 +20,7 @@
         "Click the 'Play' button to listen to the mystery song clip or soundtrack.",
         "Contestants buzz in or announce their guess for song title, artist, or movie theme.",
         "Click 'Reveal Answer' to uncover the verified song information.",
-        "Click 'Next Track ➔' to move to the next audio clue until all tracks are finished."
+        "Click 'Next Track ->' to move to the next audio clue until all tracks are finished."
       ]
     },
     "es": {
@@ -31,7 +31,7 @@
         "Pulsa el botón 'Reproducir' para escuchar el fragmento o pista musical.",
         "Los concursantes intentan adivinar el título, artista o tema de película.",
         "Haz clic en 'Revelar Respuesta' para mostrar la solución oficial de la canción.",
-        "Haz clic en 'Siguiente Pista ➔' para avanzar al siguiente clip hasta terminar la lista."
+        "Haz clic en 'Siguiente Pista ->' para avanzar al siguiente clip hasta terminar la lista."
       ]
     },
     "fr": {
@@ -42,7 +42,7 @@
         "Cliquez sur 'Lecture' pour écouter le clip musical mystère.",
         "Les participants tentent de deviner le titre du morceau, l'artiste ou le film.",
         "Cliquez sur 'Révéler la réponse' pour afficher les informations officielles du titre.",
-        "Cliquez sur 'Piste suivante ➔' pour enchaîner jusqu'à la fin de la manche."
+        "Cliquez sur 'Piste suivante ->' pour enchaîner jusqu'à la fin de la manche."
       ]
     },
     "pt": {
@@ -53,7 +53,7 @@
         "Clique em 'Play' para ouvir o trecho da música ou trilha sonora.",
         "Os competidores tentam adivinhar o título da canção, artista ou tema.",
         "Clique em 'Revelar Resposta' para exibir a solução oficial da música.",
-        "Clique em 'Próxima Faixa ➔' para passar para o próximo áudio até o fim da lista."
+        "Clique em 'Próxima Faixa ->' para passar para o próximo áudio até o fim da lista."
       ]
     }
   }

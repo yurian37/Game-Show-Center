@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import SvgEmoji from '../../../SvgEmoji';
 
 export default function ZeroMarginSetup({ value, onChange }) {
   const [newTime, setNewTime] = useState('');
@@ -87,13 +88,13 @@ export default function ZeroMarginSetup({ value, onChange }) {
               key={idx}
               className="bg-[#1b2238] border border-slate-800 text-slate-300 text-xs px-3 py-1.5 rounded-lg flex items-center gap-2 font-mono font-semibold"
             >
-              ⏱️ {timeVal.toFixed(2)}s
+              <SvgEmoji name="stopwatch" className="mr-1.5 inline" /> {timeVal.toFixed(2)}s
               <button
                 type="button"
                 onClick={() => handleRemoveTime(idx)}
                 className="text-slate-500 hover:text-rose-400 font-bold transition-colors text-[10px]"
               >
-                ✕
+                <SvgEmoji name="close" />
               </button>
             </span>
           ))}
