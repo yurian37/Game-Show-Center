@@ -96,6 +96,13 @@ export default function Settings({ onNavigate }) {
     if (isAlreadySelected) {
       setSelectedGames(selectedGames.filter(g => g.name !== game.name));
     } else {
+      if (game.plan === 'premium') {
+        const hasPremiumSelected = selectedGames.some(g => g.plan === 'premium');
+        if (hasPremiumSelected) {
+          showToast("Maximum 1 Premium game allowed per match. Deselect the active Premium game first.", "warning");
+          return;
+        }
+      }
       setSelectedGames([...selectedGames, game]);
     }
   };
@@ -124,6 +131,11 @@ export default function Settings({ onNavigate }) {
     }
     if (selectedGames.length === 0) {
       showToast("Please select at least one mini-game for your matchup.", "warning");
+      return;
+    }
+    const premiumCount = selectedGames.filter(g => g.plan === 'premium').length;
+    if (premiumCount > 1) {
+      showToast("Maximum 1 Premium game allowed per match. Please remove extra Premium games.", "warning");
       return;
     }
     
@@ -287,12 +299,23 @@ export default function Settings({ onNavigate }) {
                   <SvgEmoji name="puzzle" /> B) Mini-Games Selection
                 </label>
                 <p className="text-slate-400 text-xs mt-1">
-                  Click the games you want to include in the order they will be played during the show.
+                  Click the games you want to include in the order they will be played during the show. (Max 1 Premium game per match).
                 </p>
               </div>
-              <span className="text-xs font-bold text-indigo-400 bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20">
-                {selectedGames.length} of {allGames.length} selected
-              </span>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs font-bold text-indigo-400 bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20">
+                  {selectedGames.length} of {allGames.length} selected
+                </span>
+                {selectedGames.some(g => g.plan === 'premium') ? (
+                  <span className="text-[10px] font-bold text-amber-300 bg-amber-500/15 px-2.5 py-1 rounded-full border border-amber-500/30 flex items-center gap-1">
+                    <SvgEmoji name="star" size={12} /> 1/1 Premium Used
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-bold text-slate-400 bg-slate-800/60 px-2.5 py-1 rounded-full border border-slate-700/60 flex items-center gap-1">
+                    <SvgEmoji name="star" size={12} /> 0/1 Premium
+                  </span>
+                )}
+              </div>
             </div>
             
             {/* 3-COLUMN PUZZLE DECK CONTAINER */}
