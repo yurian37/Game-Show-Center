@@ -1607,6 +1607,7 @@ def main():
                         "answer": str(item["answer"]).strip()
                     })
             output_data = {
+                "question_pool": formatted_pool[:count],
                 "questionPool": formatted_pool[:count]
             }
             report_progress(count, count, f"¡{len(formatted_pool[:count])} preguntas generadas!")

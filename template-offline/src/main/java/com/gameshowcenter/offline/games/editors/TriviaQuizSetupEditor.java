@@ -98,8 +98,8 @@ public class TriviaQuizSetupEditor implements IGameSetupEditor {
         questionsListPanel = new VBox(10);
 
         questionItems.clear();
-        JsonNode poolNode = (currentSetup != null && currentSetup.has("questionPool")) ? currentSetup.get("questionPool") :
-            ((currentSetup != null && currentSetup.has("question_pool")) ? currentSetup.get("question_pool") : null);
+        JsonNode poolNode = (currentSetup != null && currentSetup.has("question_pool")) ? currentSetup.get("question_pool") :
+            ((currentSetup != null && currentSetup.has("questionPool")) ? currentSetup.get("questionPool") : null);
 
         if (poolNode != null && poolNode.isArray() && poolNode.size() > 0) {
             for (JsonNode qNode : poolNode) {
@@ -195,13 +195,13 @@ public class TriviaQuizSetupEditor implements IGameSetupEditor {
 
         int compCount = (profiles != null && !profiles.isEmpty()) ? profiles.size() : 2;
         int rounds = 3;
-        if (setupData.has("roundsPerPlayer")) rounds = setupData.get("roundsPerPlayer").asInt();
-        else if (setupData.has("rounds_per_player")) rounds = setupData.get("rounds_per_player").asInt();
+        if (setupData.has("rounds_per_player")) rounds = setupData.get("rounds_per_player").asInt();
+        else if (setupData.has("roundsPerPlayer")) rounds = setupData.get("roundsPerPlayer").asInt();
 
         int minQuestions = isBr ? 1 : (compCount * rounds);
         int questionCount = 0;
-        JsonNode poolNode = setupData.has("questionPool") ? setupData.get("questionPool") :
-            (setupData.has("question_pool") ? setupData.get("question_pool") : null);
+        JsonNode poolNode = setupData.has("question_pool") ? setupData.get("question_pool") :
+            (setupData.has("questionPool") ? setupData.get("questionPool") : null);
 
         if (poolNode != null && poolNode.isArray()) {
             for (JsonNode qNode : poolNode) {
@@ -231,10 +231,9 @@ public class TriviaQuizSetupEditor implements IGameSetupEditor {
         root.put("game", "Trivia_Quiz");
         root.put("battleRoyale", battleRoyaleCheckBox != null && battleRoyaleCheckBox.isSelected());
         int rpp = roundsSpinner.getValue();
-        root.put("roundsPerPlayer", rpp);
         root.put("rounds_per_player", rpp);
 
-        ArrayNode qArr = root.putArray("questionPool");
+        ArrayNode qArr = root.putArray("question_pool");
         for (QuestionItem item : questionItems) {
             String qText = item.questionField.getText().trim();
             String aText = item.answerField.getText().trim();
@@ -245,7 +244,6 @@ public class TriviaQuizSetupEditor implements IGameSetupEditor {
                 qArr.add(qObj);
             }
         }
-        root.set("question_pool", qArr.deepCopy());
 
         return root;
     }

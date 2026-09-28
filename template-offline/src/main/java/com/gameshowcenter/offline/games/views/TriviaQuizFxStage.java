@@ -238,8 +238,8 @@ public class TriviaQuizFxStage extends VBox {
     }
 
     private void parseQuestionPool() {
-        JsonNode poolNode = (setupData != null && setupData.has("questionPool")) ? setupData.get("questionPool")
-                : ((setupData != null && setupData.has("question_pool")) ? setupData.get("question_pool") : null);
+        JsonNode poolNode = (setupData != null && setupData.has("question_pool")) ? setupData.get("question_pool")
+                : ((setupData != null && setupData.has("questionPool")) ? setupData.get("questionPool") : null);
 
         if (poolNode != null && poolNode.isArray() && poolNode.size() > 0) {
             for (JsonNode item : poolNode) {

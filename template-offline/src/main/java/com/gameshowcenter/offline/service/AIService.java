@@ -401,8 +401,8 @@ public class AIService {
                 }
             }
         } else if (norm.contains("trivia")) {
-            JsonNode pool = setupNode.has("questionPool") ? setupNode.get("questionPool") :
-                    (setupNode.has("question_pool") ? setupNode.get("question_pool") : null);
+            JsonNode pool = setupNode.has("question_pool") ? setupNode.get("question_pool") :
+                    (setupNode.has("questionPool") ? setupNode.get("questionPool") : null);
             if (pool != null && pool.isArray()) {
                 for (JsonNode n : pool) {
                     if (n.has("question")) items.add(n.get("question").asText());
@@ -475,19 +475,21 @@ public class AIService {
         // 1. Trivia Quiz
         if (norm.contains("trivia")) {
             root.put("game", "Trivia_Quiz");
-            ArrayNode newPool = generatedData.has("questionPool") ? (ArrayNode) generatedData.get("questionPool") : null;
+            ArrayNode newPool = generatedData.has("question_pool") ? (ArrayNode) generatedData.get("question_pool") :
+                    (generatedData.has("questionPool") ? (ArrayNode) generatedData.get("questionPool") : null);
             if (newPool != null) {
-                if (overwrite || !root.has("questionPool") || !root.get("questionPool").isArray()) {
-                    root.set("questionPool", newPool.deepCopy());
+                if (overwrite || !root.has("question_pool") || !root.get("question_pool").isArray()) {
                     root.set("question_pool", newPool.deepCopy());
                 } else {
-                    ArrayNode existingArr = (ArrayNode) root.get("questionPool");
+                    ArrayNode existingArr = (ArrayNode) root.get("question_pool");
                     for (JsonNode q : newPool) {
                         existingArr.add(q.deepCopy());
                     }
-                    root.set("question_pool", existingArr.deepCopy());
                 }
             }
+            // Remove redundant replicas
+            root.remove("questionPool");
+            root.remove("roundsPerPlayer");
         }
 
         // 2. Hangman (Guarantee strictly unique, non-repeating words)
