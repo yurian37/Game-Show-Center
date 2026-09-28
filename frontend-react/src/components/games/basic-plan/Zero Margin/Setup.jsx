@@ -11,13 +11,16 @@ export default function ZeroMarginSetup({ value, onChange }) {
     });
   };
 
+  const [error, setError] = useState('');
+
   const handleAddTime = (e) => {
     e.preventDefault();
     const timeVal = parseFloat(newTime);
     if (isNaN(timeVal) || timeVal <= 0) {
-      alert("Target time must be a number strictly greater than 0 seconds.");
+      setError("Target time must be a number strictly greater than 0 seconds.");
       return;
     }
+    setError('');
 
     const pool = value?.target_times_pool || [];
     onChange({
@@ -76,11 +79,12 @@ export default function ZeroMarginSetup({ value, onChange }) {
           />
           <button
             type="submit"
-            className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-5 rounded-xl text-xs uppercase tracking-wider transition-colors"
+            className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-5 rounded-xl text-xs uppercase tracking-wider transition-colors cursor-pointer"
           >
             Add
           </button>
         </form>
+        {error && <p className="text-rose-400 text-xs mb-3 font-semibold">{error}</p>}
 
         <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto bg-[#0f121d] p-4 rounded-xl border border-slate-900">
           {value?.target_times_pool?.map((timeVal, idx) => (

@@ -11,6 +11,8 @@ export default function HangmanSetup({ value, onChange }) {
     });
   };
 
+  const [wordError, setWordError] = useState('');
+
   const handleAddWord = (e) => {
     e.preventDefault();
     const word = newWord.trim().toUpperCase();
@@ -18,9 +20,10 @@ export default function HangmanSetup({ value, onChange }) {
     
     const wordPool = value?.word_pool || [];
     if (wordPool.some(w => (typeof w === 'string' ? w.trim().toUpperCase() : '') === word)) {
-      alert("This word already exists in the list (duplicates not allowed).");
+      setWordError("This word already exists in the list (duplicates not allowed).");
       return;
     }
+    setWordError('');
 
     onChange({
       ...value,
@@ -89,11 +92,12 @@ export default function HangmanSetup({ value, onChange }) {
           />
           <button
             type="submit"
-            className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-5 rounded-xl text-xs uppercase tracking-wider transition-colors"
+            className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-5 rounded-xl text-xs uppercase tracking-wider transition-colors cursor-pointer"
           >
             Add
           </button>
         </form>
+        {wordError && <p className="text-rose-400 text-xs mb-3 font-semibold">{wordError}</p>}
 
         <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto bg-[#0f121d] p-4 rounded-xl border border-slate-900">
           {value?.word_pool?.map((word, idx) => (

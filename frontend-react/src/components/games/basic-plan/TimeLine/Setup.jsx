@@ -16,12 +16,15 @@ export default function TimeLineSetup({ value, onChange, numPlayers, players }) 
   const [newDesc, setNewDesc] = useState('');
   const [search, setSearch] = useState('');
 
+  const [timelineError, setTimelineError] = useState('');
+
   const handleAddEvent = (e) => {
     e.preventDefault();
     if (!newTitle.trim() || newYear === '' || isNaN(parseInt(newYear, 10))) {
-      alert('Please provide a valid milestone title and numerical year.');
+      setTimelineError('Please provide a valid milestone title and numerical year.');
       return;
     }
+    setTimelineError('');
 
     const newEvent = {
       id: `ev_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
@@ -43,9 +46,10 @@ export default function TimeLineSetup({ value, onChange, numPlayers, players }) 
 
   const handleRemoveEvent = (idToRemove) => {
     if (events.length <= 3) {
-      alert('At least 3 timeline events are required for a match.');
+      setTimelineError('At least 3 timeline events are required for a match.');
       return;
     }
+    setTimelineError('');
     const updated = events.filter((ev) => ev.id !== idToRemove);
     onChange({
       ...value,
@@ -112,7 +116,8 @@ export default function TimeLineSetup({ value, onChange, numPlayers, players }) 
             />
           </div>
 
-          <div className="flex justify-end pt-1">
+          <div className="flex flex-col items-end pt-1 gap-2">
+            {timelineError && <p className="text-rose-400 text-xs font-semibold">{timelineError}</p>}
             <button
               type="submit"
               className="px-5 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs rounded-xl shadow-md transition-all active:scale-95 cursor-pointer"

@@ -37,6 +37,15 @@ export default function Settings({ onNavigate }) {
     setFfaPlayers(updatedPlayers);
   };
 
+  const [toast, setToast] = useState(null);
+
+  const showToast = (message, type = 'info') => {
+    setToast({ message, type });
+    setTimeout(() => {
+      setToast(prev => (prev?.message === message ? null : prev));
+    }, 4000);
+  };
+
   const handleScoreValueChange = (id, newValue) => {
     setScorePresets(scorePresets.map(preset => 
       preset.id === id ? { ...preset, value: newValue } : preset
@@ -45,7 +54,7 @@ export default function Settings({ onNavigate }) {
 
   const handleAddScorePreset = () => {
     if (scorePresets.length >= 8) {
-      alert("Maximum limit reached. You can only have up to 8 score presets.");
+      showToast("Maximum limit reached: You can configure up to 8 score presets.", "warning");
       return;
     }
     const nextId = scorePresets.length > 0 ? Math.max(...scorePresets.map(p => p.id)) + 1 : 1;
@@ -54,7 +63,7 @@ export default function Settings({ onNavigate }) {
 
   const handleRemoveScorePreset = (id) => {
     if (scorePresets.length <= 2) {
-      alert("Minimum limit reached. You must keep at least 2 score presets.");
+      showToast("Minimum limit reached: You must keep at least 2 score presets.", "warning");
       return;
     }
     setScorePresets(scorePresets.filter(preset => preset.id !== id));
@@ -93,7 +102,7 @@ export default function Settings({ onNavigate }) {
       if (game.plan === 'premium') {
         const hasPremiumSelected = selectedGames.some(g => g.plan === 'premium');
         if (hasPremiumSelected) {
-          alert("Heads up! With the Basic plan, you can include a maximum of one Premium game in your activity. Get the Premium plan to unlock them all.");
+          showToast("Basic plan allows one Premium game at a time in your loop.", "info");
           return;
         }
       }
@@ -120,11 +129,11 @@ export default function Settings({ onNavigate }) {
 
   const handleStartGame = () => {
     if (!gameMode) {
-      alert("Please select a game mode before starting.");
+      showToast("Please select a game mode before starting.", "warning");
       return;
     }
     if (selectedGames.length === 0) {
-      alert("Please select at least one mini-game for your matchup loop.");
+      showToast("Please select at least one mini-game for your matchup.", "warning");
       return;
     }
     
@@ -147,131 +156,28 @@ export default function Settings({ onNavigate }) {
     onNavigate('host', matchConfig);
   };
 
-  const handleExportSetupJson = () => {
-    let exportProfiles = [];
-    if (gameMode === '1vs1') {
-      exportProfiles = [
-        { id: 'p1', name: player1 || 'Player 1' },
-        { id: 'p2', name: player2 || 'Player 2' }
-      ];
-    } else if (gameMode === 'team') {
-      exportProfiles = Array.from({ length: teamCount }).map((_, idx) => ({
-        id: `t${idx + 1}`,
-        name: teams[idx] || `Team ${idx + 1}`
-      }));
-    } else {
-      exportProfiles = Array.from({ length: ffaPlayerCount }).map((_, idx) => ({
-        id: `ffa_${idx}`,
-        name: ffaPlayers[idx] || `Player ${idx + 1}`
-      }));
-    }
-
-    const configData = {
-      gameMode,
-      selectedGames: selectedGames.map(g => ({
-        name: g.name,
-        plan: g.plan,
-        setup: g.setup || g.setupData || {}
-      })),
-      scorePresets,
-      initialPlayers: {
-        player1,
-        player2,
-        teamCount,
-        teams,
-        team1: teams[0] || '',
-        team2: teams[1] || '',
-        ffaPlayerCount,
-        ffaPlayers
-      },
-      profiles: exportProfiles
-    };
-    const jsonStr = JSON.stringify(configData, null, 2);
-    const blob = new Blob([jsonStr], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'setup.json';
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const handleImportSetupJson = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      try {
-        const importedData = JSON.parse(event.target.result);
-        const importedMode = importedData.gameMode || '1vs1';
-        if (importedData.gameMode) setGameMode(importedData.gameMode);
-
-        if (Array.isArray(importedData.selectedGames)) {
-          const resolvedGames = importedData.selectedGames.map(g => {
-            const gName = typeof g === 'string' ? g : g.name;
-            const found = allGames.find(item => item.name.toLowerCase() === (gName || '').toLowerCase());
-            if (found) {
-              return { ...found, ...(typeof g === 'object' ? g : {}) };
-            }
-            return typeof g === 'object' ? g : { name: gName };
-          }).filter(Boolean);
-          setSelectedGames(resolvedGames);
-        }
-
-        if (Array.isArray(importedData.scorePresets)) {
-          const normalized = importedData.scorePresets.map((preset, idx) => {
-            if (typeof preset === 'object' && preset !== null && preset.value !== undefined) {
-              return { id: preset.id ?? (idx + 1), value: String(preset.value) };
-            } else {
-              return { id: idx + 1, value: String(preset) };
-            }
-          });
-          setScorePresets(normalized);
-        }
-
-        if (importedData.initialPlayers) {
-          if (importedData.initialPlayers.player1) setPlayer1(importedData.initialPlayers.player1);
-          if (importedData.initialPlayers.player2) setPlayer2(importedData.initialPlayers.player2);
-          if (importedData.initialPlayers.teamCount) setTeamCount(importedData.initialPlayers.teamCount);
-          if (Array.isArray(importedData.initialPlayers.teams)) {
-            setTeams(importedData.initialPlayers.teams);
-          } else if (importedData.initialPlayers.team1 || importedData.initialPlayers.team2) {
-            setTeams([importedData.initialPlayers.team1 || '', importedData.initialPlayers.team2 || '', '', '']);
-          }
-          if (importedData.initialPlayers.ffaPlayerCount) setFfaPlayerCount(importedData.initialPlayers.ffaPlayerCount);
-          if (Array.isArray(importedData.initialPlayers.ffaPlayers)) setFfaPlayers(importedData.initialPlayers.ffaPlayers);
-        } else if (Array.isArray(importedData.profiles) && importedData.profiles.length > 0) {
-          const profs = importedData.profiles;
-          if (importedMode === '1vs1') {
-            setPlayer1(profs[0]?.name || 'Player 1');
-            setPlayer2(profs[1]?.name || 'Player 2');
-          } else if (importedMode === 'team') {
-            const count = Math.min(4, Math.max(2, profs.length));
-            setTeamCount(count);
-            const teamArr = Array(4).fill('');
-            profs.slice(0, count).forEach((p, i) => { teamArr[i] = p.name || ''; });
-            setTeams(teamArr);
-          } else {
-            const count = Math.min(8, Math.max(3, profs.length));
-            setFfaPlayerCount(count);
-            const ffaArr = Array(8).fill('');
-            profs.slice(0, count).forEach((p, i) => { ffaArr[i] = p.name || ''; });
-            setFfaPlayers(ffaArr);
-          }
-        }
-
-        alert("Match setup loaded successfully!");
-      } catch (err) {
-        alert("Could not read file. Make sure you select a valid match setup JSON file.");
-      }
-    };
-    reader.readAsText(file);
-    e.target.value = null;
-  };
-
   return (
-    <div className="w-full max-w-4xl bg-[#141929] border border-slate-800/60 rounded-[2.5rem] p-6 md:p-10 shadow-[0_30px_70px_-15px_rgba(0,0,0,0.8)] flex flex-col animate-fadeIn text-slate-200">
+    <div className="w-full max-w-4xl bg-[#141929] border border-slate-800/60 rounded-[2.5rem] p-6 md:p-10 shadow-[0_30px_70px_-15px_rgba(0,0,0,0.8)] flex flex-col animate-fadeIn text-slate-200 relative">
       
+      {/* IN-APP TOAST NOTIFICATION (NO BROWSER ALERTS) */}
+      {toast && (
+        <div className={`fixed top-6 right-6 z-50 flex items-center gap-3 px-5 py-3 rounded-2xl shadow-2xl backdrop-blur-md border transition-all animate-fadeIn ${
+          toast.type === 'warning'
+            ? 'bg-amber-950/95 border-amber-500/60 text-amber-200'
+            : 'bg-indigo-950/95 border-indigo-500/60 text-indigo-200'
+        }`}>
+          <SvgEmoji name={toast.type === 'warning' ? 'warning' : 'megaphone'} size={18} />
+          <span className="text-xs font-bold">{toast.message}</span>
+          <button 
+            type="button" 
+            onClick={() => setToast(null)} 
+            className="ml-3 text-slate-400 hover:text-white font-bold text-xs cursor-pointer"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
       <button 
         onClick={() => onNavigate('home')}
         className="text-xs font-bold text-slate-400 hover:text-indigo-400 self-start mb-6 flex items-center gap-1 uppercase tracking-wider transition-colors cursor-pointer"
@@ -285,21 +191,10 @@ export default function Settings({ onNavigate }) {
           <p className="text-xs text-slate-400 mt-1">Organize participants, mini-games, and score buttons for your show.</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <label className="text-xs font-bold bg-slate-800 hover:bg-purple-900/40 text-purple-300 px-3.5 py-2 rounded-xl border border-purple-700/60 transition-all uppercase tracking-wider cursor-pointer flex items-center gap-1.5 shadow-sm" title="Load a previously saved match from a file on your device">
-            <SvgEmoji name="inbox" /> Load Saved Match
-            <input type="file" accept=".json" onChange={handleImportSetupJson} className="hidden" />
-          </label>
-          <button
-            onClick={handleExportSetupJson}
-            title="Save participants and settings to a file to reuse them later"
-            className="text-xs font-bold bg-slate-800 hover:bg-indigo-900/40 text-indigo-300 px-3.5 py-2 rounded-xl border border-indigo-700/60 transition-all uppercase tracking-wider flex items-center gap-1.5 cursor-pointer shadow-sm"
-          >
-            <SvgEmoji name="save" /> Save Match
-          </button>
           <button
             onClick={handleReset}
             title="Reset all fields and selections to their default values"
-            className="text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-300 px-3.5 py-2 rounded-xl border border-slate-700 transition-all uppercase tracking-wider cursor-pointer"
+            className="text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-300 px-3.5 py-2 rounded-xl border border-slate-700 transition-all uppercase tracking-wider cursor-pointer shadow-sm"
           >
             Reset Settings
           </button>
@@ -687,60 +582,51 @@ export default function Settings({ onNavigate }) {
         </div>
       )}
 
-      {/* TAB 2 CONTENT: PREMIUM PLAN */}
+      {/* TAB 2 CONTENT: PREMIUM PLAN (DESKTOP STANDALONE) */}
       {activeTab === 'premium' && (
         <div className="space-y-6">
-          {/* MAINTENANCE ALERT BANNER */}
-          <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-4 flex items-center gap-3 text-amber-300 text-xs font-bold">
-            <span className="text-xl flex items-center justify-center"><SvgEmoji name="construction" /></span>
-            <div>
-              <p className="font-black uppercase tracking-wider">En Mantenimiento</p>
-              <p className="text-slate-400 font-normal mt-0.5">Las descargas y pasarelas de pago del Plan Premium se encuentran temporalmente en mantenimiento. Vuelve a consultar pronto.</p>
-            </div>
-          </div>
-
           {/* OPTION A */}
-          <div className="bg-gradient-to-br from-[#1b2238] to-[#1e1a3a] p-6 rounded-2xl border border-purple-500/20 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="bg-gradient-to-br from-[#1b2238] to-[#1e1a3a] p-6 rounded-2xl border border-purple-500/30 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
-                <h3 className="text-lg font-bold text-purple-300">A) Download Offline Standalone App (5 Games Included)</h3>
-                <span className="text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/40 px-2 py-0.5 rounded-full font-black uppercase">
-                  En Mantenimiento
+                <h3 className="text-lg font-bold text-purple-300">A) Standalone Desktop Application (5 Games Included)</h3>
+                <span className="text-[10px] bg-purple-500/20 text-purple-300 border border-purple-500/40 px-2.5 py-0.5 rounded-full font-black uppercase">
+                  Desktop Edition
                 </span>
               </div>
               <p className="text-slate-400 text-xs leading-relaxed max-w-xl">
-                Get the full offline standalone system packaged in a <strong>.zip</strong> archive. Includes the independent desktop application, folder structure, and the 5 core mini-games (Zero Margin, Hangman, TicTacToe, Roulette, Trivia Quiz) with local resources.
+                Get the full offline standalone system packaged in a <strong>.zip</strong> archive. Includes the independent desktop application, local folder structure, and the 5 core mini-games (Zero Margin, Hangman, TicTacToe, Roulette, Trivia Quiz) with local high-resolution resources.
               </p>
               <button
-                onClick={() => alert("En Mantenimiento: Las descargas y pagos del Plan Premium se encuentran temporalmente en mantenimiento. Vuelve a consultar pronto.")}
-                className="mt-4 bg-gradient-to-r from-amber-600/80 to-purple-600/80 hover:from-amber-600 hover:to-purple-600 text-white text-xs font-black py-3 px-6 rounded-xl uppercase tracking-wider shadow-lg transition-all active:scale-95 cursor-pointer flex items-center gap-2"
+                onClick={() => setIsPaymentModalOpen(true)}
+                className="mt-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-black py-3 px-6 rounded-xl uppercase tracking-wider shadow-lg transition-all active:scale-95 cursor-pointer flex items-center gap-2"
               >
-                En Mantenimiento (Descargas no disponibles)
+                <SvgEmoji name="download" /> Get Standalone Edition ($5.00 USD)
               </button>
             </div>
             <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-4 text-center shrink-0 min-w-[130px]">
-              <span className="block text-xs text-slate-400 uppercase font-bold tracking-wider mb-1">Price</span>
+              <span className="block text-xs text-slate-400 uppercase font-bold tracking-wider mb-1">One-Time License</span>
               <span className="text-2xl font-black text-purple-400">$5.00</span>
             </div>
           </div>
 
           {/* OPTION B */}
-          <div className="bg-gradient-to-br from-[#1b2238] to-[#251b30] p-6 rounded-2xl border border-pink-500/20 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="bg-gradient-to-br from-[#1b2238] to-[#251b30] p-6 rounded-2xl border border-pink-500/30 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
                 <h3 className="text-lg font-bold text-pink-300">B) Add Additional Premium Modules</h3>
-                <span className="text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/40 px-2 py-0.5 rounded-full font-black uppercase">
-                  En Mantenimiento
+                <span className="text-[10px] bg-pink-500/20 text-pink-300 border border-pink-500/40 px-2.5 py-0.5 rounded-full font-black uppercase">
+                  Add-ons
                 </span>
               </div>
               <p className="text-slate-400 text-xs leading-relaxed max-w-xl">
-                Expand your mini-game library with individual premium modules. Each module downloads into its own folder ready to drop into your catalog.
+                Expand your mini-game library with individual premium modules. Each module downloads into its own folder ready to drop into your catalog with full visual customization and local audio packs.
               </p>
               <button
-                onClick={() => alert("En Mantenimiento: La descarga de módulos individuales Premium se encuentra temporalmente en mantenimiento.")}
-                className="mt-4 bg-gradient-to-r from-amber-600/80 to-rose-600/80 hover:from-amber-600 hover:to-rose-600 text-white text-xs font-black py-3 px-6 rounded-xl uppercase tracking-wider shadow-lg transition-all active:scale-95 cursor-pointer flex items-center gap-2"
+                onClick={() => setIsPaymentModalOpen(true)}
+                className="mt-4 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white text-xs font-black py-3 px-6 rounded-xl uppercase tracking-wider shadow-lg transition-all active:scale-95 cursor-pointer flex items-center gap-2"
               >
-                En Mantenimiento: Módulos Premium
+                <SvgEmoji name="star" /> Explore Modules ($1.00 USD ea)
               </button>
             </div>
             <div className="bg-pink-500/10 border border-pink-500/30 rounded-xl p-4 text-center shrink-0 min-w-[130px]">
@@ -750,6 +636,16 @@ export default function Settings({ onNavigate }) {
           </div>
         </div>
       )}
+
+      {/* PAYMENT MODAL */}
+      <PaymentModal 
+        isOpen={isPaymentModalOpen} 
+        onClose={() => setIsPaymentModalOpen(false)} 
+        onDownloadSuccess={() => {
+          showToast("Access verified successfully! Preparing download...", "info");
+          setIsPaymentModalOpen(false);
+        }}
+      />
     </div>
   );
 }

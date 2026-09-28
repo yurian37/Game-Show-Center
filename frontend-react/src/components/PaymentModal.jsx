@@ -28,15 +28,27 @@ export default function PaymentModal({ isOpen, onClose, onDownloadSuccess }) {
   const handleValidatePromoCode = async (e) => {
     e.preventDefault();
     if (!promoCode.trim()) return;
-    setPromoStatus({ type: 'error', text: 'En Mantenimiento: Las descargas y validaciones se encuentran temporalmente en mantenimiento.' });
+    const hashed = await computeSha256(promoCode);
+    if (hashed === ENCRYPTED_VIP_HASH) {
+      setPromoStatus({ type: 'success', text: 'VIP Access code verified! Unlocking Standalone edition...' });
+      setTimeout(() => {
+        if (onDownloadSuccess) onDownloadSuccess();
+      }, 1000);
+    } else {
+      setPromoStatus({ type: 'error', text: 'Invalid or expired promo code. Please verify your VIP key.' });
+    }
   };
 
   const handleSimulatedPayment = () => {
-    setPaymentStatus({ type: 'error', text: 'En Mantenimiento: Las descargas se encuentran temporalmente en mantenimiento.' });
+    setPaymentStatus({ type: 'success', text: 'Demo checkout approved! Access to the Standalone edition granted.' });
+    setTimeout(() => {
+      if (onDownloadSuccess) onDownloadSuccess();
+    }, 1200);
   };
 
   const handleOpenPayPalLink = () => {
-    setPaymentStatus({ type: 'error', text: 'En Mantenimiento: Los pagos y descargas se encuentran temporalmente en mantenimiento.' });
+    window.open(`https://www.paypal.com/paypalme/pvalencianocr/5USD`, '_blank', 'noopener,noreferrer');
+    setPaymentStatus({ type: 'info', text: 'Secure PayPal checkout opened in an external tab. Complete payment or enter your VIP promo code.' });
   };
 
   return (
