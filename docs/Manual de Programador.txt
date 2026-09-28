@@ -1,7 +1,7 @@
 ================================================================================
               GAME SHOW CENTER OFFLINE - MANUAL DEL PROGRAMADOR
       GUÍA TÉCNICA DE ARQUITECTURA, EXTENSIÓN, IA LOCAL (RAG) Y MINIJUEGOS
-                                YUYI STUDIOS
+                               YONIA ENTERPRISE
 ================================================================================
 
 FECHA: Septiembre 2026
@@ -30,7 +30,7 @@ A. Flujo de Desarrollo Directo con Maven (Recomendado para programadores del pro
    - Clave Maestra de Activación para Pruebas de Desarrollo:
      Si el entorno solicita activación de licencia durante el desarrollo, ingresa la
      siguiente Clave Maestra de Desarrollador (Master Key):
-     `YUYI-STUDIO-PRO-2026`
+     `YONIA-ENTERPRISE-PRO-2026`
      Esta clave activa instantáneamente todas las funciones Pro de forma offline.
 
 B. Flujo de Desarrollo Modular Externo (Plugin Autónomo):

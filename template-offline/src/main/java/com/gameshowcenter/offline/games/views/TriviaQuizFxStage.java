@@ -42,7 +42,7 @@ public class TriviaQuizFxStage extends VBox {
             new TriviaQuestion("Which animal is the largest mammal in the world?", "Blue Whale"),
             new TriviaQuestion("What is the hardest natural substance on Earth?", "Diamond"),
             new TriviaQuestion("In which country can you find the Pyramids of Giza?", "Egypt"),
-            new TriviaQuestion("What is the studio that developed Game Show Center?", "YuyiStudio"),
+            new TriviaQuestion("What is the studio that developed Game Show Center?", "YonIA Enterprise"),
             new TriviaQuestion("How many continents are there on Earth?", "7"),
             new TriviaQuestion("What is the fastest land animal in the world?", "Cheetah"),
             new TriviaQuestion("Which gas do plants absorb during photosynthesis?", "Carbon Dioxide"));

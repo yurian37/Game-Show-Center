@@ -82,7 +82,7 @@ export default function GameArenaDriver({
               <p className="text-xs text-slate-400 leading-relaxed max-w-md mx-auto">{gameDesc}</p>
             </div>
             <div className="inline-flex items-center gap-3 bg-[#141929] px-4 py-2 rounded-xl border border-slate-800 text-xs text-slate-300 font-mono">
-              <span>Author: <strong className="text-purple-400">{gameInfo?.author || 'Yuyi Studios'}</strong></span>
+              <span>Author: <strong className="text-purple-400">{gameInfo?.author || 'YonIA Enterprise'}</strong></span>
               <span>•</span>
               <span>Plan: <strong className="text-amber-400 uppercase">{gameInfo?.plan || 'basic'}</strong></span>
             </div>

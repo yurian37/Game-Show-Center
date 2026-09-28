@@ -2,7 +2,7 @@
   "index": 1,
   "name": "TimeLine",
   "description": "Educational chronological sequencing game: place historical milestones, scientific discoveries, and world events in their correct order on the timeline.",
-  "author": "Yuyi Studios",
+  "author": "YonIA Enterprise",
   "stageClass": "com.gameshowcenter.offline.games.views.TimeLineFxStage",
   "editorClass": "com.gameshowcenter.offline.games.editors.TimeLineSetupEditor",
   "available": ["1vs1", "team", "freeforall"],

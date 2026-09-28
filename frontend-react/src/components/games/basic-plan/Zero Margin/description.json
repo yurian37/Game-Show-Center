@@ -2,7 +2,7 @@
   "index": 5,
   "name": "Zero Margin",
   "description": "Test your focus and timing: watch the running stopwatch and stop it at the exact target time with less margin for error.",
-  "author": "Yuyi Studios",
+  "author": "YonIA Enterprise",
   "available": ["1vs1", "team", "freeforall"],
   "instructions": [
     "A target time (in seconds and milliseconds) is designated for the round.",

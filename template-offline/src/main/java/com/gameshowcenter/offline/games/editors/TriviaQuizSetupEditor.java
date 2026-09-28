@@ -108,7 +108,7 @@ public class TriviaQuizSetupEditor implements IGameSetupEditor {
         } else {
             ObjectNode sample1 = objectMapper.createObjectNode();
             sample1.put("question", "What studio developed Game Show Center?");
-            sample1.put("answer", "YuyiStudio");
+            sample1.put("answer", "YonIA Enterprise");
             addQuestionRow(sample1);
         }
 

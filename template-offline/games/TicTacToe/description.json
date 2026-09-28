@@ -2,7 +2,7 @@
   "index": 3,
   "name": "TicTacToe",
   "description": "Classic 3x3 strategic grid battle: align three markers in a row to win the match.",
-  "author": "Yuyi Studios",
+  "author": "YonIA Enterprise",
   "stageClass": "com.gameshowcenter.offline.games.views.TicTacToeFxStage",
   "editorClass": "com.gameshowcenter.offline.games.editors.TicTacToeSetupEditor",
   "available": ["1vs1"],

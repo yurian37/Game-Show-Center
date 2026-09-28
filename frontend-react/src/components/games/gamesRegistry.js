@@ -58,7 +58,7 @@ for (const descPath in descJsonModules) {
     description: parsed.description || '',
     instructions: parsed.instructions || [],
     translations: parsed.translations || {},
-    author: parsed.author || 'Yuyi Studios',
+    author: parsed.author || 'YonIA Enterprise',
     index: parsed.index !== undefined ? parsed.index : 0,
     available: parsed.available !== undefined ? parsed.available : ["1vs1", "team", "freeforall"],
     plan

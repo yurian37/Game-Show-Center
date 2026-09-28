@@ -209,6 +209,14 @@ export default function LoadPage({ onNavigate, onOpenLegal }) {
           <div className="pt-4 border-t border-slate-800 flex flex-wrap items-center justify-center gap-4 text-xs text-slate-400">
             <button 
               type="button" 
+              onClick={() => onOpenLegal && onOpenLegal('contact')}
+              className="hover:text-emerald-400 underline transition-colors cursor-pointer"
+            >
+              Contact Us
+            </button>
+            <span>•</span>
+            <button 
+              type="button" 
               onClick={() => onOpenLegal && onOpenLegal('privacy')}
               className="hover:text-indigo-400 underline transition-colors cursor-pointer"
             >
@@ -228,7 +236,7 @@ export default function LoadPage({ onNavigate, onOpenLegal }) {
               onClick={() => onOpenLegal && onOpenLegal('about')}
               className="hover:text-pink-400 underline transition-colors cursor-pointer"
             >
-              About Yuyi Studio
+              About YonIA Enterprise
             </button>
           </div>
         </div>

@@ -2,7 +2,7 @@
   "index": 4,
   "name": "Snap Solve",
   "description": "Put your visual reflexes to the test: look at distorted mystery images and identify the hidden subject as the distortion clears.",
-  "author": "Yuyi Studios",
+  "author": "YonIA Enterprise",
   "available": ["1vs1", "team", "freeforall"],
   "instructions": [
     "Before starting each turn, decide which contestant will play while the image remains hidden.",

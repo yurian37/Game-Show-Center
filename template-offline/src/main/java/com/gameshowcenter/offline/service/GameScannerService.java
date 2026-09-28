@@ -89,7 +89,7 @@ public class GameScannerService {
                     System.err.println("Could not parse description.json in " + dir.getName() + ": " + e.getMessage());
                 }
             } else {
-                descriptor.setAuthor("YuyiStudio");
+                descriptor.setAuthor("YonIA Enterprise");
                 descriptor.setDescription("Custom offline minigame module.");
             }
 

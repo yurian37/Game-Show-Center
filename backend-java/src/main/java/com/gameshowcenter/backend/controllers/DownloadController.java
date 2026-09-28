@@ -40,7 +40,7 @@ public class DownloadController {
             // 1. Add Instructions File
             String instructions = """
                 ====================================================
-                GAME SHOW CENTER - MODO OFFLINE (Developed by YuyiStudio)
+                GAME SHOW CENTER - MODO OFFLINE (Developed by YonIA Enterprise)
                 ====================================================
 
                 INSTRUCCIONES DE USO:
@@ -51,7 +51,7 @@ public class DownloadController {
                    java -jar template-offline-1.0.0-standalone.jar
 
                 3. Al abrir por primera vez, ingresa tu clave de licencia.
-                   (Clave de Prueba / Maestra: YUYI-STUDIO-PRO-2026)
+                   (Clave de Prueba / Maestra: YONIA-ENTERPRISE-PRO-2026)
 
                 4. La carpeta 'games/' contiene los 5 juegos básicos. Puedes
                    agregar o descargar más juegos pegando su carpeta en 'games/'.

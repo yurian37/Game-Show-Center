@@ -1,9 +1,9 @@
 ; Script de Inno Setup para Game Show Center - Offline Executable
-; Desarrollado por Yuyi Studio
+; Desarrollado por YonIA Enterprise
 
 #define MyAppName "Game Show Center Offline"
 #define MyAppVersion "1.0.0"
-#define MyAppPublisher "Yuyi Studio"
+#define MyAppPublisher "YonIA Enterprise"
 #define MyAppURL "https://gameshowcenter.com"
 #define MyAppExeName "GameShowCenter.exe"
 

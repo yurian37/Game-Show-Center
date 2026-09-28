@@ -2,7 +2,7 @@
   "index": 5,
   "name": "Topic Takedown",
   "description": "Conquer the board category by category: answer specific themed questions correctly to completely dominate and clear out the topics.",
-  "author": "Yuyi Studios",
+  "author": "YonIA Enterprise",
   "available": ["1vs1", "team", "freeforall"],
   "instructions": [
     "The board is organized in columns of categories with numbered question cards.",

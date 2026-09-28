@@ -9,8 +9,10 @@ import java.util.Base64;
 public class LicenseManager {
 
     private static final String LICENSE_FILE_NAME = "license.lic";
-    private static final String SECRET_SALT = "YuyiStudio_GSC_Offline_Secret_2026_KeySalt";
-    private static final String MASTER_KEY = "YUYI-STUDIO-PRO-2026";
+    private static final String SECRET_SALT = "YonIAEnterprise_GSC_Offline_Secret_2026_KeySalt";
+    private static final String LEGACY_SECRET_SALT = "YuyiStudio_GSC_Offline_Secret_2026_KeySalt";
+    private static final String MASTER_KEY = "YONIA-ENTERPRISE-PRO-2026";
+    private static final String LEGACY_MASTER_KEY = "YUYI-STUDIO-PRO-2026";
 
     /**
      * Checks if the current machine is activated.
@@ -39,9 +41,10 @@ public class LicenseManager {
                 return false;
             }
 
-            // Verify HWID signature matches current machine
+            // Verify HWID signature matches current machine (current or legacy)
             String expectedEncryptedHwid = encryptHwid(currentHwid);
-            return expectedEncryptedHwid.equals(storedEncryptedHwid);
+            String legacyEncryptedHwid = encryptHwidWithSalt(currentHwid, LEGACY_SECRET_SALT);
+            return expectedEncryptedHwid.equals(storedEncryptedHwid) || legacyEncryptedHwid.equals(storedEncryptedHwid);
 
         } catch (Exception e) {
             return false;
@@ -85,12 +88,17 @@ public class LicenseManager {
         if (inputKey == null || inputKey.isBlank()) return false;
         String key = inputKey.trim().toUpperCase();
 
-        if (MASTER_KEY.equalsIgnoreCase(key)) {
+        if (MASTER_KEY.equalsIgnoreCase(key) || LEGACY_MASTER_KEY.equalsIgnoreCase(key)) {
             return true;
         }
 
         String expectedKey = generateValidKeyForHwid(hwid);
-        return expectedKey.equalsIgnoreCase(key);
+        if (expectedKey.equalsIgnoreCase(key)) {
+            return true;
+        }
+
+        String legacyKey = generateKeyWithSalt(hwid, LEGACY_SECRET_SALT);
+        return legacyKey.equalsIgnoreCase(key);
     }
 
     /**
@@ -98,7 +106,11 @@ public class LicenseManager {
      * Format: GSCKEY-XXXX-XXXX-XXXX
      */
     public static String generateValidKeyForHwid(String hwid) {
-        String base = hwid + SECRET_SALT;
+        return generateKeyWithSalt(hwid, SECRET_SALT);
+    }
+
+    private static String generateKeyWithSalt(String hwid, String salt) {
+        String base = hwid + salt;
         String hash = HardwareIdUtil.sha256(base);
         return String.format("GSCKEY-%s-%s-%s",
                 hash.substring(0, 4).toUpperCase(),
@@ -107,7 +119,11 @@ public class LicenseManager {
     }
 
     private static String encryptHwid(String hwid) {
-        String base = hwid + "::" + SECRET_SALT;
+        return encryptHwidWithSalt(hwid, SECRET_SALT);
+    }
+
+    private static String encryptHwidWithSalt(String hwid, String salt) {
+        String base = hwid + "::" + salt;
         return Base64.getEncoder().encodeToString(HardwareIdUtil.sha256(base).getBytes(StandardCharsets.UTF_8));
     }
 

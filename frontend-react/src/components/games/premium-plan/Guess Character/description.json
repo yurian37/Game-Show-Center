@@ -2,7 +2,7 @@
   "index": 2,
   "name": "Guess Character",
   "description": "Say the name of each character image shown on the screen: identify pop culture icons, historical figures, and animated avatars.",
-  "author": "Yuyi Studios",
+  "author": "YonIA Enterprise",
   "available": ["1vs1", "team", "freeforall"],
   "instructions": [
     "Before each turn starts, contestants take a brief pause while the character image remains hidden.",

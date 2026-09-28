@@ -46,7 +46,7 @@ cd template-offline
 ./mvnw javafx:run
 ```
 
-*For developer testing, use the master activation key: `YUYI-STUDIO-PRO-2026`.*
+*For developer testing, use the master activation key: `YONIA-ENTERPRISE-PRO-2026`.*
 
 ### 2. Web Portal (`frontend-react`)
 Requirements: **Node.js 18+**, **npm**.
@@ -81,4 +81,4 @@ Detailed technical and operational guides can be found in the [`docs/`](./docs) 
 
 ## 🛡️ License
 
-Copyright © 2026 Yuyi Studios. All rights reserved.
+Copyright © 2026 YonIA Enterprise. All rights reserved.

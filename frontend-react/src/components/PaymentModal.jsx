@@ -3,7 +3,7 @@ import SvgEmoji from './SvgEmoji';
 
 // Cryptographic SHA-256 hash of the VIP promo code ("yinyang")
 const ENCRYPTED_VIP_HASH = "53086b510bd55bb3f8373b5cf2e55ef92b512c1c6fbbfbe6e95c1c8a4df55811";
-const PAYPAL_RECEIVER_EMAIL = "pvalencianocr@hotmail.com";
+const PAYPAL_RECEIVER_EMAIL = "yoniadevs@gmail.com";
 
 async function computeSha256(text) {
   try {
@@ -47,8 +47,8 @@ export default function PaymentModal({ isOpen, onClose, onDownloadSuccess }) {
   };
 
   const handleOpenPayPalLink = () => {
-    window.open(`https://www.paypal.com/paypalme/pvalencianocr/5USD`, '_blank', 'noopener,noreferrer');
-    setPaymentStatus({ type: 'info', text: 'Secure PayPal checkout opened in an external tab. Complete payment or enter your VIP promo code.' });
+    window.open(`mailto:yoniadevs@gmail.com?subject=I%20am%20interested%20in%20game-show-center`, '_blank', 'noopener,noreferrer');
+    setPaymentStatus({ type: 'info', text: 'Email inquiry opened. Contact yoniadevs@gmail.com to complete registration or enter your VIP promo code.' });
   };
 
   return (

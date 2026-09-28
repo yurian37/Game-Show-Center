@@ -1541,7 +1541,7 @@ public class SettingsFxView extends ScrollPane {
             }
 
             Label statusModeLabel = new Label(
-                    modeSupported ? "Author: " + (game.getAuthor() != null ? game.getAuthor() : "YuyiStudio")
+                    modeSupported ? "Author: " + (game.getAuthor() != null ? game.getAuthor() : "YonIA Enterprise")
                             : I18n.get("settings.games.not_supported"));
             statusModeLabel.setStyle(modeSupported
                     ? String.format("-fx-text-fill: %s; -fx-font-size: 10px; -fx-font-weight: bold;",

@@ -2,7 +2,7 @@
   "index": 1,
   "name": "GeoLocation",
   "description": "Each image is a new opportunity to discover the mystery location: examine geography, landmarks, and clues to pinpoint the exact place.",
-  "author": "Yuyi Studios",
+  "author": "YonIA Enterprise",
   "available": ["1vs1", "team", "freeforall"],
   "instructions": [
     "An image depicting a mystery geographic location, monument, or landscape is presented.",

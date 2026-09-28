@@ -2,7 +2,7 @@
   "index": 2,
   "name": "Hangman",
   "description": "Classic word guessing game: guess letters one by one or solve the word before running out of lives.",
-  "author": "Yuyi Studios",
+  "author": "YonIA Enterprise",
   "available": ["1vs1", "team", "freeforall"],
   "instructions": [
     "A hidden secret word is displayed with blank letter dashes.",

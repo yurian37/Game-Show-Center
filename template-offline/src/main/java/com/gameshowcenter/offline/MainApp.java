@@ -330,7 +330,7 @@ public class MainApp extends Application {
         Label byText = new Label(I18n.get("app.header.by") + " ");
         byText.setStyle(String.format("-fx-text-fill: %s; -fx-font-size: 10px;",
                 ThemeManager.getTextOnCardSecondaryHex()));
-        Label studioText = new Label("YUYI STUDIO");
+        Label studioText = new Label("YONIA ENTERPRISE");
         studioText.setStyle(String.format("-fx-text-fill: %s; -fx-font-weight: 900; -fx-font-size: 10px;",
                 ThemeManager.getAccentHex()));
         badgeBox.getChildren().addAll(byText, studioText);

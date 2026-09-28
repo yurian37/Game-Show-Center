@@ -2,7 +2,7 @@
   "index": 7,
   "name": "Guess Character",
   "description": "Say the name of each character image shown on the screen: identify pop culture icons, historical figures, and animated avatars.",
-  "author": "Yuyi Studios",
+  "author": "YonIA Enterprise",
   "stageClass": "com.gameshowcenter.offline.games.views.GuessCharacterFxStage",
   "editorClass": "com.gameshowcenter.offline.games.editors.GuessCharacterSetupEditor",
   "available": ["1vs1", "team", "freeforall"],

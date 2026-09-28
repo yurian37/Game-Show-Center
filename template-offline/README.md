@@ -1,6 +1,6 @@
 # 🎮 Game Show Center - Standalone Offline Engine (v1.0.0)
 
-> **Release Oficial 1.0.0** — Motor ejecutable nativo 100% offline desarrollado por **Yuyi Studios**.  
+> **Release Oficial 1.0.0** — Motor ejecutable nativo 100% offline desarrollado por **YonIA Enterprise**.  
 > Plataforma interactiva de concursos televisivos para educación, auditorios, salones de clase y eventos en vivo.
 
 ---
@@ -61,7 +61,7 @@ template-offline/
 cd template-offline
 .\mvnw.cmd javafx:run
 ```
-*Clave Maestra de Desarrollador para Pruebas Pro: `YUYI-STUDIO-PRO-2026`*
+*Clave Maestra de Desarrollador para Pruebas Pro: `YONIA-ENTERPRISE-PRO-2026`*
 
 ### 2. Generar el JAR Standalone
 ```powershell
@@ -116,5 +116,5 @@ public interface IGameSetupEditor {
 ---
 
 ## 📜 Licencia y Créditos
-- Desarrollado por **Yuyi Studios** © 2026.
+- Desarrollado por **YonIA Enterprise** © 2026.
 - Todos los derechos reservados.

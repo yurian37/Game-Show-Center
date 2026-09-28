@@ -4,7 +4,7 @@ param(
 )
 
 # Script de compilacion y generacion de ejecutable .EXE para Game Show Center Offline
-# Desarrollado por Yuyi Studio
+# Desarrollado por YonIA Enterprise
 
 Write-Host "==================================================" -ForegroundColor Cyan
 Write-Host "   Game Show Center Offline - Generador de .EXE   " -ForegroundColor Cyan
@@ -69,7 +69,7 @@ if (-not (Test-Path $jpackagePath)) {
     --main-jar $mainJarName `
     --main-class "com.gameshowcenter.offline.Launcher" `
     --dest "release" `
-    --vendor "Yuyi Studio" `
+    --vendor "YonIA Enterprise" `
     --app-version $AppVersion `
     --description "Game Show Center Offline Executable"
 

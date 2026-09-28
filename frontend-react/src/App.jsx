@@ -115,6 +115,12 @@ export default function App() {
             Game Settings
           </button>
           <button
+            onClick={() => handleOpenLegal('contact')}
+            className="hover:text-emerald-400 transition-colors cursor-pointer hidden sm:inline"
+          >
+            Contact Us
+          </button>
+          <button
             onClick={() => handleOpenLegal('privacy')}
             className="hover:text-indigo-400 transition-colors cursor-pointer hidden sm:inline"
           >
@@ -122,7 +128,7 @@ export default function App() {
           </button>
           <div className="bg-[#1e253b] border border-indigo-500/20 rounded-xl px-3 py-1 shadow-inner text-[11px]">
             <span className="text-slate-400">by </span>
-            <span className="font-bold text-indigo-300">YUYI STUDIO</span>
+            <span className="font-bold text-indigo-300">YonIA Enterprise</span>
           </div>
         </nav>
       </header>
@@ -209,11 +215,19 @@ export default function App() {
         <p>
           &copy; {new Date().getFullYear()} Game Show Center. Developed by{' '}
           <strong className="text-slate-300 font-semibold hover:text-indigo-400 transition-colors">
-            Yuyi Studio
+            YonIA Enterprise
           </strong>
           . All rights reserved.
         </p>
         <div className="flex items-center gap-4 text-slate-400 text-[11px]">
+          <button 
+            type="button" 
+            onClick={() => handleOpenLegal('contact')}
+            className="hover:text-emerald-400 transition-colors cursor-pointer"
+          >
+            Contact Us
+          </button>
+          <span>•</span>
           <button 
             type="button" 
             onClick={() => handleOpenLegal('privacy')}
@@ -235,7 +249,7 @@ export default function App() {
             onClick={() => handleOpenLegal('about')}
             className="hover:text-pink-400 transition-colors cursor-pointer"
           >
-            About Us
+            About YonIA Enterprise
           </button>
         </div>
       </footer>

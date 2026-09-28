@@ -2,7 +2,7 @@
   "index": 8,
   "name": "Rapid Rhythm",
   "description": "Listen closely to audio clues, identify the mystery songs, and reveal the answers: test your musical ear and speed.",
-  "author": "Yuyi Studios",
+  "author": "YonIA Enterprise",
   "stageClass": "com.gameshowcenter.offline.games.views.RapidRhythmFxStage",
   "editorClass": "com.gameshowcenter.offline.games.editors.RapidRhythmSetupEditor",
   "available": ["1vs1", "team", "freeforall"],

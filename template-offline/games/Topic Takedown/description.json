@@ -2,7 +2,7 @@
   "index": 5,
   "name": "Topic Takedown",
   "description": "Conquer the board category by category: answer specific themed questions correctly to completely dominate and clear out the topics.",
-  "author": "Yuyi Studios",
+  "author": "YonIA Enterprise",
   "stageClass": "com.gameshowcenter.offline.games.views.TopicTakedownFxStage",
   "editorClass": "com.gameshowcenter.offline.games.editors.TopicTakedownSetupEditor",
   "available": ["1vs1", "team", "freeforall"],

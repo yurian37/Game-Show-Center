@@ -8,7 +8,7 @@
     <artifactId>template-offline</artifactId>
     <version>1.0.0</version>
     <name>Game Show Center - Offline Executable</name>
-    <description>Standalone Offline Executable Game Show Center Developed by YuyiStudio</description>
+    <description>Standalone Offline Executable Game Show Center Developed by YonIA Enterprise</description>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

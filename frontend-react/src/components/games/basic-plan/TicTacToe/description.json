@@ -2,7 +2,7 @@
   "index": 3,
   "name": "TicTacToe",
   "description": "Classic 3x3 strategic grid battle: align three markers in a row to win the match.",
-  "author": "Yuyi Studios",
+  "author": "YonIA Enterprise",
   "available": ["1vs1"],
   "instructions": [
     "Two players or teams compete on a 3x3 grid taking alternating turns.",

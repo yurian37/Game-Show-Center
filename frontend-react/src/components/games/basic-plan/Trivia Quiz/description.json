@@ -2,7 +2,7 @@
   "index": 4,
   "name": "Trivia Quiz",
   "description": "Showcase your knowledge across diverse topics, answer correctly and climb the leaderboard.",
-  "author": "Yuyi Studios",
+  "author": "YonIA Enterprise",
   "available": ["1vs1", "team", "freeforall"],
   "instructions": [
     "A question is presented to the participants.",

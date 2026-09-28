@@ -2,7 +2,7 @@
   "index": 4,
   "name": "Trivia Quiz",
   "description": "Customizable trivia question show: host reveals questions and correct answers for players across various topics.",
-  "author": "Yuyi Studios",
+  "author": "YonIA Enterprise",
   "stageClass": "com.gameshowcenter.offline.games.views.TriviaQuizFxStage",
   "editorClass": "com.gameshowcenter.offline.games.editors.TriviaQuizSetupEditor",
   "available": ["1vs1", "team", "freeforall"],

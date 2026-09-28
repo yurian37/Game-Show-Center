@@ -2,7 +2,7 @@
   "index": 3,
   "name": "Rapid Rhythm",
   "description": "Listen closely to audio clues, identify the mystery songs, and reveal the answers: test your musical ear and speed.",
-  "author": "Yuyi Studios",
+  "author": "YonIA Enterprise",
   "available": ["1vs1", "team", "freeforall"],
   "instructions": [
     "An audio clue from the configured music playlist is ready to play.",
