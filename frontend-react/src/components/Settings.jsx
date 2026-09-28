@@ -2,11 +2,8 @@ import React, { useState } from 'react';
 import SvgEmoji from './SvgEmoji';
 // Dynamic games list from gamesRegistry
 import { gamesList as allGames } from '../components/games/gamesRegistry';
-import PaymentModal from './PaymentModal';
 
 export default function Settings({ onNavigate }) {
-  const [activeTab, setActiveTab] = useState('basic');
-  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [gameMode, setGameMode] = useState('');
   const [player1, setPlayer1] = useState('');
   const [player2, setPlayer2] = useState('');
@@ -99,13 +96,6 @@ export default function Settings({ onNavigate }) {
     if (isAlreadySelected) {
       setSelectedGames(selectedGames.filter(g => g.name !== game.name));
     } else {
-      if (game.plan === 'premium') {
-        const hasPremiumSelected = selectedGames.some(g => g.plan === 'premium');
-        if (hasPremiumSelected) {
-          showToast("Basic plan allows one Premium game at a time in your loop.", "info");
-          return;
-        }
-      }
       setSelectedGames([...selectedGames, game]);
     }
   };
@@ -201,33 +191,7 @@ export default function Settings({ onNavigate }) {
         </div>
       </div>
 
-      {/* TAB NAVIGATION */}
-      <div className="flex border-b border-slate-800 mb-8 gap-2">
-        <button
-          onClick={() => setActiveTab('basic')}
-          className={`py-3 px-6 text-sm font-black uppercase tracking-wider border-b-2 transition-all cursor-pointer ${
-            activeTab === 'basic' 
-              ? 'border-indigo-500 text-indigo-400 bg-indigo-500/5 rounded-t-xl' 
-              : 'border-transparent text-slate-400 hover:text-slate-200'
-          }`}
-        >
-          Basic Plan (Free)
-        </button>
-        <button
-          onClick={() => setActiveTab('premium')}
-          className={`py-3 px-6 text-sm font-black uppercase tracking-wider border-b-2 transition-all cursor-pointer ${
-            activeTab === 'premium' 
-              ? 'border-purple-500 text-purple-400 bg-purple-500/5 rounded-t-xl' 
-              : 'border-transparent text-slate-400 hover:text-slate-200'
-          }`}
-        >
-          Premium Plan
-        </button>
-      </div>
-
-      {/* TAB 1 CONTENT: BASIC PLAN */}
-      {activeTab === 'basic' && (
-        <div className="space-y-8">
+      <div className="space-y-8 mt-6">
           
           {/* A) Game Mode Selection */}
           <div className="bg-[#1b2238] p-6 rounded-2xl border border-slate-800">
@@ -580,72 +544,7 @@ export default function Settings({ onNavigate }) {
           </div>
 
         </div>
-      )}
 
-      {/* TAB 2 CONTENT: PREMIUM PLAN (DESKTOP STANDALONE) */}
-      {activeTab === 'premium' && (
-        <div className="space-y-6">
-          {/* OPTION A */}
-          <div className="bg-gradient-to-br from-[#1b2238] to-[#1e1a3a] p-6 rounded-2xl border border-purple-500/30 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-1">
-                <h3 className="text-lg font-bold text-purple-300">A) Standalone Desktop Application (5 Games Included)</h3>
-                <span className="text-[10px] bg-purple-500/20 text-purple-300 border border-purple-500/40 px-2.5 py-0.5 rounded-full font-black uppercase">
-                  Desktop Edition
-                </span>
-              </div>
-              <p className="text-slate-400 text-xs leading-relaxed max-w-xl">
-                Get the full offline standalone system packaged in a <strong>.zip</strong> archive. Includes the independent desktop application, local folder structure, and the 5 core mini-games (Zero Margin, Hangman, TicTacToe, Roulette, Trivia Quiz) with local high-resolution resources.
-              </p>
-              <button
-                onClick={() => setIsPaymentModalOpen(true)}
-                className="mt-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-black py-3 px-6 rounded-xl uppercase tracking-wider shadow-lg transition-all active:scale-95 cursor-pointer flex items-center gap-2"
-              >
-                <SvgEmoji name="download" /> Get Standalone Edition ($5.00 USD)
-              </button>
-            </div>
-            <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-4 text-center shrink-0 min-w-[130px]">
-              <span className="block text-xs text-slate-400 uppercase font-bold tracking-wider mb-1">One-Time License</span>
-              <span className="text-2xl font-black text-purple-400">$5.00</span>
-            </div>
-          </div>
-
-          {/* OPTION B */}
-          <div className="bg-gradient-to-br from-[#1b2238] to-[#251b30] p-6 rounded-2xl border border-pink-500/30 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-1">
-                <h3 className="text-lg font-bold text-pink-300">B) Add Additional Premium Modules</h3>
-                <span className="text-[10px] bg-pink-500/20 text-pink-300 border border-pink-500/40 px-2.5 py-0.5 rounded-full font-black uppercase">
-                  Add-ons
-                </span>
-              </div>
-              <p className="text-slate-400 text-xs leading-relaxed max-w-xl">
-                Expand your mini-game library with individual premium modules. Each module downloads into its own folder ready to drop into your catalog with full visual customization and local audio packs.
-              </p>
-              <button
-                onClick={() => setIsPaymentModalOpen(true)}
-                className="mt-4 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white text-xs font-black py-3 px-6 rounded-xl uppercase tracking-wider shadow-lg transition-all active:scale-95 cursor-pointer flex items-center gap-2"
-              >
-                <SvgEmoji name="star" /> Explore Modules ($1.00 USD ea)
-              </button>
-            </div>
-            <div className="bg-pink-500/10 border border-pink-500/30 rounded-xl p-4 text-center shrink-0 min-w-[130px]">
-              <span className="block text-xs text-slate-400 uppercase font-bold tracking-wider mb-1">Per Module</span>
-              <span className="text-2xl font-black text-pink-400">$1.00</span>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* PAYMENT MODAL */}
-      <PaymentModal 
-        isOpen={isPaymentModalOpen} 
-        onClose={() => setIsPaymentModalOpen(false)} 
-        onDownloadSuccess={() => {
-          showToast("Access verified successfully! Preparing download...", "info");
-          setIsPaymentModalOpen(false);
-        }}
-      />
-    </div>
-  );
-}
+      </div>
+    );
+  }
