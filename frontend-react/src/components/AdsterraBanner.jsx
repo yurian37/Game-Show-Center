@@ -73,7 +73,7 @@ export default function AdsterraBanner({
                 'params' : {}
               };
             </script>
-            <script type="text/javascript" src="//www.topcreativeformat.com/${effectiveZoneKey}/invoke.js" onerror="parent.postMessage('adsterra_blocked_${position}', '*')"></script>
+            <script type="text/javascript" src="https://www.topcreativeformat.com/${effectiveZoneKey}/invoke.js" onerror="parent.postMessage('adsterra_blocked_${position}', '*')"></script>
           </body>
         </html>
       `;
@@ -82,12 +82,13 @@ export default function AdsterraBanner({
       iframeDoc.write(adHtml);
       iframeDoc.close();
     } catch (err) {
-      console.warn("Adsterra banner initialization notice:", err);
+      console.warn(`[Adsterra] Banner initialization error (${position}):`, err);
       setAdBlocked(true);
     }
 
     const handleMessage = (event) => {
       if (event.data === `adsterra_blocked_${position}`) {
+        console.warn(`[Adsterra] Banner (${position}) fue bloqueado (posible AdBlocker activo o dominio sin inventario en Adsterra). Mostrando respaldo.`);
         setAdBlocked(true);
       }
     };
