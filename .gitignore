@@ -103,3 +103,5 @@ empty_temp/
 !.vscode/launch.json
 *.sw?
 *.bak
+~$*
+*.tmp
