@@ -76,10 +76,7 @@ export default function App() {
     }
   };
 
-  // Sponsored Advertising Display Policy:
-  // Advertisements should only be displayed on editorial/content screens (home, settings),
-  // and NOT on live behavioral game action screens (arena, host) or error states.
-  const showContentAds = screen === 'home' || screen === 'settings';
+
 
   return (
     <div className="min-h-screen bg-[#0d111c] text-slate-100 flex flex-col justify-between font-sans selection:bg-indigo-500 selection:text-white">
@@ -137,21 +134,19 @@ export default function App() {
       <div className="flex flex-grow w-full max-w-[1920px] mx-auto items-stretch relative">
         
         {/* PUBLICIDAD IZQUIERDA (SPONSOR SPACE 1 - Adsterra Banner & Offline Edition Spotlight) */}
-        {showContentAds && (
-          <aside className="hidden xl:flex w-72 bg-[#111524] border-r border-slate-800/80 flex-col p-5 justify-between items-center relative shrink-0">
-            <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/5 to-transparent pointer-events-none" />
-            <div className="w-full text-center">
-              <p className="text-[10px] font-black text-indigo-400/60 tracking-[0.3em] uppercase mb-4 select-none">
-                SPONSOR SPACE
-              </p>
-              
-              <AdsterraBanner position="left" label="Sponsored Space" width={160} height={600} />
-            </div>
-          </aside>
-        )}
+        <aside className="hidden lg:flex w-52 xl:w-72 bg-[#111524] border-r border-slate-800/80 flex-col p-3 xl:p-5 justify-start items-center relative shrink-0">
+          <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/5 to-transparent pointer-events-none" />
+          <div className="w-full text-center sticky top-6">
+            <p className="text-[10px] font-black text-indigo-400/60 tracking-[0.3em] uppercase mb-4 select-none">
+              SPONSOR SPACE
+            </p>
+            
+            <AdsterraBanner zoneKey="4e1cbb94898a46491d4e929a66cfbc53" position="left" label="Sponsored Space" width={160} height={600} />
+          </div>
+        </aside>
 
         {/* MAIN CONTENT */}
-        <main className="flex-grow flex items-center justify-center p-4 md:p-8 lg:p-12">
+        <main className="flex-grow flex items-center justify-center p-3 sm:p-4 md:p-6 lg:p-8 xl:p-10 min-w-0 overflow-x-hidden">
           <ErrorBoundary onReset={() => setScreen('settings')}>
             
             {screen === 'home' && (
@@ -195,19 +190,25 @@ export default function App() {
         </main>
 
         {/* PUBLICIDAD DERECHA (SPONSOR SPACE 2 - Adsterra Banner & Local AI Spotlight) */}
-        {showContentAds && (
-          <aside className="hidden xl:flex w-72 bg-[#111524] border-l border-slate-800/80 flex-col p-5 justify-between items-center relative shrink-0">
-            <div className="absolute inset-0 bg-gradient-to-b from-purple-500/5 to-transparent pointer-events-none" />
-            <div className="w-full text-center">
-              <p className="text-[10px] font-black text-purple-400/60 tracking-[0.3em] uppercase mb-4 select-none">
-                SPONSOR SPACE
-              </p>
+        <aside className="hidden lg:flex w-52 xl:w-72 bg-[#111524] border-l border-slate-800/80 flex-col p-3 xl:p-5 justify-start items-center relative shrink-0">
+          <div className="absolute inset-0 bg-gradient-to-b from-purple-500/5 to-transparent pointer-events-none" />
+          <div className="w-full text-center sticky top-6">
+            <p className="text-[10px] font-black text-purple-400/60 tracking-[0.3em] uppercase mb-4 select-none">
+              SPONSOR SPACE
+            </p>
 
-              <AdsterraBanner position="right" label="Sponsored Space" width={160} height={600} />
-            </div>
-          </aside>
-        )}
+            <AdsterraBanner zoneKey="4e1cbb94898a46491d4e929a66cfbc53" position="right" label="Sponsored Space" width={160} height={600} />
+          </div>
+        </aside>
 
+      </div>
+
+      {/* PUBLICIDAD RESPONSIVA PARA MÓVIL Y TABLET (< LG) */}
+      <div className="lg:hidden w-full flex flex-col items-center justify-center py-6 bg-[#111524] border-t border-slate-800/80">
+        <p className="text-[10px] font-black text-indigo-400/60 tracking-[0.3em] uppercase mb-3 select-none">
+          SPONSOR SPACE
+        </p>
+        <AdsterraBanner zoneKey="4e1cbb94898a46491d4e929a66cfbc53" position="left" label="Sponsored Space" width={160} height={600} />
       </div>
 
       {/* FOOTER */}
