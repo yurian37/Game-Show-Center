@@ -5,7 +5,7 @@ import Settings from './components/Settings';
 import OnGameHost from './components/OnGameHost';
 import ArenaStage from './components/ArenaStage';
 import WinnerStage from './components/WinnerStage';
-import AdSenseBanner from './components/AdSenseBanner';
+import AdsterraBanner from './components/AdsterraBanner';
 import LegalModal from './components/LegalModal';
 import SvgEmoji from './components/SvgEmoji';
 
@@ -76,7 +76,7 @@ export default function App() {
     }
   };
 
-  // Google AdSense Policy Compliance:
+  // Sponsored Advertising Display Policy:
   // Advertisements should only be displayed on editorial/content screens (home, settings),
   // and NOT on live behavioral game action screens (arena, host) or error states.
   const showContentAds = screen === 'home' || screen === 'settings';
@@ -136,7 +136,7 @@ export default function App() {
       {/* WRAPPER GLOBAL */}
       <div className="flex flex-grow w-full max-w-[1920px] mx-auto items-stretch relative">
         
-        {/* PUBLICIDAD IZQUIERDA (SPONSOR SPACE 1 - Hidden during active games to comply with AdSense policy) */}
+        {/* PUBLICIDAD IZQUIERDA (SPONSOR SPACE 1 - Adsterra Banner & Offline Edition Spotlight) */}
         {showContentAds && (
           <aside className="hidden xl:flex w-72 bg-[#111524] border-r border-slate-800/80 flex-col p-5 justify-between items-center relative shrink-0">
             <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/5 to-transparent pointer-events-none" />
@@ -145,7 +145,7 @@ export default function App() {
                 SPONSOR SPACE
               </p>
               
-              <AdSenseBanner slotId="1000000001" label="Advertisement" />
+              <AdsterraBanner position="left" label="Sponsored Space" width={160} height={600} />
             </div>
           </aside>
         )}
@@ -194,7 +194,7 @@ export default function App() {
           </ErrorBoundary>
         </main>
 
-        {/* PUBLICIDAD DERECHA (SPONSOR SPACE 2 - Hidden during active games to comply with AdSense policy) */}
+        {/* PUBLICIDAD DERECHA (SPONSOR SPACE 2 - Adsterra Banner & Local AI Spotlight) */}
         {showContentAds && (
           <aside className="hidden xl:flex w-72 bg-[#111524] border-l border-slate-800/80 flex-col p-5 justify-between items-center relative shrink-0">
             <div className="absolute inset-0 bg-gradient-to-b from-purple-500/5 to-transparent pointer-events-none" />
@@ -203,7 +203,7 @@ export default function App() {
                 SPONSOR SPACE
               </p>
 
-              <AdSenseBanner slotId="2000000002" label="Advertisement" />
+              <AdsterraBanner position="right" label="Sponsored Space" width={160} height={600} />
             </div>
           </aside>
         )}

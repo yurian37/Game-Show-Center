@@ -175,7 +175,7 @@ export default function LoadPage({ onNavigate, onOpenLegal }) {
           <div className="bg-[#1b2238] p-4 rounded-xl border border-slate-800">
             <h4 className="text-xs font-bold text-slate-200 mb-1">Is Game Show Center free to use online?</h4>
             <p className="text-[11px] text-slate-400 leading-relaxed">
-              Yes. The web application is 100% free for schools, community events, and live streams. It is supported by verified ad spaces through Google AdSense.
+              Yes. The web application is 100% free for schools, community events, and live streams. It is supported by verified ad spaces through Adsterra and official sponsorships.
             </p>
           </div>
 

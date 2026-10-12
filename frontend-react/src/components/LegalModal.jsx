@@ -175,7 +175,7 @@ export default function LegalModal({ isOpen, onClose, initialTab = 'privacy' }) 
             </div>
           )}
 
-          {/* TAB 1: PRIVACY POLICY (COMPLIANT WITH GOOGLE ADSENSE) */}
+          {/* TAB 1: PRIVACY POLICY (ADSTERRA & ADVERTISING PARTNERS COMPLIANT) */}
           {activeTab === 'privacy' && (
             <div className="space-y-4">
               <div className="bg-[#1b2238] p-4 rounded-xl border border-indigo-500/20">
@@ -186,19 +186,19 @@ export default function LegalModal({ isOpen, onClose, initialTab = 'privacy' }) 
               </div>
 
               <div className="bg-[#1b2238] p-4 rounded-xl border border-slate-800">
-                <h3 className="text-sm font-bold text-slate-200 mb-2">2. Google AdSense & Third-Party Cookies Disclosure</h3>
+                <h3 className="text-sm font-bold text-slate-200 mb-2">2. Third-Party Advertising & Adsterra Network Disclosure</h3>
                 <p className="mb-2">
-                  Our website displays advertisements served by <strong>Google AdSense</strong>. In accordance with Google AdSense program policies, please note:
+                  Our website displays advertisements served by verified advertising networks including <strong>Adsterra</strong> and participating sponsors. In accordance with digital advertising standards, please note:
                 </p>
                 <ul className="list-disc list-inside space-y-1 text-slate-300 pl-2">
                   <li>
-                    <strong>Third-Party Vendors:</strong> Third-party vendors, including Google, use cookies to serve ads based on a user's prior visits to this website or other websites across the Internet.
+                    <strong>Third-Party Vendors:</strong> Third-party ad networks, including Adsterra and its advertising partners, may use cookies, web beacons, or non-personal identifiers to deliver relevant contextual banner advertisements on our website.
                   </li>
                   <li>
-                    <strong>Advertising Cookies (DART):</strong> Google's use of advertising cookies enables it and its partners to serve ads to users based on their visits to our sites and/or other sites on the Internet.
+                    <strong>Non-Personal Data:</strong> These advertising technologies collect non-identifiable telemetry (such as browser type, approximate geography, device characteristics, and general interaction metrics) solely for campaign attribution and fraud prevention.
                   </li>
                   <li>
-                    <strong>User Opt-Out:</strong> Users may opt out of personalized advertising by visiting Google Ad Settings (<a href="https://adssettings.google.com" target="_blank" rel="noopener noreferrer" className="text-indigo-400 underline">adssettings.google.com</a>) or by visiting <a href="https://www.aboutads.info" target="_blank" rel="noopener noreferrer" className="text-indigo-400 underline">www.aboutads.info</a>.
+                    <strong>User Privacy & Opt-Out:</strong> Users can manage, restrict, or opt out of personalized tracking via their browser cookie settings or through industry opt-out portals such as the Network Advertising Initiative (<a href="https://optout.networkadvertising.org" target="_blank" rel="noopener noreferrer" className="text-indigo-400 underline">optout.networkadvertising.org</a>) and Your Online Choices (<a href="https://www.youronlinechoices.com" target="_blank" rel="noopener noreferrer" className="text-indigo-400 underline">www.youronlinechoices.com</a>).
                   </li>
                 </ul>
               </div>
@@ -278,7 +278,7 @@ export default function LegalModal({ isOpen, onClose, initialTab = 'privacy' }) 
                   YonIA Enterprise specializes in modern interactive entertainment software, gamification frameworks, and high-impact digital experiences.
                 </p>
                 <div className="mt-3 pt-3 border-t border-slate-700/60 flex flex-col sm:flex-row items-start sm:items-center justify-between text-[11px] text-slate-400 gap-2">
-                  <span>Web Version: 2.5 (AdSense Compliant)</span>
+                  <span>Web Version: 2.5 (Adsterra & Privacy Compliant)</span>
                   <span className="text-indigo-400 font-mono">yoniadevs@gmail.com</span>
                 </div>
               </div>

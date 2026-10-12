@@ -46,11 +46,11 @@ A. Propaganda y Vitrina de Juegos en Vivo:
    - Muestra demostraciones interactivas en vivo (Play/Setup) para que los usuarios
      experimenten la emoción de los juegos antes de adquirirlos.
 
-B. Espacios Publicitarios (Sponsors & Google AdSense):
+B. Espacios Publicitarios (Sponsors & Adsterra / Redes de Display):
    - Integración nativa de bloques publicitarios en marcos laterales ("Sponsor Space")
      y banners superiores/inferiores.
    - Venta directa de espacios de patrocinio para marcas educativas, tiendas de
-     tecnología o eventos, complementado con redes programáticas (Google AdSense).
+     tecnología o eventos, complementado con redes programáticas (Adsterra / Display Networks).
 
 C. Portal de Descarga y Pasarela de Comercio Electrónico:
    - Descarga directa de la Plantilla Base Offline (Template Offline) lista para
@@ -131,7 +131,7 @@ B. Segmento Corporativo y Onboarding Empresarial:
 El modelo de monetización se diversifica en 4 fuentes clave de ingresos:
 
 1. Ingresos Publicitarios en Web (Tráfico Abierto):
-   - Google AdSense + Redes de Display en banners integrados.
+   - Redes de Display (Adsterra) en banners integrados.
    - Venta directa de espacios de patrocinio en los bordes del área de juego.
 
 2. Venta Directa a Consumidores Finales (B2C):
