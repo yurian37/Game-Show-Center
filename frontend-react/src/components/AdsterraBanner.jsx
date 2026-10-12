@@ -6,6 +6,9 @@ import SvgEmoji from './SvgEmoji';
  * Safely sandboxes `atOptions` within an isolated iframe to prevent global scope conflicts in React SPAs,
  * and renders an elegant branded fallback when no zone key is configured or when ads are blocked.
  */
+// Verified production key for Adsterra 160x600 skyscraper banner
+const DEFAULT_ADSTERRA_ZONE_KEY = "4e1cbb94898a46491d4e929a66cfbc53";
+
 export default function AdsterraBanner({
   zoneKey = "",
   position = "left",
@@ -16,18 +19,20 @@ export default function AdsterraBanner({
   const [adBlocked, setAdBlocked] = useState(false);
   const iframeRef = useRef(null);
 
-  // Read zone key from prop or Vite environment variables
+  // Read zone key from prop, Vite environment variables, or verified default key
   const effectiveZoneKey =
     zoneKey ||
     (position === 'left'
       ? import.meta.env.VITE_ADSTERRA_LEFT_ZONE_KEY
       : import.meta.env.VITE_ADSTERRA_RIGHT_ZONE_KEY) ||
-    "";
+    DEFAULT_ADSTERRA_ZONE_KEY;
 
   const hasLiveKey = Boolean(
     effectiveZoneKey &&
     effectiveZoneKey.trim() !== "" &&
-    effectiveZoneKey !== "YOUR_ADSTERRA_KEY_HERE"
+    effectiveZoneKey !== "YOUR_ADSTERRA_KEY_HERE" &&
+    effectiveZoneKey !== "YOUR_LEFT_ZONE_KEY_HERE" &&
+    effectiveZoneKey !== "YOUR_RIGHT_ZONE_KEY_HERE"
   );
 
   useEffect(() => {
