@@ -241,6 +241,13 @@ public class AIService {
                 reqNode.put("mode", mode);
                 reqNode.put("strictness", ImageSourcesConfigManager.getStrictness());
 
+                int qPerCat = 4;
+                if (currentSetup != null) {
+                    if (currentSetup.has("questionsPerCategory")) qPerCat = currentSetup.get("questionsPerCategory").asInt(4);
+                    else if (currentSetup.has("questions_per_category")) qPerCat = currentSetup.get("questions_per_category").asInt(4);
+                }
+                reqNode.put("questions_per_category", qPerCat);
+
                 ArrayNode sourcesArray = objectMapper.createArrayNode();
                 if (imageSources != null && !imageSources.isEmpty()) {
                     for (String src : imageSources) {
@@ -265,6 +272,10 @@ public class AIService {
                     ragDocsArray.add(doc);
                 }
                 reqNode.set("rag_documents", ragDocsArray);
+
+                if (currentSetup != null) {
+                    reqNode.set("current_setup", currentSetup);
+                }
 
                 objectMapper.writeValue(tempConfigFile, reqNode);
 
@@ -406,6 +417,7 @@ public class AIService {
             if (pool != null && pool.isArray()) {
                 for (JsonNode n : pool) {
                     if (n.has("question")) items.add(n.get("question").asText());
+                    if (n.has("answer")) items.add(n.get("answer").asText());
                 }
             }
         } else if (norm.contains("hangman")) {
@@ -423,6 +435,21 @@ public class AIService {
                     if (n.has("categoryName")) items.add(n.get("categoryName").asText());
                     else if (n.has("category_name")) items.add(n.get("category_name").asText());
                     else if (n.has("name")) items.add(n.get("name").asText());
+
+                    JsonNode qs = n.has("questions") ? n.get("questions") : null;
+                    if (qs != null && qs.isArray()) {
+                        for (JsonNode qNode : qs) {
+                            if (qNode.has("question")) items.add(qNode.get("question").asText());
+                            if (qNode.has("answer")) items.add(qNode.get("answer").asText());
+                        }
+                    }
+                }
+            }
+        } else if (norm.contains("timeline")) {
+            JsonNode evs = setupNode.has("events") ? setupNode.get("events") : null;
+            if (evs != null && evs.isArray()) {
+                for (JsonNode e : evs) {
+                    if (e.has("title")) items.add(e.get("title").asText());
                 }
             }
         } else if (norm.contains("guess") || norm.contains("snap")) {
@@ -523,12 +550,17 @@ public class AIService {
             root.put("game", "Topic_Takedown");
             if (generatedData.has("categories") && generatedData.get("categories").isArray()) {
                 ArrayNode newCats = (ArrayNode) generatedData.get("categories");
+                int qPerCat = generatedData.has("questionsPerCategory") ? generatedData.get("questionsPerCategory").asInt(4) :
+                        (generatedData.has("questions_per_category") ? generatedData.get("questions_per_category").asInt(4) :
+                                (currentSetup != null && currentSetup.has("questionsPerCategory") ? currentSetup.get("questionsPerCategory").asInt(4) :
+                                        (currentSetup != null && currentSetup.has("questions_per_category") ? currentSetup.get("questions_per_category").asInt(4) : 4)));
+
                 if (overwrite || !root.has("categories") || !root.get("categories").isArray()) {
                     root.set("categories", newCats.deepCopy());
                     root.put("numCategories", newCats.size());
                     root.put("num_categories", newCats.size());
-                    root.put("questionsPerCategory", 4);
-                    root.put("questions_per_category", 4);
+                    root.put("questionsPerCategory", qPerCat);
+                    root.put("questions_per_category", qPerCat);
                 } else {
                     ArrayNode existingCats = (ArrayNode) root.get("categories");
                     for (JsonNode cat : newCats) {
@@ -538,6 +570,8 @@ public class AIService {
                     }
                     root.put("numCategories", existingCats.size());
                     root.put("num_categories", existingCats.size());
+                    root.put("questionsPerCategory", qPerCat);
+                    root.put("questions_per_category", qPerCat);
                 }
             }
         }

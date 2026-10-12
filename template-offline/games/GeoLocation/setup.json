@@ -2,25 +2,31 @@
   "game" : "GeoLocation",
   "battleRoyale" : false,
   "rounds_per_player" : 1,
-  "images_per_round" : 2,
+  "images_per_round" : 4,
   "locations" : [ {
-    "location_name" : "Eiffel Tower, France",
-    "images" : [ "games/GeoLocation/images/ai_eiffel_tower_france_1_20572079.jpg", "games/GeoLocation/images/ai_eiffel_tower_france_2_20581230.jpg" ]
+    "location_name" : "Tenis",
+    "images" : [ "games/GeoLocation/images/ai_tenis_1_46008113.jpg", "games/GeoLocation/images/ai_tenis_2_46017851.jpg", "games/GeoLocation/images/ai_tenis_3_46026705.jpg", "games/GeoLocation/images/ai_tenis_4_46082470.jpg" ]
   }, {
-    "location_name" : "Great Wall of China, China",
-    "images" : [ "games/GeoLocation/images/ai_great_wall_of_china_china_1_20614453.jpg", "games/GeoLocation/images/ai_great_wall_of_china_china_2_20623335.jpg" ]
+    "location_name" : "Golf",
+    "images" : [ "games/GeoLocation/images/ai_golf_1_46115554.jpg", "games/GeoLocation/images/ai_golf_2_46122871.jpg", "games/GeoLocation/images/ai_golf_3_46139008.jpg", "games/GeoLocation/images/ai_golf_4_46147938.jpg" ]
   }, {
-    "location_name" : "Taj Mahal, India",
-    "images" : [ "games/GeoLocation/images/ai_taj_mahal_india_1_20678861.jpg", "games/GeoLocation/images/ai_taj_mahal_india_2_20696792.jpg" ]
+    "location_name" : "Críquet",
+    "images" : [ "games/GeoLocation/images/ai_cr_quet_1_46180847.jpg", "games/GeoLocation/images/ai_cr_quet_2_46190595.jpg", "games/GeoLocation/images/ai_cr_quet_3_46200517.jpg", "games/GeoLocation/images/ai_cr_quet_4_46220808.jpg" ]
   }, {
-    "location_name" : "Colosseum, Italy",
-    "images" : [ "games/GeoLocation/images/ai_colosseum_italy_1_20723339.jpg", "games/GeoLocation/images/ai_colosseum_italy_2_20732254.jpg" ]
+    "location_name" : "Polo",
+    "images" : [ "games/GeoLocation/images/ai_polo_1_46245409.jpg", "games/GeoLocation/images/ai_polo_2_46263507.jpg", "games/GeoLocation/images/ai_polo_3_46273713.jpg", "games/GeoLocation/images/ai_polo_4_46282761.jpg" ]
   }, {
-    "location_name" : "Sydney Opera House, Australia",
-    "images" : [ "games/GeoLocation/images/ai_sydney_opera_house_austra_1_20758559.jpg", "games/GeoLocation/images/ai_sydney_opera_house_austra_2_20767612.jpg" ]
+    "location_name" : "Hockey",
+    "images" : [ "games/GeoLocation/images/ai_hockey_1_46306199.jpg", "games/GeoLocation/images/ai_hockey_2_46315168.jpg", "games/GeoLocation/images/ai_hockey_3_46326366.jpg", "games/GeoLocation/images/ai_hockey_4_46336188.jpg" ]
   }, {
-    "location_name" : "Christ the Redeemer, Brazil",
-    "images" : [ "games/GeoLocation/images/ai_christ_the_redeemer_brazi_1_20800774.jpg", "games/GeoLocation/images/ai_christ_the_redeemer_brazi_2_20811858.jpg" ]
+    "location_name" : "Béisbol",
+    "images" : [ "games/GeoLocation/images/ai_b_isbol_1_46367404.jpg", "games/GeoLocation/images/ai_b_isbol_2_46376915.jpg", "games/GeoLocation/images/ai_b_isbol_3_46386457.jpg", "games/GeoLocation/images/ai_b_isbol_4_46395106.jpg" ]
+  }, {
+    "location_name" : "Patinaje",
+    "images" : [ "games/GeoLocation/images/ai_patinaje_1_46426159.jpg", "games/GeoLocation/images/ai_patinaje_2_46434714.jpg", "games/GeoLocation/images/ai_patinaje_3_46444262.jpg", "games/GeoLocation/images/ai_patinaje_4_46454963.jpg" ]
+  }, {
+    "location_name" : "Esquí",
+    "images" : [ "games/GeoLocation/images/ai_esqu_1_46485728.jpg", "games/GeoLocation/images/ai_esqu_2_46495701.jpg", "games/GeoLocation/images/ai_esqu_3_46504745.jpg", "games/GeoLocation/images/ai_esqu_4_46515718.jpg" ]
   } ],
-  "copyright_warnings" : [ "games/GeoLocation/images/ai_great_wall_of_china_china_1_20614453.jpg", "games/GeoLocation/images/ai_christ_the_redeemer_brazi_1_20800774.jpg", "games/GeoLocation/images/ai_colosseum_italy_1_20723339.jpg", "games/GeoLocation/images/ai_eiffel_tower_france_2_20581230.jpg", "games/GeoLocation/images/ai_christ_the_redeemer_brazi_2_20811858.jpg", "games/GeoLocation/images/ai_eiffel_tower_france_1_20572079.jpg", "games/GeoLocation/images/ai_taj_mahal_india_1_20678861.jpg", "games/GeoLocation/images/ai_colosseum_italy_2_20732254.jpg", "games/GeoLocation/images/ai_great_wall_of_china_china_2_20623335.jpg", "games/GeoLocation/images/ai_sydney_opera_house_austra_2_20767612.jpg", "games/GeoLocation/images/ai_sydney_opera_house_austra_1_20758559.jpg" ]
+  "copyright_warnings" : [ "games/GeoLocation/images/ai_patinaje_2_46434714.jpg", "games/GeoLocation/images/ai_tenis_3_46026705.jpg", "games/GeoLocation/images/ai_voleibol_2_45778367.jpg", "games/GeoLocation/images/ai_golf_1_46115554.jpg", "games/GeoLocation/images/ai_cr_quet_3_46200517.jpg", "games/GeoLocation/images/ai_b_isbol_3_46386457.jpg", "games/GeoLocation/images/ai_polo_4_46282761.jpg", "games/GeoLocation/images/ai_patinaje_4_46454963.jpg", "games/GeoLocation/images/ai_esqu_2_46495701.jpg", "games/GeoLocation/images/ai_hockey_4_46336188.jpg", "games/GeoLocation/images/ai_hockey_3_46326366.jpg", "games/GeoLocation/images/ai_esqu_1_46485728.jpg", "games/GeoLocation/images/ai_polo_2_46263507.jpg", "games/GeoLocation/images/ai_b_isbol_4_46395106.jpg", "games/GeoLocation/images/ai_tenis_2_46017851.jpg", "games/GeoLocation/images/ai_cr_quet_1_46180847.jpg", "games/GeoLocation/images/ai_hockey_2_46315168.jpg", "games/GeoLocation/images/ai_polo_3_46273713.jpg", "games/GeoLocation/images/ai_polo_1_46245409.jpg", "games/GeoLocation/images/ai_b_isbol_1_46367404.jpg", "games/GeoLocation/images/ai_esqu_3_46504745.jpg", "games/GeoLocation/images/ai_voleibol_1_45751629.jpg", "games/GeoLocation/images/ai_cr_quet_4_46220808.jpg", "games/GeoLocation/images/ai_hockey_1_46306199.jpg", "games/GeoLocation/images/ai_esqu_4_46515718.jpg", "games/GeoLocation/images/ai_golf_2_46122871.jpg", "games/GeoLocation/images/ai_cr_quet_2_46190595.jpg" ]
 }

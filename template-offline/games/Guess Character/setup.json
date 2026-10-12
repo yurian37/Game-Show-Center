@@ -1,8 +1,9 @@
 {
   "game" : "Guess_Character",
+  "battleRoyale" : false,
   "rounds_per_player" : 3,
   "enable_timer" : true,
   "timer_seconds" : 30,
-  "media_pool" : [ "games/Guess Character/images/ai_elden_ring_1_95470563.jpg", "games/Guess Character/images/ai_the_last_of_us_part_ii_1_95613078.jpg", "games/Guess Character/images/ai_ghost_of_tsushima_1_95984326.jpg", "games/Guess Character/images/ai_spider-man_miles_morales_1_96025929.jpg", "games/Guess Character/images/ai_cyberpunk_2077_1_96065982.jpg", "games/Guess Character/images/ai_red_dead_redemption_2_1_96095977.jpg", "games/Guess Character/images/ai_half-life_alyx_1_96125000.jpg", "games/Guess Character/images/ai_resident_evil_village_1_96155234.jpg", "games/Guess Character/images/ai_horizon_forbidden_west_1_96187106.jpg", "games/Guess Character/images/ai_the_legend_of_zelda_breat_1_96226806.jpg" ],
-  "copyright_warnings" : [ "games/Guess Character/images/ai_horizon_forbidden_west_1_96187106.jpg", "games/Guess Character/images/ai_the_last_of_us_part_ii_1_95613078.jpg", "games/Guess Character/images/ai_spider-man_miles_morales_1_96025929.jpg" ]
+  "media_pool" : [ "games/Guess Character/images/ai_spongebob_squarepants_1_46892278.jpg", "games/Guess Character/images/ai_patrick_star_1_46921482.jpg", "games/Guess Character/images/ai_squidward_tentacles_1_46965167.jpg", "games/Guess Character/images/ai_mr_krabs_1_47013252.jpg", "games/Guess Character/images/ai_plankton_1_47154647.jpg", "games/Guess Character/images/ai_danny_phantom_1_47198895.jpg", "games/Guess Character/images/ai_sam_manson_1_47228030.jpg", "games/Guess Character/images/ai_tucker_foley_1_47267512.jpg", "games/Guess Character/images/ai_samurai_jack_1_47428561.jpg", "games/Guess Character/images/ai_genji_1_47716239.jpg" ],
+  "copyright_warnings" : [ "games/Guess Character/images/ai_sam_manson_1_47228030.jpg", "games/Guess Character/images/ai_mr_krabs_1_47013252.jpg", "games/Guess Character/images/ai_spongebob_squarepants_1_46892278.jpg", "games/Guess Character/images/ai_squidward_tentacles_1_46965167.jpg", "games/Guess Character/images/ai_tucker_foley_1_47267512.jpg", "games/Guess Character/images/ai_samurai_jack_1_47428561.jpg", "games/Guess Character/images/ai_patrick_star_1_46921482.jpg", "games/Guess Character/images/ai_danny_phantom_1_47198895.jpg" ]
 }

@@ -11,6 +11,8 @@ import re
 import json
 import time
 import argparse
+import difflib
+import unicodedata
 from io import BytesIO
 
 # Force UTF-8 stdout/stderr for Windows compatibility
@@ -57,6 +59,148 @@ def report_progress(current: int, total: int, step: str = ""):
     sys.stdout.write(f"PROGRESS:{json.dumps(payload, ensure_ascii=False)}\n")
     sys.stdout.flush()
 
+# ==============================================================================
+# DIVERSITY & ANTI-DUPLICATION SIMILARITY ENGINE
+# ==============================================================================
+
+STOP_WORDS = {
+    'el', 'la', 'los', 'las', 'un', 'una', 'unos', 'unas', 'de', 'del', 'en',
+    'que', 'cual', 'cuales', 'como', 'donde', 'cuando', 'quien', 'quienes',
+    'por', 'para', 'con', 'sin', 'sobre', 'es', 'son', 'fue', 'era', 'eran',
+    'se', 'al', 'su', 'sus', 'mi', 'mis', 'tu', 'tus', 'ano', 'anos', 'nombre',
+    'tiene', 'tienen', 'hay', 'habia', 'the', 'a', 'an', 'and', 'or', 'of',
+    'to', 'in', 'on', 'at', 'by', 'for', 'with', 'about', 'against', 'between',
+    'into', 'through', 'during', 'before', 'after', 'above', 'below', 'from',
+    'up', 'down', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have',
+    'has', 'had', 'do', 'does', 'did', 'but', 'if', 'what', 'which', 'who',
+    'whom', 'this', 'that', 'these', 'those', 'am', 'question', 'answer'
+}
+
+def normalize_text_for_sim(text: str) -> str:
+    """Normalizes text by removing accents, lowercasing, and stripping non-alphanumeric chars."""
+    if not text:
+        return ""
+    nfkd = unicodedata.normalize('NFKD', str(text))
+    ascii_text = ''.join(c for c in nfkd if not unicodedata.combining(c))
+    cleaned = re.sub(r'[^a-z0-9\s]', ' ', ascii_text.lower())
+    return ' '.join(cleaned.split())
+
+def extract_significant_tokens(text: str) -> set:
+    """Extracts content words, numbers, and proper-noun tokens excluding stop words."""
+    norm = normalize_text_for_sim(text)
+    return set(w for w in norm.split() if len(w) >= 2 and w not in STOP_WORDS)
+
+def is_answer_too_similar(cand_ans: str, pool_answers: list, threshold: float = 0.85) -> tuple:
+    """
+    Checks if a candidate answer is effectively identical or too close to an answer in the pool.
+    """
+    c_norm = normalize_text_for_sim(cand_ans)
+    if not c_norm:
+        return False, ""
+    for p_ans in pool_answers:
+        p_norm = normalize_text_for_sim(p_ans)
+        if not p_norm:
+            continue
+        if c_norm == p_norm:
+            return True, f"Misma respuesta exacta ('{cand_ans}')"
+        if (len(c_norm) >= 4 and len(p_norm) >= 4) and (c_norm in p_norm or p_norm in c_norm):
+            return True, f"Respuesta solapada ('{cand_ans}' vs '{p_ans}')"
+        ratio = difflib.SequenceMatcher(None, c_norm, p_norm).ratio()
+        if ratio >= threshold:
+            return True, f"Respuesta similar ({ratio:.0%}: '{cand_ans}' vs '{p_ans}')"
+    return False, ""
+
+def is_qa_collision(cand_q: str, cand_a: str, pool_items: list, 
+                    token_overlap_threshold: float = 0.50, 
+                    jaccard_threshold: float = 0.40, 
+                    text_ratio_threshold: float = 0.72) -> tuple:
+    """
+    Evaluates whether a candidate question/answer pair collides with any previously approved items.
+    Checks:
+    1. Answer similarity (same answer or near-identical answer).
+    2. Token overlap of meaningful content words (catching rephrased identical facts).
+    3. Cross-leak: candidate question contains previous item's answer and shares topic tokens.
+    4. Difflib string similarity.
+    """
+    q_norm = normalize_text_for_sim(cand_q)
+    a_norm = normalize_text_for_sim(cand_a)
+    q_tokens = extract_significant_tokens(cand_q)
+    
+    for item in pool_items:
+        p_q = item.get("question", "")
+        p_a = item.get("answer", "")
+        p_q_norm = normalize_text_for_sim(p_q)
+        p_a_norm = normalize_text_for_sim(p_a)
+        p_tokens = extract_significant_tokens(p_q)
+        
+        # 1. Answer check
+        ans_sim, ans_reason = is_answer_too_similar(cand_a, [p_a])
+        if ans_sim:
+            return True, ans_reason
+            
+        # 2. Token overlap on question statements
+        if q_tokens and p_tokens:
+            intersection = q_tokens & p_tokens
+            min_len = min(len(q_tokens), len(p_tokens))
+            overlap_coef = len(intersection) / min_len if min_len > 0 else 0
+            union_len = len(q_tokens | p_tokens)
+            jaccard = len(intersection) / union_len if union_len > 0 else 0
+            
+            if overlap_coef >= token_overlap_threshold or jaccard >= jaccard_threshold:
+                shared = ", ".join(list(intersection)[:4])
+                return True, f"Hecho/pregunta similar ({overlap_coef:.0%} términos comunes: {shared})"
+                
+        # 3. Cross question-answer inversion
+        if p_a_norm and len(p_a_norm) >= 4 and p_a_norm in q_norm:
+            shared = q_tokens & p_tokens
+            if len(shared) >= 1:
+                return True, f"Reutiliza la respuesta previa '{p_a}' como enunciado"
+                
+        if a_norm and len(a_norm) >= 4 and a_norm in p_q_norm:
+            shared = q_tokens & p_tokens
+            if len(shared) >= 1:
+                return True, f"La respuesta '{cand_a}' ya era parte del enunciado de '{p_q[:35]}...'"
+                
+        # 4. Text ratio comparison
+        ratio = difflib.SequenceMatcher(None, q_norm, p_q_norm).ratio()
+        if ratio >= text_ratio_threshold:
+            return True, f"Enunciado muy similar ({ratio:.0%}: '{p_q[:35]}...')"
+            
+    return False, ""
+
+def is_timeline_collision(cand_title: str, cand_year: int, pool_events: list, text_threshold: float = 0.70) -> tuple:
+    """Evaluates whether a milestone event collides with any previously approved events."""
+    t_norm = normalize_text_for_sim(cand_title)
+    t_tokens = extract_significant_tokens(cand_title)
+    for ev in pool_events:
+        p_title = ev.get("title", "")
+        p_year = ev.get("year", None)
+        p_norm = normalize_text_for_sim(p_title)
+        p_tokens = extract_significant_tokens(p_title)
+        
+        if p_year is not None and cand_year == p_year:
+            if t_tokens and p_tokens and (t_tokens & p_tokens):
+                return True, f"Mismo año ({cand_year}) y evento similar ({', '.join(t_tokens & p_tokens)})"
+        
+        ratio = difflib.SequenceMatcher(None, t_norm, p_norm).ratio()
+        if ratio >= text_threshold:
+            return True, f"Título casi idéntico ({ratio:.0%}: '{p_title}')"
+            
+    return False, ""
+
+def is_word_collision(cand_word: str, pool_words: set) -> tuple:
+    """Evaluates whether a word collides with already accepted words in Hangman."""
+    cw = cand_word.upper().strip()
+    if not cw or len(cw) < 4:
+        return True, "Palabra demasiado corta"
+    if cw in pool_words:
+        return True, f"Palabra exacta repetida ('{cw}')"
+    if cw.endswith("S") and cw[:-1] in pool_words:
+        return True, f"Variante plural de '{cw[:-1]}'"
+    if (cw + "S") in pool_words:
+        return True, f"Variante singular de '{cw + 'S'}'"
+    return False, ""
+
 def find_model_paths():
 
     """Locates the GGUF model and multimodal projector."""
@@ -91,11 +235,8 @@ def extract_rag_context(rag_documents: list, user_query: str = "", max_total_cha
     try:
         from pypdf import PdfReader
     except ImportError:
-        try:
-            from pypdf2 import PdfReader
-        except ImportError:
-            sys.stderr.write("Aviso RAG: biblioteca pypdf no encontrada en el entorno de Python.\n")
-            return ""
+        sys.stderr.write("Aviso RAG: biblioteca pypdf no encontrada en el entorno de Python.\n")
+        return ""
 
     collected_chunks = []
     query_terms = [t.lower() for t in re.findall(r"\w{4,}", user_query)]
@@ -1428,6 +1569,7 @@ def main():
     parser.add_argument("--prompt", type=str, help="User prompt/topic")
     parser.add_argument("--count", type=int, default=5, help="Number of items to generate")
     parser.add_argument("--images-per-round", type=int, default=3, help="Images per round (for GeoLocation)")
+    parser.add_argument("--questions-per-category", type=int, default=4, help="Questions per category (for Topic Takedown)")
     parser.add_argument("--mode", type=str, default="add", choices=["add", "overwrite"], help="Insertion mode")
     parser.add_argument("--strictness", type=int, default=5, help="Image strictness threshold on base 10 scale (1 to 10)")
     args = parser.parse_args()
@@ -1440,22 +1582,33 @@ def main():
             user_prompt = cfg.get("prompt", "")
             count = int(cfg.get("count", 5))
             images_per_round = int(cfg.get("images_per_round", 3))
+            questions_per_category = int(cfg.get("questions_per_category", 4))
             mode = cfg.get("mode", "add")
             image_sources = cfg.get("image_sources", ["wikipedia"])
             strictness = int(cfg.get("strictness", 5))
             existing_items = cfg.get("existing_items", [])
             rag_documents = cfg.get("rag_documents", [])
+            current_setup_data = cfg.get("current_setup", None)
     else:
         game_name = args.game or ""
         user_prompt = args.prompt or ""
         count = args.count
         images_per_round = args.images_per_round
+        questions_per_category = args.questions_per_category
         mode = args.mode
         image_sources = ["wikipedia"]
         strictness = int(args.strictness or 5)
         existing_items = []
         rag_documents = []
+        current_setup_data = None
 
+    if isinstance(current_setup_data, dict):
+        if "questionsPerCategory" in current_setup_data:
+            questions_per_category = int(current_setup_data["questionsPerCategory"])
+        elif "questions_per_category" in current_setup_data:
+            questions_per_category = int(current_setup_data["questions_per_category"])
+
+    questions_per_category = max(1, min(8, questions_per_category))
     strictness = max(1, min(10, strictness))
 
     global GLOBAL_RAG_CONTEXT
@@ -1558,7 +1711,7 @@ def main():
         llm = Llama(
             model_path=model_path,
             chat_handler=chat_handler,
-            n_ctx=2048,
+            n_ctx=8192,
             n_threads=cpu_threads,
             verbose=False
         )
@@ -1579,38 +1732,91 @@ def main():
     try:
         # A. QA LIST (e.g. Trivia Quiz)
         if gen_type == "qa_list":
-            report_progress(0, count, f"Generando {count} preguntas sobre '{user_prompt}'...")
-            system_prompt = ai_cfg.get("system_prompt", "You are an expert trivia question writer.")
-            user_msg = ai_cfg.get("user_prompt_template", "Generate exactly {count} trivia questions about the topic: '{prompt}'.").format(count=count, prompt=user_prompt)
-            user_msg += avoid_clause + rag_prompt_clause
-            tokens = min(1200, count * 90 + 96)
-            
-            seen_q = [0]
-            def on_tq_token(tok):
-                if "}" in tok:
-                    seen_q[0] += 1
-                    c = min(seen_q[0], count)
-                    report_progress(c, count, f"Pregunta {c}/{count} generada...")
+            report_progress(0, count, f"Generando {count} preguntas diversas sobre '{user_prompt}'...")
+            system_prompt = ai_cfg.get("system_prompt", "You are an expert trivia question writer. Respond ONLY with a valid JSON array of objects.")
+            user_msg_tmpl = ai_cfg.get("user_prompt_template", "Generate exactly {count} trivia questions about the topic: '{prompt}'.")
 
-            q_list = generate_text_llm(llm, system_prompt, user_msg, max_tokens=tokens, stream_callback=on_tq_token)
-            
-            seen_existing_q = set(s.lower().strip() for s in existing_items)
+            # Initialize Diversity Gatekeeper Pool
+            global_qa_pool = []
+            if mode == "add":
+                if isinstance(current_setup_data, dict):
+                    q_arr = current_setup_data.get("question_pool") or current_setup_data.get("questionPool") or []
+                    for q in q_arr:
+                        if isinstance(q, dict):
+                            q_txt = str(q.get("question", "")).strip()
+                            a_txt = str(q.get("answer", "")).strip()
+                            if q_txt or a_txt:
+                                global_qa_pool.append({"question": q_txt, "answer": a_txt})
+                for it in existing_items:
+                    it_str = str(it).strip()
+                    if it_str:
+                        global_qa_pool.append({"question": it_str, "answer": it_str})
+
             formatted_pool = []
-            for item in q_list:
-                if isinstance(item, dict) and "question" in item and "answer" in item:
-                    q_str = str(item["question"]).strip()
-                    if q_str.lower() in seen_existing_q:
-                        continue
-                    seen_existing_q.add(q_str.lower())
-                    formatted_pool.append({
-                        "question": q_str,
-                        "answer": str(item["answer"]).strip()
-                    })
+            attempt_round = 1
+            max_rounds = 7
+
+            while len(formatted_pool) < count and attempt_round <= max_rounds:
+                needed = count - len(formatted_pool)
+                batch_size = max(needed + 2, int(needed * 1.4))
+                tokens = min(1500, batch_size * 90 + 96)
+
+                if attempt_round == 1:
+                    user_msg = user_msg_tmpl.format(count=batch_size, prompt=user_prompt) + avoid_clause + rag_prompt_clause
+                else:
+                    sample_blacklist = []
+                    for item in reversed(global_qa_pool):
+                        ans = str(item.get("answer", "")).strip()
+                        if ans and ans not in sample_blacklist:
+                            sample_blacklist.append(ans)
+                        if len(sample_blacklist) >= 15:
+                            break
+                    user_msg = (
+                        f"{user_msg_tmpl.format(count=batch_size, prompt=user_prompt)}\n"
+                        f"CRITICAL ANTI-DUPLICATION RULE:\n"
+                        f"DO NOT repeat, duplicate, or ask about any of these facts, subjects, or answers already used:\n"
+                        f"{', '.join(sample_blacklist)}.\n"
+                        f"Provide ONLY brand new, distinct questions."
+                    ) + rag_prompt_clause
+
+                try:
+                    q_list = generate_text_llm(llm, system_prompt, user_msg, max_tokens=tokens)
+                except Exception as ex_tq:
+                    sys.stderr.write(f"Aviso en generación de preguntas lote {attempt_round}: {ex_tq}\n")
+                    q_list = []
+
+                if isinstance(q_list, list):
+                    for item in q_list:
+                        if len(formatted_pool) >= count:
+                            break
+                        if isinstance(item, dict) and "question" in item and "answer" in item:
+                            q_str = str(item["question"]).strip()
+                            a_str = str(item["answer"]).strip()
+                            if not q_str or not a_str:
+                                continue
+
+                            collided, reason = is_qa_collision(q_str, a_str, global_qa_pool)
+                            if collided:
+                                report_progress(len(formatted_pool), count, f"Pregunta descartada por similitud ({reason}). Buscando variedad...")
+                                continue
+
+                            formatted_pool.append({
+                                "question": q_str,
+                                "answer": a_str
+                            })
+                            global_qa_pool.append({
+                                "question": q_str,
+                                "answer": a_str
+                            })
+                            report_progress(len(formatted_pool), count, f"Pregunta {len(formatted_pool)}/{count}: '{q_str[:38]}...'")
+
+                attempt_round += 1
+
             output_data = {
                 "question_pool": formatted_pool[:count],
                 "questionPool": formatted_pool[:count]
             }
-            report_progress(count, count, f"¡{len(formatted_pool[:count])} preguntas generadas!")
+            report_progress(len(formatted_pool[:count]), count, f"¡{len(formatted_pool[:count])} preguntas únicas verificadas!")
 
         # B. WORD LIST (e.g. Hangman - Non-repeating unique words)
         elif gen_type == "word_list":
@@ -1632,15 +1838,25 @@ def main():
             
             clean_words = []
             seen_words_set = set()
-            for ew in existing_items:
-                clean_ew = re.sub(r"[^A-Z]", "", str(ew).upper().replace("Á","A").replace("É","E").replace("Í","I").replace("Ó","O").replace("Ú","U").replace("Ñ","N"))
-                if clean_ew:
-                    seen_words_set.add(clean_ew)
+
+            # In add mode, preload existing words
+            if mode == "add":
+                if isinstance(current_setup_data, dict):
+                    old_words = current_setup_data.get("wordPool") or current_setup_data.get("word_pool") or []
+                    for ow in old_words:
+                        clean_ow = re.sub(r"[^A-Z]", "", str(ow).upper().replace("Á","A").replace("É","E").replace("Í","I").replace("Ó","O").replace("Ú","U").replace("Ñ","N"))
+                        if clean_ow:
+                            seen_words_set.add(clean_ow)
+                for ew in existing_items:
+                    clean_ew = re.sub(r"[^A-Z]", "", str(ew).upper().replace("Á","A").replace("É","E").replace("Í","I").replace("Ó","O").replace("Ú","U").replace("Ñ","N"))
+                    if clean_ew:
+                        seen_words_set.add(clean_ew)
 
             for w in w_list:
                 if isinstance(w, str):
                     clean_w = re.sub(r"[^A-Z]", "", w.upper().replace("Á","A").replace("É","E").replace("Í","I").replace("Ó","O").replace("Ú","U").replace("Ñ","N"))
-                    if len(clean_w) >= 4 and clean_w not in seen_words_set:
+                    collided, _ = is_word_collision(clean_w, seen_words_set)
+                    if not collided:
                         seen_words_set.add(clean_w)
                         clean_words.append(clean_w)
 
@@ -1655,7 +1871,8 @@ def main():
                     for w in more_list:
                         if isinstance(w, str):
                             clean_w = re.sub(r"[^A-Z]", "", w.upper().replace("Á","A").replace("É","E").replace("Í","I").replace("Ó","O").replace("Ú","U").replace("Ñ","N"))
-                            if len(clean_w) >= 4 and clean_w not in seen_words_set:
+                            collided, _ = is_word_collision(clean_w, seen_words_set)
+                            if not collided:
                                 seen_words_set.add(clean_w)
                                 clean_words.append(clean_w)
                                 if len(clean_words) >= count:
@@ -1672,68 +1889,178 @@ def main():
         elif gen_type == "hierarchical_categories":
             cat_count = min(6, max(1, count))
             report_progress(0, cat_count, f"Creando {cat_count} categorías para '{user_prompt}'...")
-            system_prompt_cats = ai_cfg.get("system_prompt_categories", "Generate distinct category names related to the given topic.")
+            system_prompt_cats = ai_cfg.get("system_prompt_categories", "Generate distinct category names related to the given topic. Respond ONLY with a valid JSON array of category name strings.")
             user_msg_cats = ai_cfg.get("user_prompt_template_categories", "Generate exactly {cat_count} category names related to '{prompt}'.").format(cat_count=cat_count, prompt=user_prompt)
             user_msg_cats += avoid_clause + rag_prompt_clause
-            cat_names = generate_text_llm(llm, system_prompt_cats, user_msg_cats, max_tokens=150)
+            raw_cat_names = generate_text_llm(llm, system_prompt_cats, user_msg_cats, max_tokens=180)
             
-            seen_existing_cats = set(s.lower().strip() for s in existing_items)
+            # Initialize Global Cross-Category Pool (in-memory rolling pool for Overwrite and Append)
+            global_qa_pool = []
+            seen_existing_cats = set()
+
+            if mode == "add":
+                if isinstance(current_setup_data, dict):
+                    for cat in current_setup_data.get("categories", []):
+                        if isinstance(cat, dict):
+                            c_name = cat.get("categoryName") or cat.get("category_name") or cat.get("name") or ""
+                            if c_name:
+                                seen_existing_cats.add(normalize_text_for_sim(c_name))
+                            for q in cat.get("questions", []):
+                                if isinstance(q, dict):
+                                    q_txt = str(q.get("question", "")).strip()
+                                    a_txt = str(q.get("answer", "")).strip()
+                                    if q_txt or a_txt:
+                                        global_qa_pool.append({
+                                            "question": q_txt,
+                                            "answer": a_txt,
+                                            "category": c_name
+                                        })
+                for it in existing_items:
+                    it_str = str(it).strip()
+                    if it_str:
+                        seen_existing_cats.add(normalize_text_for_sim(it_str))
+                        global_qa_pool.append({"question": it_str, "answer": it_str, "category": ""})
+
+            # Filter distinct category names
+            clean_cat_names = []
+            if isinstance(raw_cat_names, list):
+                for cn in raw_cat_names:
+                    if isinstance(cn, str) and cn.strip():
+                        c_clean = cn.strip()
+                        c_norm = normalize_text_for_sim(c_clean)
+                        if c_norm and c_norm not in seen_existing_cats:
+                            seen_existing_cats.add(c_norm)
+                            clean_cat_names.append(c_clean)
+                            if len(clean_cat_names) >= cat_count:
+                                break
+
+            # Fallback if fewer categories generated
+            cat_idx = 1
+            while len(clean_cat_names) < cat_count:
+                fallback_name = f"Categoría {cat_idx}"
+                if normalize_text_for_sim(fallback_name) not in seen_existing_cats:
+                    clean_cat_names.append(fallback_name)
+                    seen_existing_cats.add(normalize_text_for_sim(fallback_name))
+                cat_idx += 1
+
             formatted_cats = []
-            for idx, cat_name in enumerate(cat_names):
-                if len(formatted_cats) >= cat_count:
-                    break
-                if not isinstance(cat_name, str) or not cat_name.strip():
-                    continue
-                c_clean = cat_name.strip()
-                if c_clean.lower() in seen_existing_cats:
-                    continue
-                seen_existing_cats.add(c_clean.lower())
-                report_progress(len(formatted_cats), cat_count, f"Categoría {len(formatted_cats) + 1}/{cat_count}: Generando preguntas de '{c_clean}'...")
-                q_system = ai_cfg.get("system_prompt_questions", "Generate exactly 4 trivia questions for category '{category}'.").replace("{category}", c_clean)
-                q_user = ai_cfg.get("user_prompt_template_questions", "Questions for category: {category}.").replace("{category}", c_clean)
-                if rag_prompt_clause:
-                    q_user += rag_prompt_clause
-                try:
-                    raw_qs = generate_text_llm(llm, q_system, q_user, max_tokens=450)
-                except Exception as ex:
-                    sys.stderr.write(f"Warning generating questions for {c_clean}: {ex}\n")
-                    raw_qs = []
+            questions_per_cat = questions_per_category
+
+            for idx, c_clean in enumerate(clean_cat_names):
+                report_progress(len(formatted_cats), cat_count, f"Categoría {len(formatted_cats) + 1}/{cat_count}: Generando preguntas diversas de '{c_clean}'...")
                 
-                questions = []
-                if isinstance(raw_qs, list):
-                    for i, q in enumerate(raw_qs):
-                        if isinstance(q, dict) and "question" in q and "answer" in q:
-                            questions.append({
-                                "difficulty": i + 1,
-                                "question": str(q["question"]).strip(),
-                                "answer": str(q["answer"]).strip(),
-                                "imageUrl": "",
-                                "audioUrl": ""
-                            })
-                while len(questions) < 4:
-                    diff = len(questions) + 1
-                    questions.append({
+                cat_questions = []
+                cat_attempt = 1
+                max_cat_attempts = 7
+
+                while len(cat_questions) < questions_per_cat and cat_attempt <= max_cat_attempts:
+                    needed = questions_per_cat - len(cat_questions)
+                    batch_cand = max(needed + 2, questions_per_cat + 2)
+                    
+                    raw_q_system = ai_cfg.get("system_prompt_questions", "")
+                    if "{q_count}" in raw_q_system:
+                        q_system = raw_q_system.replace("{q_count}", str(questions_per_cat)).replace("{category}", c_clean)
+                    else:
+                        q_system = (
+                            f"Generate exactly {batch_cand} diverse trivia questions for category '{c_clean}', "
+                            f"graded from difficulty 1 (easiest) to {questions_per_cat} (hardest). Each question must cover a distinct fact or entity. "
+                            f"Respond ONLY with a valid JSON array of objects with 'difficulty' (integer 1-{questions_per_cat}), 'question', and 'answer'."
+                        )
+                    
+                    # Cross-category anti-duplication blacklist of facts/answers already used anywhere in the game
+                    sample_blacklist = []
+                    for it in reversed(global_qa_pool):
+                        ans = str(it.get("answer", "")).strip()
+                        if ans and ans not in sample_blacklist:
+                            sample_blacklist.append(ans)
+                        if len(sample_blacklist) >= 15:
+                            break
+
+                    q_user = f"Questions for category: {c_clean}."
+                    if sample_blacklist:
+                        q_user += (
+                            f"\nCRITICAL ANTI-DUPLICATION RULE:\n"
+                            f"DO NOT repeat, duplicate, or ask about any of these facts, subjects, or answers already covered in other categories:\n"
+                            f"{', '.join(sample_blacklist)}.\n"
+                            f"Generate ONLY new, distinct questions with different answers."
+                        )
+                    if rag_prompt_clause:
+                        q_user += rag_prompt_clause
+
+                    max_tokens_cat = min(1500, batch_cand * 110 + 128)
+                    try:
+                        raw_qs = generate_text_llm(llm, q_system, q_user, max_tokens=max_tokens_cat)
+                    except Exception as ex:
+                        sys.stderr.write(f"Warning generating questions for {c_clean} (attempt {cat_attempt}): {ex}\n")
+                        raw_qs = []
+
+                    if isinstance(raw_qs, list):
+                        for q in raw_qs:
+                            if len(cat_questions) >= questions_per_cat:
+                                break
+                            if isinstance(q, dict) and "question" in q and "answer" in q:
+                                q_txt = str(q["question"]).strip()
+                                a_txt = str(q["answer"]).strip()
+                                if not q_txt or not a_txt:
+                                    continue
+
+                                # Cross-category Diversity Gatekeeper collision check
+                                collided, reason = is_qa_collision(q_txt, a_txt, global_qa_pool)
+                                if collided:
+                                    report_progress(len(formatted_cats), cat_count, f"'{c_clean}': Descartada pregunta por alta coincidencia ({reason}). Buscando variedad...")
+                                    continue
+
+                                diff = len(cat_questions) + 1
+                                cat_questions.append({
+                                    "difficulty": diff,
+                                    "question": q_txt,
+                                    "answer": a_txt,
+                                    "imageUrl": "",
+                                    "audioUrl": ""
+                                })
+                                # Add to global cross-category pool
+                                global_qa_pool.append({
+                                    "question": q_txt,
+                                    "answer": a_txt,
+                                    "category": c_clean
+                                })
+                                report_progress(len(formatted_cats), cat_count, f"'{c_clean}' {diff}/{questions_per_cat}: '{q_txt[:30]}...'")
+
+                    cat_attempt += 1
+
+                # Fallback if still under required questions
+                while len(cat_questions) < questions_per_cat:
+                    diff = len(cat_questions) + 1
+                    fb_q = f"¿Cuál es un aspecto clave de dificultad {diff} en relación a {c_clean}?"
+                    fb_a = f"Aspecto {diff} de {c_clean}"
+                    cat_questions.append({
                         "difficulty": diff,
-                        "question": f"Pregunta {diff} de {c_clean}?",
-                        "answer": "Respuesta",
+                        "question": fb_q,
+                        "answer": fb_a,
                         "imageUrl": "",
                         "audioUrl": ""
                     })
+                    global_qa_pool.append({
+                        "question": fb_q,
+                        "answer": fb_a,
+                        "category": c_clean
+                    })
+
                 formatted_cats.append({
                     "categoryName": c_clean,
                     "category_name": c_clean,
-                    "questions": questions[:4]
+                    "questions": cat_questions[:questions_per_cat]
                 })
-                report_progress(len(formatted_cats), cat_count, f"Categoría {len(formatted_cats)}/{cat_count}: '{c_clean}' completada")
+                report_progress(len(formatted_cats), cat_count, f"Categoría {len(formatted_cats)}/{cat_count}: '{c_clean}' completada ({len(cat_questions)} preguntas únicas)")
 
             output_data = {
                 "numCategories": len(formatted_cats),
                 "num_categories": len(formatted_cats),
-                "questionsPerCategory": 4,
-                "questions_per_category": 4,
+                "questionsPerCategory": questions_per_cat,
+                "questions_per_category": questions_per_cat,
                 "categories": formatted_cats
             }
-            report_progress(cat_count, cat_count, "¡Todas las categorías listas!")
+            report_progress(cat_count, cat_count, "¡Todas las categorías listas sin repeticiones cruzadas!")
 
         # D. MULTI-IMAGE ENTITIES (e.g. GeoLocation - Open to Any Topic)
         elif gen_type == "multi_image_entities":
@@ -1943,17 +2270,43 @@ def main():
             user_msg_tmpl = ai_cfg.get("user_prompt_template", "Generate exactly {count} distinct chronological milestone events related to: '{prompt}'.")
 
             formatted_events = []
+            global_events_pool = []
             seen_titles = set()
-            attempt_round = 1
 
-            while len(formatted_events) < count and attempt_round <= 5:
+            if mode == "add":
+                if isinstance(current_setup_data, dict):
+                    old_evs = current_setup_data.get("events") or []
+                    for ev in old_evs:
+                        if isinstance(ev, dict):
+                            t = str(ev.get("title", "")).strip()
+                            y = ev.get("year")
+                            if t:
+                                seen_titles.add(normalize_text_for_sim(t))
+                                global_events_pool.append({"title": t, "year": y})
+                for it in existing_items:
+                    it_str = str(it).strip()
+                    if it_str:
+                        seen_titles.add(normalize_text_for_sim(it_str))
+                        global_events_pool.append({"title": it_str, "year": None})
+
+            attempt_round = 1
+            max_rounds = 7
+
+            while len(formatted_events) < count and attempt_round <= max_rounds:
                 needed = count - len(formatted_events)
-                tokens = min(1500, needed * 120 + 128)
+                batch_size = max(needed + 2, int(needed * 1.3))
+                tokens = min(1500, batch_size * 120 + 128)
+
                 if attempt_round == 1:
-                    user_msg = user_msg_tmpl.format(count=count, prompt=user_prompt)
+                    user_msg = user_msg_tmpl.format(count=batch_size, prompt=user_prompt) + avoid_clause + rag_prompt_clause
                 else:
-                    sample_titles = list(seen_titles)[:15]
-                    user_msg = f"{user_msg_tmpl.format(count=needed, prompt=user_prompt)}\nDO NOT repeat any of these already used milestone events: {', '.join(sample_titles)}."
+                    sample_titles = [e.get("title", "") for e in reversed(global_events_pool) if e.get("title")][:15]
+                    user_msg = (
+                        f"{user_msg_tmpl.format(count=batch_size, prompt=user_prompt)}\n"
+                        f"CRITICAL ANTI-DUPLICATION RULE:\n"
+                        f"DO NOT repeat or generate similar milestone events to any of these already used:\n"
+                        f"{', '.join(sample_titles)}."
+                    ) + rag_prompt_clause
 
                 try:
                     ev_list = generate_text_llm(llm, system_prompt, user_msg, max_tokens=tokens)
@@ -1963,25 +2316,32 @@ def main():
 
                 if isinstance(ev_list, list):
                     for item in ev_list:
+                        if len(formatted_events) >= count:
+                            break
                         if isinstance(item, dict) and "title" in item and "year" in item:
                             t_str = str(item["title"]).strip()
-                            t_key = t_str.lower()
-                            if not t_str or t_key in seen_titles:
+                            if not t_str:
                                 continue
                             try:
                                 year_val = int(item["year"])
                             except Exception:
                                 continue
-                            seen_titles.add(t_key)
-                            formatted_events.append({
+
+                            collided, reason = is_timeline_collision(t_str, year_val, global_events_pool)
+                            if collided:
+                                report_progress(len(formatted_events), count, f"Hito descartado por similitud ({reason}). Buscando variedad...")
+                                continue
+
+                            seen_titles.add(normalize_text_for_sim(t_str))
+                            ev_obj = {
                                 "id": f"ev_{len(formatted_events) + 1}",
                                 "title": t_str,
                                 "year": year_val,
                                 "description": str(item.get("description", "")).strip()
-                            })
-                            report_progress(len(formatted_events), count, f"Evento histórico {len(formatted_events)}/{count}: '{t_str}'")
-                            if len(formatted_events) >= count:
-                                break
+                            }
+                            formatted_events.append(ev_obj)
+                            global_events_pool.append({"title": t_str, "year": year_val})
+                            report_progress(len(formatted_events), count, f"Evento histórico {len(formatted_events)}/{count}: '{t_str}' ({year_val})")
 
                 attempt_round += 1
 

@@ -1883,13 +1883,34 @@ public class SettingsFxView extends ScrollPane {
             }
         }
 
-        Label countLabel = new Label(isGeo 
-                ? String.format(I18n.get("settings.ai.search_count_geo"), curImagesPerRound)
-                : I18n.get("settings.ai.search_count"));
+        int curQuestionsPerCategory = 4;
+        int curTopicCategories = 4;
+        if (isTopic && currentLiveSetup != null) {
+            if (currentLiveSetup.has("questionsPerCategory")) {
+                curQuestionsPerCategory = currentLiveSetup.get("questionsPerCategory").asInt(4);
+            } else if (currentLiveSetup.has("questions_per_category")) {
+                curQuestionsPerCategory = currentLiveSetup.get("questions_per_category").asInt(4);
+            }
+
+            if (currentLiveSetup.has("numCategories")) {
+                curTopicCategories = currentLiveSetup.get("numCategories").asInt(4);
+            } else if (currentLiveSetup.has("num_categories")) {
+                curTopicCategories = currentLiveSetup.get("num_categories").asInt(4);
+            }
+        }
+
+        Label countLabel;
+        if (isGeo) {
+            countLabel = new Label(String.format(I18n.get("settings.ai.search_count_geo"), curImagesPerRound));
+        } else if (isTopic) {
+            countLabel = new Label(String.format(I18n.get("settings.ai.search_count_topic"), curQuestionsPerCategory));
+        } else {
+            countLabel = new Label(I18n.get("settings.ai.search_count"));
+        }
         countLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #e2e8f0; -fx-font-size: 13px;");
 
         int maxCount = isTopic ? 6 : 20;
-        int defCount = isTopic ? 3 : (isGeo ? 2 : 5);
+        int defCount = isTopic ? Math.max(1, Math.min(6, curTopicCategories)) : (isGeo ? 2 : 5);
         Spinner<Integer> countSpinner = new Spinner<>(1, maxCount, defCount, 1);
         countSpinner.setEditable(true);
         countSpinner.setPrefWidth(90);

@@ -1,174 +1,319 @@
 {
   "game" : "Topic_Takedown",
+  "battleRoyale" : false,
   "numCategories" : 6,
   "num_categories" : 6,
-  "questionsPerCategory" : 4,
-  "questions_per_category" : 4,
+  "questionsPerCategory" : 8,
+  "questions_per_category" : 8,
   "categories" : [ {
-    "categoryName" : "Temas de Actualidad",
-    "category_name" : "Temas de Actualidad",
+    "categoryName" : "Historia de la Libertad",
+    "category_name" : "Historia de la Libertad",
     "questions" : [ {
       "difficulty" : 1,
-      "question" : "¿Cuál es el nombre del satélite de la NASA que fue lanzado recientemente para estudiar el clima espacial y la actividad solar?",
-      "answer" : "Parker Solar Probe",
+      "question" : "¿Qué documento histórico, firmado en 1776, proclamó la independencia de los Estados Unidos de Gran Bretaña?",
+      "answer" : "La Declaración de Independencia de los Estados Unidos.",
       "imageUrl" : "",
       "audioUrl" : ""
     }, {
       "difficulty" : 2,
-      "question" : "¿Qué país fue el primero en aprobar una ley que prohíbe el uso de plásticos de un solo uso en 2024?",
-      "answer" : "Kenia",
+      "question" : "¿Qué movimiento social y político de finales del siglo XIX buscaba la liberación de los pueblos colonizados en Asia y África?",
+      "answer" : "El Movimiento de Descolonización.",
       "imageUrl" : "",
       "audioUrl" : ""
     }, {
       "difficulty" : 3,
-      "question" : "¿Qué organización y activista recibieron el Premio Nobel de la Paz en 2023?",
-      "answer" : "El Premio Nobel de la Paz de 2023 fue otorgado a la organización 'Mujeres de la Primavera Árabe' y a la activista 'Nadia Murad'.",
+      "question" : "¿Qué tratado de 1815, firmado en la Conferencia de Viena, buscó restaurar el orden europeo tras las guerras napoleónicas?",
+      "answer" : "El Acta de la Santa Alianza.",
       "imageUrl" : "",
       "audioUrl" : ""
     }, {
       "difficulty" : 4,
-      "question" : "¿Cuál es el nombre del nuevo tratado internacional propuesto por la Unión Europea para regular la inteligencia artificial y establecer estándares éticos globales?",
-      "answer" : "AI Act",
-      "imageUrl" : "",
-      "audioUrl" : ""
-    } ]
-  }, {
-    "categoryName" : "Ciencia y Tecnología",
-    "category_name" : "Ciencia y Tecnología",
-    "questions" : [ {
-      "difficulty" : 1,
-      "question" : "¿Cuál es el planeta más cercano al Sol?",
-      "answer" : "Mercurio",
-      "imageUrl" : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSU3X4kjG-Ay-mtMszuAFnJlfkmWpIPOzVvTnyZaVa_Ow&s=10",
-      "audioUrl" : ""
-    }, {
-      "difficulty" : 2,
-      "question" : "¿Qué elemento químico tiene el símbolo 'O' en la tabla periódica?",
-      "answer" : "Oxígeno",
+      "question" : "¿Qué evento en 1863, liderado por Abraham Lincoln, proclamó la libertad de los esclavos en los Estados Unidos?",
+      "answer" : "La Proclamación de Emancipación.",
       "imageUrl" : "",
       "audioUrl" : ""
     }, {
-      "difficulty" : 3,
-      "question" : "¿Quién formuló la teoría de la relatividad?",
-      "answer" : "Albert Einstein",
+      "difficulty" : 5,
+      "question" : "¿Qué filósofo alemán del siglo XVIII, autor de 'El Contrato Social', es considerado un precursor del pensamiento liberal y revolucionario?",
+      "answer" : "Jean-Jacques Rousseau.",
       "imageUrl" : "",
       "audioUrl" : ""
     }, {
-      "difficulty" : 4,
-      "question" : "¿Cuál es el nombre del algoritmo de aprendizaje automático que utiliza redes neuronales profundas para el reconocimiento de voz?",
-      "answer" : "Deep Learning",
-      "imageUrl" : "",
-      "audioUrl" : ""
-    } ]
-  }, {
-    "categoryName" : "Historia y Cultura",
-    "category_name" : "Historia y Cultura",
-    "questions" : [ {
-      "difficulty" : 1,
-      "question" : "¿Cuál es el río más largo del mundo?",
-      "answer" : "El río Amazonas",
+      "difficulty" : 6,
+      "question" : "¿Qué movimiento de resistencia armada contra la ocupación japonesa en Filipinas, liderado por Andrés Bonifacio, comenzó en 1896?",
+      "answer" : "La Revolución Filipina.",
       "imageUrl" : "",
       "audioUrl" : ""
     }, {
-      "difficulty" : 2,
-      "question" : "¿En qué año llegó Cristóbal Colón a América?",
-      "answer" : "1492",
+      "difficulty" : 7,
+      "question" : "¿Qué evento histórico de 1989, que simbolizó el fin de la Guerra Fría y la caída del comunismo en Europa del Este, comenzó con la caída del Muro de Berlín?",
+      "answer" : "La caída del Muro de Berlín.",
       "imageUrl" : "",
       "audioUrl" : ""
     }, {
-      "difficulty" : 3,
-      "question" : "¿Quién pintó la Mona Lisa?",
-      "answer" : "Leonardo da Vinci",
-      "imageUrl" : "",
-      "audioUrl" : ""
-    }, {
-      "difficulty" : 4,
-      "question" : "¿Qué tratado puso fin a la Primera Guerra Mundial?",
+      "difficulty" : 8,
+      "question" : "¿Qué tratado de paz finalizó la Primera Guerra Mundial y estableció nuevas fronteras en Europa?",
       "answer" : "El Tratado de Versalles",
       "imageUrl" : "",
       "audioUrl" : ""
     } ]
   }, {
-    "categoryName" : "Deportes y Entretenimiento",
-    "category_name" : "Deportes y Entretenimiento",
+    "categoryName" : "Derechos Humanos",
+    "category_name" : "Derechos Humanos",
     "questions" : [ {
       "difficulty" : 1,
-      "question" : "¿Cuál es el deporte olímpico que se juega con una pelota y una red, donde dos equipos de cinco jugadores intentan anotar puntos?",
-      "answer" : "Voleibol",
+      "question" : "¿Cuál es el nombre del documento internacional más antiguo que establece los derechos fundamentales de las personas?",
+      "answer" : "La Declaración de los Derechos del Hombre y del Ciudadano (1789)",
       "imageUrl" : "",
       "audioUrl" : ""
     }, {
       "difficulty" : 2,
-      "question" : "¿Quién es el actor que interpreta al personaje de James Bond en la película 'Casino Royale' de 2006?",
-      "answer" : "Daniel Craig",
+      "question" : "¿Qué organización internacional se encarga de promover y proteger los derechos humanos en todo el mundo?",
+      "answer" : "La Organización de las Naciones Unidas (ONU)",
       "imageUrl" : "",
       "audioUrl" : ""
     }, {
       "difficulty" : 3,
-      "question" : "¿En qué año ganó la selección española de fútbol la Eurocopa?",
-      "answer" : "2008",
+      "question" : "¿Cuál es el artículo de la Declaración Universal de los Derechos Humanos que prohíbe la esclavitud?",
+      "answer" : "Artículo 4",
       "imageUrl" : "",
       "audioUrl" : ""
     }, {
       "difficulty" : 4,
-      "question" : "¿Quién compuso la banda sonora de la película 'El Padrino' y ganó el Premio Óscar por ello?",
-      "answer" : "Nino Rota",
+      "question" : "¿Qué tribunal internacional tiene la función principal de juzgar crímenes de lesa humanidad y crímenes de guerra?",
+      "answer" : "La Corte Penal Internacional (CPI)",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 5,
+      "question" : "¿Qué principio establece que las leyes internacionales de derechos humanos son obligatorias para todos los estados, sin excepción?",
+      "answer" : "El principio de universalidad de los derechos humanos",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 6,
+      "question" : "¿Qué documento de 1966 establece los derechos civiles y políticos y los derechos económicos, sociales y culturales?",
+      "answer" : "Los Pactos Internacionales de Derechos Humanos",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 7,
+      "question" : "¿Qué concepto jurídico define la obligación de los estados de no interferir en la vida privada de las personas y garantizar la libertad de expresión?",
+      "answer" : "La esfera de privacidad y libertad de expresión protegida por el derecho internacional",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 8,
+      "question" : "¿Qué organismo de la ONU es responsable de supervisar el cumplimiento de los derechos humanos a nivel mundial?",
+      "answer" : "El Consejo de Derechos Humanos de la ONU.",
       "imageUrl" : "",
       "audioUrl" : ""
     } ]
   }, {
-    "categoryName" : "Geografía y Viajes",
-    "category_name" : "Geografía y Viajes",
+    "categoryName" : "Política y Gobierno",
+    "category_name" : "Política y Gobierno",
     "questions" : [ {
       "difficulty" : 1,
-      "question" : "¿Cuál es el río más largo del mundo?",
-      "answer" : "El río Amazonas.",
+      "question" : "¿Qué tipo de gobierno tiene México, según su Constitución actual?",
+      "answer" : "República federal representativa democrática",
       "imageUrl" : "",
       "audioUrl" : ""
     }, {
       "difficulty" : 2,
-      "question" : "¿Cuál es la capital de Australia?",
-      "answer" : "Canberra.",
+      "question" : "¿Qué órgano del poder ejecutivo en España es responsable de la gestión diaria del gobierno?",
+      "answer" : "El Consejo de Ministros",
       "imageUrl" : "",
       "audioUrl" : ""
     }, {
       "difficulty" : 3,
-      "question" : "Pregunta 3 de Geografía y Viajes?",
-      "answer" : "Respuesta",
+      "question" : "¿En qué año se firmó la Constitución de la República Argentina?",
+      "answer" : "1853",
       "imageUrl" : "",
       "audioUrl" : ""
     }, {
       "difficulty" : 4,
-      "question" : "Pregunta 4 de Geografía y Viajes?",
-      "answer" : "Respuesta",
+      "question" : "¿Qué concepto político describe la separación entre el poder legislativo, ejecutivo y judicial?",
+      "answer" : "Separación de poderes",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 5,
+      "question" : "¿Qué tratado internacional de 1945 estableció la creación de la ONU y la Carta de las Naciones Unidas?",
+      "answer" : "La Carta de las Naciones Unidas",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 6,
+      "question" : "¿Qué sistema electoral se utiliza en Francia para la elección de su presidente?",
+      "answer" : "Sistema de dos vueltas",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 7,
+      "question" : "¿Qué teoría política, formulada por Niccolò Machiavelli, sugiere que los fines justifican los medios en la política?",
+      "answer" : "El fin justifica los medios",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 8,
+      "question" : "¿Qué institución se encarga de interpretar las leyes y garantizar su cumplimiento en un Estado de Derecho?",
+      "answer" : "Poder Judicial",
       "imageUrl" : "",
       "audioUrl" : ""
     } ]
   }, {
-    "categoryName" : "Arte y Literatura",
-    "category_name" : "Arte y Literatura",
+    "categoryName" : "Economía y Trabajo",
+    "category_name" : "Economía y Trabajo",
     "questions" : [ {
       "difficulty" : 1,
-      "question" : "¿Quién es el autor de la obra literaria 'Don Quijote de la Mancha'?",
-      "answer" : "Miguel de Cervantes",
+      "question" : "¿Cuál es el término económico que describe la relación entre el salario de un trabajador y el costo de vida en un país?",
+      "answer" : "Poder adquisitivo",
       "imageUrl" : "",
       "audioUrl" : ""
     }, {
       "difficulty" : 2,
-      "question" : "¿En qué año fue pintada la obra 'La noche estrellada' de Vincent van Gogh?",
-      "answer" : "1889",
+      "question" : "¿Qué indicador mide el porcentaje de la población activa que está desempleada?",
+      "answer" : "Tasa de desempleo",
       "imageUrl" : "",
       "audioUrl" : ""
     }, {
       "difficulty" : 3,
-      "question" : "¿Qué movimiento artístico del siglo XX se caracteriza por el uso de formas geométricas simples y colores planos?",
+      "question" : "¿Qué tipo de contrato laboral se caracteriza por tener una duración determinada y un fin específico?",
+      "answer" : "Contrato temporal",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 4,
+      "question" : "¿Qué institución económica internacional se encarga de supervisar la estabilidad monetaria y financiera de sus miembros?",
+      "answer" : "Fondo Monetario Internacional (FMI)",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 5,
+      "question" : "¿Qué teoría económica sugiere que el aumento de los salarios puede estimular la demanda y, por tanto, el crecimiento económico?",
+      "answer" : "Teoría del salario-keynesiana",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 6,
+      "question" : "¿Qué concepto económico se refiere a la capacidad de un país para pagar sus deudas internacionales?",
+      "answer" : "Solvencia externa",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 7,
+      "question" : "¿Qué teoría económica, desarrollada por Franco Modigliani, sugiere que los individuos ahorran y gastan a lo largo de su vida para mantener un consumo constante?",
+      "answer" : "Teoría del ciclo de vida",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 8,
+      "question" : "¿Qué modelo económico, propuesto por Milton Friedman, sugiere que el control de la oferta monetaria es la herramienta más efectiva para controlar la inflación?",
+      "answer" : "Monetarismo",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    } ]
+  }, {
+    "categoryName" : "Cultura y Sociedad",
+    "category_name" : "Cultura y Sociedad",
+    "questions" : [ {
+      "difficulty" : 1,
+      "question" : "¿Cuál es el nombre del día internacional que se celebra cada 20 de noviembre para promover la educación y la cultura?",
+      "answer" : "Día Internacional de la Lucha contra la Pobreza",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 2,
+      "question" : "¿Qué concepto sociológico describe la pérdida de identidad individual al integrarse en un grupo totalitario?",
+      "answer" : "Pensamiento de masa",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 3,
+      "question" : "¿Qué teoría sociológica, propuesta por Max Weber, explica cómo la racionalización afecta a la sociedad moderna?",
+      "answer" : "Teoría de la acción social",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 4,
+      "question" : "¿Qué filósofo alemán del siglo XIX criticó la alienación del trabajador en la sociedad industrial capitalista?",
+      "answer" : "Karl Marx",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 5,
+      "question" : "¿Qué concepto sociológico, desarrollado por Zygmunt Bauman, describe la sociedad contemporánea caracterizada por la liquidez de las relaciones y la identidad?",
+      "answer" : "Modernidad líquida",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 6,
+      "question" : "¿A qué periodo histórico y cultural pertenece la obra 'La Mona Lisa' de Leonardo da Vinci?",
+      "answer" : "El Renacimiento",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 7,
+      "question" : "¿Qué movimiento artístico del siglo XX se caracteriza por el uso de técnicas de collage y la ruptura de la perspectiva tradicional?",
       "answer" : "Cubismo",
       "imageUrl" : "",
       "audioUrl" : ""
     }, {
+      "difficulty" : 8,
+      "question" : "¿Qué concepto sociológico describe la tendencia de las personas a formar grupos basados en intereses comunes en lugar de la ubicación geográfica?",
+      "answer" : "Capital social",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    } ]
+  }, {
+    "categoryName" : "Tecnología y Futuro",
+    "category_name" : "Tecnología y Futuro",
+    "questions" : [ {
+      "difficulty" : 1,
+      "question" : "¿Qué dispositivo electrónico fue lanzado por Apple en 2007 y revolucionó el mercado de los teléfonos inteligentes?",
+      "answer" : "El iPhone",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 2,
+      "question" : "¿En qué año se lanzó el primer ordenador personal de Apple, el Apple I?",
+      "answer" : "1976",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 3,
+      "question" : "¿Qué significa la sigla 'IoT' en el contexto de las tecnologías emergentes?",
+      "answer" : "Internet de las Cosas",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
       "difficulty" : 4,
-      "question" : "¿Cuál es el nombre del poema épico escrito por Dante Alighieri que narra el viaje del poeta a través del Infierno, el Purgatorio y el Paraíso?",
-      "answer" : "La Divina Comedia",
+      "question" : "¿Qué empresa desarrolló el primer smartphone con pantalla OLED?",
+      "answer" : "Samsung",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 5,
+      "question" : "La quinta generación de redes móviles",
+      "answer" : "¿Qué es el 5G?",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 6,
+      "question" : "¿Qué empresa de hardware es conocida por producir las tarjetas gráficas GeForce?",
+      "answer" : "NVIDIA",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 7,
+      "question" : "¿Qué protocolo de comunicación se utiliza principalmente para transferir archivos entre dispositivos?",
+      "answer" : "FTP",
+      "imageUrl" : "",
+      "audioUrl" : ""
+    }, {
+      "difficulty" : 8,
+      "question" : "¿Qué lenguaje de programación se utiliza comúnmente para el desarrollo de aplicaciones web en el lado del servidor?",
+      "answer" : "Python",
       "imageUrl" : "",
       "audioUrl" : ""
     } ]
