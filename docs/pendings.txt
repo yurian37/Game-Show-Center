@@ -1,0 +1,412 @@
+================================================================================
+  GAME SHOW CENTER - REPORTE DE FALTANTES DE HARDENING & CUMPLIMIENTO
+  ESTÁNDARES: SOC 2 (Tipo II - TSC) & ISO/IEC 27001:2022 (Anexo A)
+================================================================================
+Fecha de Auditoría: Noviembre 2026
+Estado: Pendiente de Aprobación Previa (No se han aplicado cambios de código)
+Autor: Auditoría de Seguridad & Arquitectura DevSecOps YonIA Enterprise
+Archivo: docs/pendings.txt
+
+--------------------------------------------------------------------------------
+ÍNDICE
+--------------------------------------------------------------------------------
+1. RESUMEN EJECUTIVO
+2. MATRIZ DE FALTANTES POR COMPONENTE
+   2.1. Backend Cloud (backend-java - Spring Boot)
+   2.2. Frontend Web Portal (frontend-react - React 18 / Vite)
+   2.3. Motor de Escritorio & Runtime Local (template-offline - JavaFX)
+   2.4. Módulo de Licenciamiento & Criptografía (License_Generator & Security)
+   2.5. Infraestructura, Cadena de Suministro & DevSecOps (CI/CD)
+3. MAPEO DETALLADO DE CONTROLES: SOC 2 vs. ISO/IEC 27001:2022
+4. PLAN DE ACCIÓN ESCALONADO (ROADMAP DE REMEDIACIÓN)
+   4.1. Fase 1: Remediación Crítica Inmediata (P0 - Quick Wins de Alto Riesgo)
+   4.2. Fase 2: Arquitectura Criptográfica y Hardening de Servicios (P1)
+   4.3. Fase 3: Integridad de Ejecución, Sandboxing y Runtime (P2)
+   4.4. Fase 4: DevSecOps, Observabilidad y Cumplimiento Continuo (P3)
+5. CRITERIOS DE ACEPTACIÓN PARA AUDITORÍA FORMAL
+
+================================================================================
+1. RESUMEN EJECUTIVO
+================================================================================
+Se ha llevado a cabo un análisis exhaustivo del código fuente, configuraciones,
+scripts de automatización y arquitectura integral del proyecto "Game Show Center".
+
+El sistema posee fortalezas destacadas en privacidad de datos gracias a su enfoque
+de inferencia local fuera de línea (Offline RAG con LLM GGUF local), lo cual reduce
+drásticamente la exposición de datos personales (PII) en la nube.
+
+Sin embargo, para alcanzar la certificación SOC 2 Tipo II (Trust Services Criteria:
+Seguridad, Disponibilidad, Integridad del Procesamiento, Confidencialidad y Privacidad)
+y la conformidad con ISO/IEC 27001:2022 (Controles Tecnológicos y Organizacionales del
+Anexo A), se identificaron brechas críticas ("Gaps") en las siguientes áreas clave:
+
+  * Control de Acceso y Backdoors: Llaves maestras codificadas en duro y endpoints
+    REST sin autenticación.
+  * Criptografía Simétrica vs. Asimétrica: Exposición del secreto de encriptación en
+    binarios cliente descompilables.
+  * Fuga de Herramientas de Administración: Compilación de generadores de licencias
+    dentro del artefacto final del cliente.
+  * Integridad de Carga Dinámica: Carga de bytecode Java (.jar / plugins) sin
+    validación de firma digital ni sandbox.
+  * Fuga de Información y Logging: Uso de printStackTrace() y System.out sin
+    trazabilidad estructurada ni anonimización.
+  * Automatización DevSecOps: Inexistencia de pipelines CI/CD con escaneo de
+    vulnerabilidades (SCA), código estático (SAST) y detección de secretos.
+
+================================================================================
+2. MATRIZ DE FALTANTES POR COMPONENTE
+================================================================================
+
+--------------------------------------------------------------------------------
+2.1. BACKEND CLOUD (backend-java - Spring Boot 3)
+--------------------------------------------------------------------------------
+[F-BE-01] Ausencia Total de Autenticación y Autorización en API REST
+  - Ubicación: GameMatchController.java, DownloadController.java
+  - Hallazgo: Los endpoints '/api/match/compile' y '/api/download/offline-template'
+    están completamente expuestos sin requerir tokens JWT, API Keys, mTLS ni sesión.
+  - Riesgo: Explotación no autorizada de recursos computacionales (empaquetado dinámico
+    en memoria) y descarga no autorizada del software comercial.
+  - Norma Afectada: SOC 2 CC6.1, CC6.2, CC6.3 | ISO 27001:2022 A.5.15, A.8.2, A.8.26.
+
+[F-BE-02] Configuración Permisiva de CORS (Wildcard '*')
+  - Ubicación: GameMatchController.java (Línea 10), DownloadController.java (Línea 13)
+  - Hallazgo: Decoradores '@CrossOrigin(origins = "*")' habilitan peticiones desde
+    cualquier origen web sin lista blanca.
+  - Riesgo: Ataques de Cross-Site Scripting (XSS) y Cross-Origin Resource Sharing
+    abusivo desde sitios de terceros no controlados.
+  - Norma Afectada: SOC 2 CC6.6 | ISO 27001:2022 A.8.20, A.8.22.
+
+[F-BE-03] Ausencia de Rate Limiting y Protección DoS
+  - Ubicación: DownloadController.java ('/api/download/offline-template')
+  - Hallazgo: No existe control de flujo ni cuotas de peticiones por IP o token.
+    La compresión dinámica mediante 'ZipOutputStream' consume CPU y ancho de banda
+    sin límites concurrentes.
+  - Riesgo: Agotamiento de hilos del servidor (Thread Starvation) y caída del servicio.
+  - Norma Afectada: SOC 2 A1.1, A1.2 (Availability) | ISO 27001:2022 A.8.6.
+
+[F-BE-04] Fuga de Información Técnica en Excepciones y printStackTrace
+  - Ubicación: GlobalExceptionHandler.java (Línea 29-33)
+  - Hallazgo: 'ex.printStackTrace()' escribe trazas directas a consola y el método
+    retorna 'ex.getMessage()' en el payload JSON del cliente en errores 500.
+  - Riesgo: Divulgación de rutas del sistema operativo, nombres de librerías,
+    estructuras internas y posibles vectores de ataque (Information Disclosure).
+  - Norma Afectada: SOC 2 CC7.1 | ISO 27001:2022 A.8.12, A.8.26.
+
+[F-BE-05] Deficiencia en Registro y Auditoría Estructurada (Audit Logging)
+  - Ubicación: MatchCompilerService.java, GlobalExceptionHandler.java
+  - Hallazgo: Se utiliza 'System.out.println' en lugar de un framework formal (SLF4J/Logback).
+    No se registran Correlation IDs, IPs de origen, marcas de tiempo UTC ni niveles (INFO/WARN/ERROR).
+  - Riesgo: Imposibilidad de realizar análisis forense ante incidentes de seguridad.
+  - Norma Afectada: SOC 2 CC7.2, CC7.3 | ISO 27001:2022 A.8.15 (Logging).
+
+[F-BE-06] Divulgación de Llave Maestra en Archivo de Instrucciones Generado
+  - Ubicación: DownloadController.java (Líneas 53-54)
+  - Hallazgo: La clave de prueba/maestra 'YONIA-ENTERPRISE-PRO-2026' se inyecta
+    en texto plano dentro del ZIP distribuido.
+  - Riesgo: Acceso universal sin licencia comercial a cualquier usuario que descargue el paquete.
+  - Norma Afectada: SOC 2 CC6.1 | ISO 27001:2022 A.5.15, A.8.24.
+
+[F-BE-07] Inconsistencia en Descriptor Maven (pom.xml)
+  - Ubicación: backend-java/pom.xml (Línea 8)
+  - Hallazgo: La versión del padre 'spring-boot-starter-parent' indica '4.1.0'
+    (versión inexistente o simulada; Spring Boot oficial es 3.x).
+  - Riesgo: Fallo en compilaciones reproducibles, parches de seguridad automatizados
+    e incapacidad de análisis de dependencias mediante dependabot.
+  - Norma Afectada: SOC 2 CC8.1 | ISO 27001:2022 A.8.8, A.8.9.
+
+--------------------------------------------------------------------------------
+2.2. FRONTEND WEB PORTAL (frontend-react - React 18 / Vite)
+--------------------------------------------------------------------------------
+[F-FE-01] Validación de Pagos y Códigos VIP del Lado del Cliente (Client-Side Trust)
+  - Ubicación: frontend-react/src/components/PaymentModal.jsx (Líneas 4-18, 28-47)
+  - Hallazgo: La validación de acceso VIP se realiza en el navegador mediante el hash
+    SHA-256 ("53086b510bd55bb3f8373b5cf2e55ef92b512c1c6fbbfbe6e95c1c8a4df55811",
+    cuyo pre-image "yinyang" figura documentado en el código). El checkout simulado
+    habilita la descarga ('onDownloadSuccess') sin confirmación criptográfica del backend.
+  - Riesgo: Evasión trivial de pasarela de pago y bypass de monetización.
+  - Norma Afectada: SOC 2 PI1.1, PI1.2 (Processing Integrity) | ISO 27001:2022 A.8.26.
+
+[F-FE-02] Inyección Insegura de Scripts de Terceros (Adsterra) en iframes sin Sandbox
+  - Ubicación: frontend-react/src/components/AdsterraBanner.jsx (Líneas 81-83, 115-124)
+  - Hallazgo: Se utiliza 'iframeDoc.write(adHtml)' para inyectar scripts remotos de
+    'topcreativeformat.com'. El iframe carece de atributo 'sandbox' restrictivo
+    (ej. 'sandbox="allow-scripts allow-popups"') y el evento 'window.addEventListener("message")'
+    no valida 'event.origin'.
+  - Riesgo: Ataques de malvertising, robo de contexto y ejecución de scripts maliciosos.
+  - Norma Afectada: SOC 2 CC6.6, CC6.8 | ISO 27001:2022 A.8.20, A.8.28.
+
+[F-FE-03] Ausencia de Cabeceras de Seguridad HTTP y Content Security Policy (CSP)
+  - Ubicación: frontend-react/index.html, configuraciones de hosting web
+  - Hallazgo: No existen meta tags ni cabeceras HTTP para:
+    * Content-Security-Policy (CSP)
+    * X-Frame-Options: DENY
+    * X-Content-Type-Options: nosniff
+    * Referrer-Policy: strict-origin-when-cross-origin
+    * Strict-Transport-Security (HSTS)
+  - Riesgo: Susceptibilidad a Clickjacking, MIME-Sniffing e inyección de recursos no autorizados.
+  - Norma Afectada: SOC 2 CC6.6 | ISO 27001:2022 A.8.20, A.8.26.
+
+[F-FE-04] Ausencia de Banner de Consentimiento de Cookies / Tracking (GDPR / CCPA)
+  - Ubicación: frontend-react/src/App.jsx
+  - Hallazgo: Se cargan anuncios y scripts publicitarios de Adsterra de manera
+    inmediata sin requerir consentimiento explícito del usuario.
+  - Riesgo: Incumplimiento de normativas de privacidad internacional.
+  - Norma Afectada: SOC 2 P1.1, P2.1 (Privacy Criteria) | ISO/IEC 27701 / ISO 27001:2022 A.5.34.
+
+--------------------------------------------------------------------------------
+2.3. MOTOR DE ESCRITORIO & RUNTIME LOCAL (template-offline - JavaFX)
+--------------------------------------------------------------------------------
+[F-DS-01] Inexistencia de Sandboxing en Carga Dinámica de Plugins (GamePluginClassLoader)
+  - Ubicación: template-offline/.../service/GamePluginClassLoader.java (Líneas 25-50)
+  - Hallazgo: 'URLClassLoader' carga cualquier archivo '.jar' o '.class' presente
+    en carpetas de minijuegos sin verificar firma digital, hash criptográfico ni
+    restringir permisos de sistema (archivos, red, ejecución de procesos).
+  - Riesgo: Ejecución arbitraria de código (RCE) mediante paquetes de juegos
+    comunitarios o maliciosos.
+  - Norma Afectada: SOC 2 CC6.8 (Malicious Code Prevention) | ISO 27001:2022 A.8.7, A.8.19.
+
+[F-DS-02] Vulnerabilidad a Zip Bomb y Denegación de Servicio en MegaCoreManagerService
+  - Ubicación: template-offline/.../service/MegaCoreManagerService.java (Líneas 311-445)
+  - Hallazgo: La extracción de paquetes MegaCore valida el cruce de rutas (Zip Slip
+    mediante 'startsWith(targetBase)'), pero NO limita:
+    * El tamaño total descompactado (riesgo de llenar el disco duro).
+    * El ratio de compresión (máx 100:1).
+    * El número total de entradas/ficheros por archivo ZIP.
+  - Riesgo: Bloqueo del sistema operativo por saturación de almacenamiento (DoS).
+  - Norma Afectada: SOC 2 A1.1, A1.2 | ISO 27001:2022 A.8.6.
+
+[F-DS-03] Manejo Inseguro de Ficheros Temporales y Ciclo de Vida en AIService
+  - Ubicación: template-offline/.../service/AIService.java (Líneas 235, 280-320)
+  - Hallazgo: Los archivos de configuración 'File.createTempFile("gsc_ai_req_", ".json")'
+    contienen texto de prompts y rutas de documentos RAG. No se aplica borrado seguro
+    ni garantizado en bloques 'finally' en caso de error o interrupción súbita.
+    Adicionalmente, el subproceso Python carece de timeout forzado con 'process.waitFor(timeout)'.
+  - Riesgo: Fuga de información en disco temporal y procesos Python huérfanos que consumen RAM/CPU.
+  - Norma Afectada: SOC 2 CC6.7, A1.1 | ISO 27001:2022 A.8.10, A.8.14.
+
+[F-DS-04] Ausencia de Firma de Código (Code Signing) en Binarios e Instalador
+  - Ubicación: template-offline/installer-cascara.iss, build-cascara.ps1
+  - Hallazgo: Los ejecutables (.exe) y librerías generadas no están firmados con un
+    certificado de firma de código (Authenticode / EV Code Signing).
+  - Riesgo: Advertencias de Microsoft SmartScreen (software no confiable), posibilidad
+    de manipulación binaria por intermediarios e imposibilidad de verificar la integridad.
+  - Norma Afectada: SOC 2 CC8.1 | ISO 27001:2022 A.8.19, A.8.24.
+
+--------------------------------------------------------------------------------
+2.4. MÓDULO DE LICENCIAMIENTO & CRIPTOGRAFÍA (License_Generator & Security)
+--------------------------------------------------------------------------------
+[F-CR-01] Esquema Criptográfico Inseguro: Criptografía Simétrica en Binarios Públicos
+  - Ubicación: LicenseManager.java (Línea 21), Generate-License.ps1 (Línea 17)
+  - Hallazgo: Se utiliza AES-256-CBC con una sal secreta compartida:
+    'SECRET_SALT = "YonIAEnterprise_GSC_Offline_Secret_2026_KeySalt"'.
+    Dado que 'LicenseManager.java' se compila dentro del cliente distribuido, cualquier
+    usuario puede descompilar el bytecode o inspeccionar cadenas con 'strings' para
+    extraer la clave y generar licencias anuales válidas ilimitadas.
+  - Solución Requerida: Migrar a Criptografía Asimétrica (Ed25519 o RSA-4096).
+    * Clave Privada: Resguardada exclusivamente en el servidor/admin.
+    * Clave Pública: Embebida en el cliente exclusivamente para verificar firmas.
+  - Norma Afectada: SOC 2 CC6.1, CC6.7 | ISO 27001:2022 A.8.24 (Use of cryptography).
+
+[F-CR-02] Presencia de Puertas Traseras (Master Keys) en el Código Fuente
+  - Ubicación: LicenseManager.java (Líneas 22-23, 262-264)
+  - Hallazgo: Existen llaves fijas que evaden todo el flujo de validación:
+    * MASTER_KEY = "YONIA-ENTERPRISE-PRO-2026"
+    * LEGACY_MASTER_KEY = "YUYI-STUDIO-PRO-2026"
+  - Riesgo: Vulneración total del modelo de control de acceso ante una auditoría SOC 2.
+    El uso de "master keys" sin autenticación multifactor ni registro centralizado es
+    una no-conformidad crítica inmediata en ISO 27001.
+  - Norma Afectada: SOC 2 CC6.1, CC6.3 | ISO 27001:2022 A.5.15, A.8.2, A.8.4.
+
+[F-CR-03] Empaquetado Accidental del Generador de Licencias en el Artefacto Cliente
+  - Ubicación: template-offline/src/main/java/com/gameshowcenter/offline/security/LicenseEncryptorTool.java
+  - Hallazgo: 'LicenseEncryptorTool.java' (la herramienta de línea de comandos para emitir
+    nuevas licencias) se encuentra dentro de 'src/main/java', por lo que Maven Shade Plugin
+    la incluye dentro de 'template-offline-1.0.0-standalone.jar' y el instalador final.
+  - Riesgo: Cualquier cliente puede ejecutar 'java -cp app.jar com.gameshowcenter.offline.security.LicenseEncryptorTool'
+    y autofirmarse licencias comerciales para cualquier equipo.
+  - Norma Afectada: SOC 2 CC6.1, CC8.1 | ISO 27001:2022 A.8.19, A.8.24.
+
+--------------------------------------------------------------------------------
+2.5. INFRAESTRUCTURA, CADENA DE SUMINISTRO & DEVSECOPS (CI/CD)
+--------------------------------------------------------------------------------
+[F-DS-01] Ausencia de Pipelines de Integración y Entrega Continua (CI/CD)
+  - Ubicación: Raíz del repositorio (falta carpeta '.github/workflows')
+  - Hallazgo: No existen flujos automatizados de construcción, ejecución de pruebas
+    unitarias, linting ni empaquetado de artefactos.
+  - Riesgo: Despliegues manuales propensos a error humano, falta de reproducibilidad y
+    ausencia de evidencia auditable para SOC 2.
+  - Norma Afectada: SOC 2 CC8.1 | ISO 27001:2022 A.8.25, A.8.32.
+
+[F-DS-02] Inexistencia de Análisis de Composición de Software (SCA) y SAST
+  - Ubicación: backend-java, frontend-react, template-offline
+  - Hallazgo: No se ejecutan herramientas automáticas de escaneo de vulnerabilidades
+    conocidas (CVEs) en dependencias (ej. OWASP Dependency-Check, Snyk, npm audit).
+  - Riesgo: Introducción inadvertida de dependencias con vulnerabilidades críticas.
+  - Norma Afectada: SOC 2 CC7.1 | ISO 27001:2022 A.8.8 (Management of technical vulnerabilities).
+
+[F-DS-03] Ausencia de Detección Automática de Secretos (Secret Scanning)
+  - Ubicación: Historial Git y pre-commit hooks
+  - Hallazgo: No se cuenta con herramientas como Gitleaks, TruffleHog ni hooks
+    de pre-commit que bloqueen la subida accidental de llaves privadas, tokens o credenciales.
+  - Norma Afectada: SOC 2 CC6.6, CC6.7 | ISO 27001:2022 A.8.12.
+
+[F-DS-04] Falta de Generación de Lista de Materiales de Software (SBOM)
+  - Ubicación: Procesos de empaquetado Maven y NPM
+  - Hallazgo: No se genera un inventario formal CycloneDX o SPDX de componentes.
+  - Norma Afectada: ISO 27001:2022 A.8.30 (Supplier relations) | SOC 2 CC8.1.
+
+================================================================================
+3. MAPEO DETALLADO DE CONTROLES: SOC 2 vs. ISO/IEC 27001:2022
+================================================================================
+
++-------------------------+---------------------+-------------------------------+----------------------------------------+
+| Dominio de Seguridad    | Criterio SOC 2 TSC  | Control ISO/IEC 27001:2022    | Estado Actual en Game Show Center      |
++-------------------------+---------------------+-------------------------------+----------------------------------------+
+| Control de Acceso       | CC6.1, CC6.2, CC6.3 | A.5.15, A.8.2, A.8.3, A.8.4   | NO CONFORME: Sin auth en backend,      |
+|                         |                     |                               | llaves maestras en duro.               |
++-------------------------+---------------------+-------------------------------+----------------------------------------+
+| Criptografía y Llaves   | CC6.1, CC6.7        | A.8.24                        | NO CONFORME: Criptografía simétrica    |
+|                         |                     |                               | con secreto expuesto en binario.       |
++-------------------------+---------------------+-------------------------------+----------------------------------------+
+| Integridad de Software  | CC6.8, CC8.1        | A.8.7, A.8.19, A.8.25         | NO CONFORME: Carga dinámica sin firma, |
+|                         |                     |                               | sin pipeline CI/CD formal.             |
++-------------------------+---------------------+-------------------------------+----------------------------------------+
+| Disponibilidad y DoS    | A1.1, A1.2          | A.8.6                         | PARCIAL: Falta rate-limiting y cuotas  |
+|                         |                     |                               | de descompresión ZIP.                  |
++-------------------------+---------------------+-------------------------------+----------------------------------------+
+| Gestión de Incidentes   | CC7.2, CC7.3        | A.8.15, A.8.16                | NO CONFORME: Logging desestructurado,  |
+| y Auditoría             |                     |                               | fuga de trazas en excepciones.         |
++-------------------------+---------------------+-------------------------------+----------------------------------------+
+| Seguridad de Red        | CC6.6               | A.8.20, A.8.22, A.8.26        | NO CONFORME: CORS '*', sin CSP ni      |
+|                         |                     |                               | cabeceras HSTS/X-Frame-Options.        |
++-------------------------+---------------------+-------------------------------+----------------------------------------+
+| Gestión de Vulnerabilidad| CC7.1              | A.8.8, A.8.28                 | NO CONFORME: Sin SCA/SAST automatizado |
+| en Dependencias         |                     |                               | en el ciclo de vida.                   |
++-------------------------+---------------------+-------------------------------+----------------------------------------+
+| Privacidad y Datos (PII)| P1.1, P2.1          | A.5.34 (e ISO 27701)          | PARCIAL: RAG local excelente, pero     |
+|                         |                     |                               | scripts Adsterra sin banner de cookies.|
++-------------------------+---------------------+-------------------------------+----------------------------------------+
+
+================================================================================
+4. PLAN DE ACCIÓN ESCALONADO (ROADMAP DE REMEDIACIÓN)
+================================================================================
+A continuación se define la estrategia por etapas para subsanar los faltantes.
+NINGÚN CAMBIO HA SIDO APLICADO AÚN en el código fuente, a la espera de su
+revisión y visto bueno.
+
+--------------------------------------------------------------------------------
+4.1. FASE 1: REMEDIACIÓN CRÍTICA INMEDIATA (P0 - Quick Wins de Alto Riesgo) [COMPLETADA]
+--------------------------------------------------------------------------------
+Objetivo: Eliminar puertas traseras obvias, restringir vectores de fuga de datos
+y asegurar los puntos de entrada principales en menos de 48 horas.
+
+  [X] Tarea 1.1: Eliminar Llaves Maestras y Segregar Herramienta de Licencias (RESUELTO)
+      - 'LicenseEncryptorTool.java' segregada a 'src/test/java' y carpeta privada 'License_Generator/tools/'.
+      - Eliminadas 'MASTER_KEY' y 'LEGACY_MASTER_KEY' en 'LicenseManager.java'.
+      - Eliminada toda fuga de clave maestra en 'DownloadController.java', 'README.md', 'AdsterraBanner.jsx' y manuales.
+
+  [X] Tarea 1.2: Hardening de Excepciones en Backend (RESUELTO)
+      - 'GlobalExceptionHandler.java' actualizado:
+        * Sustituido 'printStackTrace()' por 'log.error()' / 'log.warn()'.
+        * Retorno de incidentId único (UUID) y mensajes sanitizados sin fuga de rutas ni trazas.
+
+  [X] Tarea 1.3: Restricción Estricta de CORS en Backend (RESUELTO)
+      - Eliminados todos los decoradores '@CrossOrigin(origins = "*")'.
+      - Implementado 'SecurityCorsConfig.java' con whitelist basada en 'cors.allowed-origins'
+        en 'application.properties'.
+
+  [X] Tarea 1.4: Corrección de Validación de Checkout y Promo en Frontend (RESUELTO)
+      - Eliminado hash expuesto y validación client-side en 'PaymentModal.jsx'.
+      - Creado endpoint seguro en backend 'PromoVerificationController.java' ('/api/payment/verify-promo').
+
+--------------------------------------------------------------------------------
+4.2. FASE 2: ARQUITECTURA CRIPTOGRÁFICA Y HARDENING DE SERVICIOS (P1)
+--------------------------------------------------------------------------------
+Objetivo: Implementar criptografía asimétrica robusta y control de acceso en APIs.
+
+  [ ] Tarea 2.1: Migración a Criptografía Asimétrica (Ed25519 o RSA-4096)
+      - Diseñar nuevo formato de licencia v3:
+        * Emisor (Admin/Servidor): Firma digitalmente el payload (HWID, Expiración,
+          Tier, Features) con la Llave Privada.
+        * Receptor (template-offline): Valida la firma exclusivamente con la Llave Pública
+          incorporada. Aunque el cliente sea descompilado, jamás se compromete la capacidad
+          de emitir licencias válidas.
+      - Retirar 'SECRET_SALT' simétrico del código JavaFX.
+
+  [ ] Tarea 2.2: Implementación de Spring Security & Tokens de Descarga
+      - Agregar 'spring-boot-starter-security' al backend.
+      - Proteger '/api/match/compile' y '/api/download/offline-template'.
+      - Implementar tokens de un solo uso (One-Time Download Tokens) firmados con HMAC
+        para la descarga de paquetes offline tras confirmación real de pago.
+
+  [ ] Tarea 2.3: Rate Limiting & DoS Throttling
+      - Integrar filtro de limitación de tasa (Bucket4j o Redis Rate Limiter) en el
+        backend para mitigar abusos sobre endpoints de descarga y compilación.
+
+  [ ] Tarea 2.4: Sistema de Logging Estructurado (Logback / JSON)
+      - Configurar 'logback-spring.xml' con rotación de ficheros y formato JSON.
+      - Enmascarar información sensible (HWID parcial, emails anonimizados).
+
+--------------------------------------------------------------------------------
+4.3. FASE 3: INTEGRIDAD DE EJECUCIÓN, SANDBOXING Y RUNTIME (P2)
+--------------------------------------------------------------------------------
+Objetivo: Blindar la ejecución del cliente JavaFX y la interacción del frontend.
+
+  [ ] Tarea 3.1: Verificación de Integridad en Carga de Plugins (GamePluginClassLoader)
+      - Implementar verificación de checksums (SHA-256) o firmas de manifiesto
+        antes de cargar clases dinámicas desde carpetas de minijuegos.
+      - Whitelist de paquetes autorizados para evitar carga de clases peligrosas.
+
+  [ ] Tarea 3.2: Protección Anti-Zip Bomb en MegaCoreManagerService
+      - Implementar umbrales estrictos durante la descompresión:
+        * Límite de tamaño total descomprimido (ej. máx 500 MB).
+        * Límite de entradas totales (ej. máx 1,000 archivos).
+        * Verificación de ratio de compresión no superior a 100:1.
+
+  [ ] Tarea 3.3: Aislamiento y Limpieza Segura en AIService
+      - Asegurar borrado inmediato de ficheros 'gsc_ai_req_*.json' en bloque 'finally'.
+      - Añadir timeout forzado al proceso Python ('process.waitFor(60, TimeUnit.SECONDS)').
+
+  [ ] Tarea 3.4: Hardening de Frontend & Sandboxing de Anuncios
+      - Configurar atributo 'sandbox="allow-scripts allow-popups"' en el iframe de Adsterra.
+      - Restringir la validación de 'event.origin' en listeners de 'message'.
+      - Definir cabeceras Content Security Policy (CSP) en el servidor web.
+      - Incorporar banner de cookies y consentimiento para tracking publicitario.
+
+--------------------------------------------------------------------------------
+4.4. FASE 4: DEVSECOPS, OBSERVABILIDAD Y CUMPLIMIENTO CONTINUO (P3)
+--------------------------------------------------------------------------------
+Objetivo: Institucionalizar los controles para mantener la certificación en el tiempo.
+
+  [ ] Tarea 4.1: Pipeline de CI/CD en GitHub Actions
+      - Crear '.github/workflows/ci.yml' con:
+        * Compilación automatizada de Backend, Frontend y Desktop.
+        * Ejecución de pruebas unitarias y de integración.
+        * Análisis de código estático (SAST) con SpotBugs y Oxlint/ESLint.
+
+  [ ] Tarea 4.2: Análisis de Dependencias (SCA) y Escaneo de Secretos
+      - Integrar OWASP Dependency-Check o Dependabot en el repositorio.
+      - Configurar Gitleaks en el pipeline CI para prevenir fugas de secretos.
+
+  [ ] Tarea 4.3: Generación de SBOM (Software Bill of Materials)
+      - Agregar plugin CycloneDX en Maven y NPM para emitir SBOM en cada release.
+
+  [ ] Tarea 4.4: Firma de Código de Instaladores (Authenticode)
+      - Configurar certificado de firma de código en 'build-cascara.ps1' e InnoSetup.
+
+================================================================================
+5. CRITERIOS DE ACEPTACIÓN PARA AUDITORÍA FORMAL
+================================================================================
+Para considerar cerrado el proceso de Hardening de cara a una evaluación SOC 2 / ISO 27001:
+
+1. Cero Llaves en Duro: Ningún secreto simétrico ni clave maestra presente en el
+   código fuente o historial de Git.
+2. Cero Endpoints Expuestos: Toda API expuesta requiere token o credencial válida.
+3. Validación Asimétrica: El cliente de escritorio solo posee claves públicas de verificación.
+4. Trazabilidad Forense: Logs estructurados en backend sin exposición de excepciones
+   ni datos personales no autorizados.
+5. Pipelines Verificados: Todo commit pasa por verificación automatizada de seguridad.
+
+================================================================================
+Fin del documento - Pendiente de revisión por el Propietario del Proyecto.
+================================================================================

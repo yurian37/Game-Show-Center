@@ -1,41 +1,44 @@
 import React, { useState } from 'react';
 import SvgEmoji from './SvgEmoji';
 
-// Cryptographic SHA-256 hash of the VIP promo code ("yinyang")
-const ENCRYPTED_VIP_HASH = "53086b510bd55bb3f8373b5cf2e55ef92b512c1c6fbbfbe6e95c1c8a4df55811";
 const PAYPAL_RECEIVER_EMAIL = "yoniadevs@gmail.com";
-
-async function computeSha256(text) {
-  try {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(text.trim().toLowerCase());
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  } catch {
-    return text.trim().toLowerCase();
-  }
-}
 
 export default function PaymentModal({ isOpen, onClose, onDownloadSuccess }) {
   const [activeMethod, setActiveMethod] = useState('card'); // 'card', 'promo'
   const [promoCode, setPromoCode] = useState('');
   const [promoStatus, setPromoStatus] = useState(null); // { type: 'success'|'error', text: '' }
   const [paymentStatus, setPaymentStatus] = useState(null);
+  const [isValidatingPromo, setIsValidatingPromo] = useState(false);
 
   if (!isOpen) return null;
 
   const handleValidatePromoCode = async (e) => {
     e.preventDefault();
     if (!promoCode.trim()) return;
-    const hashed = await computeSha256(promoCode);
-    if (hashed === ENCRYPTED_VIP_HASH) {
-      setPromoStatus({ type: 'success', text: 'VIP Access code verified! Unlocking Standalone edition...' });
-      setTimeout(() => {
-        if (onDownloadSuccess) onDownloadSuccess();
-      }, 1000);
-    } else {
-      setPromoStatus({ type: 'error', text: 'Invalid or expired promo code. Please verify your VIP key.' });
+
+    setIsValidatingPromo(true);
+    setPromoStatus(null);
+
+    try {
+      const response = await fetch('/api/payment/verify-promo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ promoCode: promoCode.trim() })
+      });
+
+      const data = await response.json();
+      if (response.ok && data && data.valid) {
+        setPromoStatus({ type: 'success', text: data.message || 'VIP Access code verified! Unlocking Standalone edition...' });
+        setTimeout(() => {
+          if (onDownloadSuccess) onDownloadSuccess();
+        }, 1000);
+      } else {
+        setPromoStatus({ type: 'error', text: data?.message || 'Invalid or expired promo code. Please verify your VIP key.' });
+      }
+    } catch {
+      setPromoStatus({ type: 'error', text: 'Verification service temporarily unreachable. Ensure the backend is active.' });
+    } finally {
+      setIsValidatingPromo(false);
     }
   };
 

@@ -10,7 +10,6 @@ import java.util.zip.ZipOutputStream;
 
 @RestController
 @RequestMapping("/api/download")
-@CrossOrigin(origins = "*")
 public class DownloadController {
 
     @GetMapping("/offline-template")
@@ -44,17 +43,18 @@ public class DownloadController {
                 ====================================================
 
                 INSTRUCCIONES DE USO:
-                1. Asegúrate de tener instalado Java 17 o superior en tu equipo.
+                1. Asegurate de tener instalado Java 17 o superior en tu equipo.
                 2. Para iniciar el programa, haz doble clic en:
                    'template-offline-1.0.0-standalone.jar'
                    o ejecuta en consola:
                    java -jar template-offline-1.0.0-standalone.jar
 
-                3. Al abrir por primera vez, ingresa tu clave de licencia.
-                   (Clave de Prueba / Maestra: YONIA-ENTERPRISE-PRO-2026)
+                3. Al abrir por primera vez, selecciona 'Examinar Archivo de Licencia (.lic)'
+                   e introduce el archivo de licencia comercial (.lic) proporcionado
+                   por el administrador para tu suscripcion anual.
 
-                4. La carpeta 'games/' contiene los 5 juegos básicos. Puedes
-                   agregar o descargar más juegos pegando su carpeta en 'games/'.
+                4. La carpeta 'games/' contiene los minijuegos instalados. Puedes
+                   agregar o actualizar juegos mediante el gestor de paquetes MegaCore.
                 ====================================================
                 """;
             zipBytes(zos, "GameShowCenter-Offline/INSTRUCCIONES_DE_USO.txt", instructions.getBytes("UTF-8"));

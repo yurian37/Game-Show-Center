@@ -1,49 +1,47 @@
-================================================================================
+﻿================================================================================
               GAME SHOW CENTER OFFLINE - MANUAL DEL PROGRAMADOR
-      GUÍA TÉCNICA DE ARQUITECTURA, EXTENSIÓN, IA LOCAL (RAG) Y MINIJUEGOS
+      GUÃA TÃ‰CNICA DE ARQUITECTURA, EXTENSIÃ“N, IA LOCAL (RAG) Y MINIJUEGOS
                                YONIA ENTERPRISE
 ================================================================================
 
 FECHA: Septiembre 2026
-VERSIÓN DEL ENTORNO: 1.0.0 Standalone Runtime & Developer SDK (Release Oficial)
-TECNOLOGÍA CORE: Java 21+ / JavaFX 22 / Jackson JSON / Dynamic ClassLoader / Local AI (GGUF / RAG / Vision)
+VERSIÃ“N DEL ENTORNO: 1.0.0 Standalone Runtime & Developer SDK (Release Oficial)
+TECNOLOGÃA CORE: Java 21+ / JavaFX 22 / Jackson JSON / Dynamic ClassLoader / Local AI (GGUF / RAG / Vision)
 
 
 --------------------------------------------------------------------------------
-1. INTRODUCCIÓN Y DESARROLLO SIN NECESIDAD DEL EJECUTABLE (.EXE)
+1. INTRODUCCIÃ“N Y DESARROLLO SIN NECESIDAD DEL EJECUTABLE (.EXE)
 --------------------------------------------------------------------------------
 En Game Show Center, los programadores de nuevas unidades y minijuegos NO necesitan
-poseer ni compilar el archivo ejecutable de producción (`GameShowCenter.exe`).
+poseer ni compilar el archivo ejecutable de producciÃ³n (`GameShowCenter.exe`).
 
-El sistema está diseñado con una arquitectura modular desacoplada que permite dos
+El sistema estÃ¡ diseÃ±ado con una arquitectura modular desacoplada que permite dos
 flujos de trabajo completos de desarrollo:
 
 A. Flujo de Desarrollo Directo con Maven (Recomendado para programadores del proyecto):
-   - Si tienes acceso al código fuente o plantilla del proyecto:
+   - Si tienes acceso al cÃ³digo fuente o plantilla del proyecto:
      1. Abre una terminal en la carpeta `template-offline/`.
      2. Ejecuta el comando de desarrollo:
         * En Windows:   `.\mvnw.cmd javafx:run`
         * En Linux/Mac: `./mvnw javafx:run`
-     3. La aplicación completa se compilará y ejecutará en caliente, escaneando
-        automáticamente cualquier carpeta de juego dentro de `games/` o
+     3. La aplicaciÃ³n completa se compilarÃ¡ y ejecutarÃ¡ en caliente, escaneando
+        automÃ¡ticamente cualquier carpeta de juego dentro de `games/` o
         `template-offline/games/`.
-   - Clave Maestra de Activación para Pruebas de Desarrollo:
-     Si el entorno solicita activación de licencia durante el desarrollo, ingresa la
-     siguiente Clave Maestra de Desarrollador (Master Key):
-     `YONIA-ENTERPRISE-PRO-2026`
-     Esta clave activa instantáneamente todas las funciones Pro de forma offline.
+   - ActivaciÃ³n de Licencia para Pruebas de Desarrollo:
+     Para pruebas locales, genera un archivo de licencia `.lic` mediante el generador
+     administrativo `Generate-License.bat` o `LicenseEncryptorTool` en el entorno de test.
 
-B. Flujo de Desarrollo Modular Externo (Plugin Autónomo):
+B. Flujo de Desarrollo Modular Externo (Plugin AutÃ³nomo):
    - Si eres un desarrollador externo creando un minijuego independiente para distribuir
      a usuarios finales:
-     1. Solo necesitas Java 17+ o 21+ y las dependencias estándar de JavaFX y Jackson
+     1. Solo necesitas Java 17+ o 21+ y las dependencias estÃ¡ndar de JavaFX y Jackson
         (disponibles en Maven Central).
      2. Desarrollas tu clase visual (Stage) y tu editor opcional (SetupEditor) en tu
         propio IDE (IntelliJ IDEA, Eclipse, VS Code, NetBeans).
-     3. Compilas tu código y generas un archivo `.jar` (ej. `mi-juego.jar`) o copias
+     3. Compilas tu cÃ³digo y generas un archivo `.jar` (ej. `mi-juego.jar`) o copias
         los archivos `.class` a una subcarpeta `classes/`.
      4. Al entregar tu juego, el usuario final solo coloca tu carpeta en `games/` y el
-        motor de `GamePluginClassLoader` cargará tu código de forma automática.
+        motor de `GamePluginClassLoader` cargarÃ¡ tu cÃ³digo de forma automÃ¡tica.
 
 
 --------------------------------------------------------------------------------
@@ -62,33 +60,33 @@ Dentro de dicha carpeta, se definen los siguientes archivos:
 
 2. `setup.json` (Obligatorio o Altamente Recomendado):
    Estructura de datos inicial del juego (banco de preguntas, respuestas, tiempos,
-   palabras, ponderaciones o parámetros numéricos).
+   palabras, ponderaciones o parÃ¡metros numÃ©ricos).
 
-3. Código Java Compilado del Juego (Elige UNA de las modalidades):
+3. CÃ³digo Java Compilado del Juego (Elige UNA de las modalidades):
    - Modalidad A (Recomendada para Plugins): Archivo `.jar` (ej. `game.jar` o `mi-juego.jar`)
-     colocado directamente en la carpeta del juego. `GamePluginClassLoader` lo añade
-     automáticamente a su ClassPath aislado.
-   - Modalidad B (Desarrollo Rápido): Subcarpeta `classes/` conteniendo la estructura
+     colocado directamente en la carpeta del juego. `GamePluginClassLoader` lo aÃ±ade
+     automÃ¡ticamente a su ClassPath aislado.
+   - Modalidad B (Desarrollo RÃ¡pido): Subcarpeta `classes/` conteniendo la estructura
      de paquetes compilada (ej: `classes/com/miempresa/juego/MiStage.class`).
-   - Modalidad C (Código en el Core): Clase compilada dentro del proyecto base
+   - Modalidad C (CÃ³digo en el Core): Clase compilada dentro del proyecto base
      (al usar `.\mvnw.cmd javafx:run`).
 
-4. `ai_prompt.json` (Opcional - Integración con Inteligencia Artificial Local):
-   Define las plantillas de prompts y el esquema de generación de contenido automático
-   mediante el modelo local de IA y la base documental RAG (ver Sección 6).
+4. `ai_prompt.json` (Opcional - IntegraciÃ³n con Inteligencia Artificial Local):
+   Define las plantillas de prompts y el esquema de generaciÃ³n de contenido automÃ¡tico
+   mediante el modelo local de IA y la base documental RAG (ver SecciÃ³n 6).
 
 5. Archivos de Reglas Multilenguaje (Opcionales):
    `instructions.json` o archivos planos (`instructions_es.txt`, `instructions_en.txt`, etc.).
 
 6. Subcarpeta `images/` (Opcional - Juegos multimedia):
-   Almacena imágenes locales precargadas o generadas/descargadas por el asistente de IA
+   Almacena imÃ¡genes locales precargadas o generadas/descargadas por el asistente de IA
    (ej. Snap Solve, GeoLocation, Guess Character).
 
 
 --------------------------------------------------------------------------------
-3. ESPECIFICACIÓN DEL ARCHIVO `description.json`
+3. ESPECIFICACIÃ“N DEL ARCHIVO `description.json`
 --------------------------------------------------------------------------------
-Ejemplo completo y válido de `description.json`:
+Ejemplo completo y vÃ¡lido de `description.json`:
 ```json
 {
   "index": 12,
@@ -154,14 +152,14 @@ Propiedades clave:
 
 
 --------------------------------------------------------------------------------
-4. REQUERIMIENTOS DE CÓDIGO JAVA (CONTRATOS E INTERFACES)
+4. REQUERIMIENTOS DE CÃ“DIGO JAVA (CONTRATOS E INTERFACES)
 --------------------------------------------------------------------------------
 
 A. Contrato de la Vista Principal (`stageClass`):
    1. Debe heredar de `javafx.scene.layout.Region` (por ejemplo: `VBox`, `StackPane`,
       `BorderPane` o `Pane`).
-   2. Debe ser pública (`public class`) y proveer al menos uno de los siguientes
-      constructores públicos:
+   2. Debe ser pÃºblica (`public class`) y proveer al menos uno de los siguientes
+      constructores pÃºblicos:
 
       Constructor A (Recomendado con callback de ganador - 3 argumentos):
       ```java
@@ -180,16 +178,16 @@ A. Contrato de la Vista Principal (`stageClass`):
       )
       ```
 
-   3. Objetos disponibles en los parámetros:
-      - `profiles`: Lista de participantes activos (`Competitor`). Métodos:
+   3. Objetos disponibles en los parÃ¡metros:
+      - `profiles`: Lista de participantes activos (`Competitor`). MÃ©todos:
         * `getId()`: Identificador interno ("Player #1", "Team #1", etc.).
         * `getName()`: Nombre asignado por el usuario en los ajustes.
         * `getAvatarPath()`: Ruta al archivo de imagen seleccionado por el usuario.
       - `setupData`: Estructura JSON cargada desde `setup.json`.
       - `winnerListener`: Consumidor opcional. Invocar `winnerListener.accept(competidor)`
-        si el juego finaliza con un ganador decretado de forma autónoma.
+        si el juego finaliza con un ganador decretado de forma autÃ³noma.
 
-   4. Buenas Prácticas de Ciclo de Vida y Eventos (Evitar Fugas):
+   4. Buenas PrÃ¡cticas de Ciclo de Vida y Eventos (Evitar Fugas):
       - Si tu escenario registra listeners de teclado o filtros globales en la ventana
         (`Scene.addEventFilter(KeyEvent.KEY_PRESSED, ...)`), debes vincular su
         desregistro a la propiedad de escena o removerlos cuando el nodo sea retirado:
@@ -202,11 +200,11 @@ A. Contrato de la Vista Principal (`stageClass`):
         ```
 
 B. Contrato del Editor de Ajustes (`editorClass`):
-   Si tu juego ofrece personalización visual en el botón "Ajustes" (Setup), debe
+   Si tu juego ofrece personalizaciÃ³n visual en el botÃ³n "Ajustes" (Setup), debe
    implementar la interfaz:
    `com.gameshowcenter.offline.games.IGameSetupEditor`
 
-   Código exacto de la interfaz:
+   CÃ³digo exacto de la interfaz:
    ```java
    package com.gameshowcenter.offline.games;
 
@@ -244,93 +242,93 @@ B. Contrato del Editor de Ajustes (`editorClass`):
            return validateSetupData(getUpdatedSetup(), profiles, battleRoyale);
        }
 
-       // Retorna el JsonNode con los datos actualizados tras la edición del usuario
+       // Retorna el JsonNode con los datos actualizados tras la ediciÃ³n del usuario
        // Debe incluir la bandera booleana: root.put("battleRoyale", isBattleRoyaleSelected);
        JsonNode getUpdatedSetup();
    }
    ```
 
-   Reglas de Implementación de Battle Royale en Minijuegos:
+   Reglas de ImplementaciÃ³n de Battle Royale en Minijuegos:
    1. Si `battleRoyale` es TRUE:
-      - No aplicar la restricción estricta de `items >= jugadores * rondas`.
-      - Validar únicamente que exista al menos 1 elemento (`items.size() >= 1`).
+      - No aplicar la restricciÃ³n estricta de `items >= jugadores * rondas`.
+      - Validar Ãºnicamente que exista al menos 1 elemento (`items.size() >= 1`).
       - Validar de manera rigurosa que todos los elementos configurados funcionen:
         archivos de imagen existentes en disco y reproducibilidad de pistas de audio.
-      - En el `Stage` de ejecución, calcular el total de rondas del juego en función
-        del tamaño del banco (`totalMatchRounds = items.size()`), asegurando que todos
+      - En el `Stage` de ejecuciÃ³n, calcular el total de rondas del juego en funciÃ³n
+        del tamaÃ±o del banco (`totalMatchRounds = items.size()`), asegurando que todos
         los elementos aparezcan en la arena antes de finalizar la partida.
    2. Si `battleRoyale` es FALSE:
-      - Mantener las reglas clásicas de validación por rondas y jugadores.
+      - Mantener las reglas clÃ¡sicas de validaciÃ³n por rondas y jugadores.
 
 
 --------------------------------------------------------------------------------
-5. ESTÁNDARES VISUALES, GLIFOS Y AJUSTES GLOBALES
+5. ESTÃNDARES VISUALES, GLIFOS Y AJUSTES GLOBALES
 --------------------------------------------------------------------------------
 
-A. Compatibilidad de Glifos en Windows (Prevención de Cajas Vacías `[]`):
-   Debido a limitaciones del renderizador tipográfico DirectWrite en Windows 10/11
+A. Compatibilidad de Glifos en Windows (PrevenciÃ³n de Cajas VacÃ­as `[]`):
+   Debido a limitaciones del renderizador tipogrÃ¡fico DirectWrite en Windows 10/11
    con fuentes del sistema no especializadas en emojis multicolores, todos los
-   componentes gráficos del sistema deben utilizar glifos Unicode estándar y seguros:
-   - Navegación / Flechas: `←`, `►`, `◄` (evitar `🠔` U+1F814).
-   - Manijas de arrastre: `⋮⋮` (evitar braille grip `⠿`).
-   - Pantalla completa: `🖥️` (evitar `⛶` U+26F6).
-   - Monedas y fichas: `🟡` (evitar `🪙` U+1FA99).
-   - Banderas de idioma: Icono universal `🌐` en selectores desplegables.
-   - Limpieza / Restablecer: `✨` (evitar escoba `🧹`).
-   - Bloques y cuadrículas: `▦` (evitar ladrillo `🧱`).
-   - Ajustes Globales: `⚙️`.
+   componentes grÃ¡ficos del sistema deben utilizar glifos Unicode estÃ¡ndar y seguros:
+   - NavegaciÃ³n / Flechas: `â†`, `â–º`, `â—„` (evitar `ðŸ ”` U+1F814).
+   - Manijas de arrastre: `â‹®â‹®` (evitar braille grip `â ¿`).
+   - Pantalla completa: `ðŸ–¥ï¸` (evitar `â›¶` U+26F6).
+   - Monedas y fichas: `ðŸŸ¡` (evitar `ðŸª™` U+1FA99).
+   - Banderas de idioma: Icono universal `ðŸŒ` en selectores desplegables.
+   - Limpieza / Restablecer: `âœ¨` (evitar escoba `ðŸ§¹`).
+   - Bloques y cuadrÃ­culas: `â–¦` (evitar ladrillo `ðŸ§±`).
+   - Ajustes Globales: `âš™ï¸`.
 
 B. Arquitectura de Ajustes Globales (`ThemeCustomizerDialog`):
-   El botón superior `⚙️` ("Ajustes Globales") unifica la configuración del sistema:
-   1. Pestaña de Paletas de Color: Personalización en vivo de fondos, acentos y fuentes.
-   2. Pestaña de Base de Conocimiento RAG: Gestión de documentos PDF de referencia
+   El botÃ³n superior `âš™ï¸` ("Ajustes Globales") unifica la configuraciÃ³n del sistema:
+   1. PestaÃ±a de Paletas de Color: PersonalizaciÃ³n en vivo de fondos, acentos y fuentes.
+   2. PestaÃ±a de Base de Conocimiento RAG: GestiÃ³n de documentos PDF de referencia
       para alimentar los modelos locales de Inteligencia Artificial.
 
 
 --------------------------------------------------------------------------------
-6. ARQUITECTURA DE IA LOCAL (GGUF) Y MÓDULO RAG (DOCUMENTOS PDF)
+6. ARQUITECTURA DE IA LOCAL (GGUF) Y MÃ“DULO RAG (DOCUMENTOS PDF)
 --------------------------------------------------------------------------------
-Game Show Center cuenta con un subsistema de generación de contenidos asistido por IA
+Game Show Center cuenta con un subsistema de generaciÃ³n de contenidos asistido por IA
 completamente offline. Funciona mediante un motor de inferencia local en Python
 (`ai_worker.py`) que ejecuta modelos cuantizados GGUF (por ejemplo: `Qwen2.5-0.5B-Instruct-Q4_K_M.gguf`
 o modelos compatibles en la carpeta `models/`).
 
-A. Módulo RAG (Retrieval-Augmented Generation) con Documentos PDF:
+A. MÃ³dulo RAG (Retrieval-Augmented Generation) con Documentos PDF:
    El sistema permite enriquecer el contexto del modelo con documentos reales del usuario:
-   - Configuración centralizada: Administrada por `RagDocumentsConfigManager.java`.
+   - ConfiguraciÃ³n centralizada: Administrada por `RagDocumentsConfigManager.java`.
    - Almacenamiento: Las rutas de hasta 10 documentos PDF se guardan en `preferences.json`
      bajo la clave `"rag_documents"`.
-   - Extracción de texto (`extract_rag_context` en `ai_worker.py`):
-     * Utiliza la librería `pypdf` para parsear los PDFs en milisegundos.
-     * Inyecta los extractos más relevantes como contexto de conocimiento en el
+   - ExtracciÃ³n de texto (`extract_rag_context` en `ai_worker.py`):
+     * Utiliza la librerÃ­a `pypdf` para parsear los PDFs en milisegundos.
+     * Inyecta los extractos mÃ¡s relevantes como contexto de conocimiento en el
        `system_prompt` de la IA.
-     * Inyecta contexto temático en el Juez Visual Multimodal (`_do_verify_image_with_vision`)
-       para validar la pertinencia de imágenes descargadas o generadas con base en el
+     * Inyecta contexto temÃ¡tico en el Juez Visual Multimodal (`_do_verify_image_with_vision`)
+       para validar la pertinencia de imÃ¡genes descargadas o generadas con base en el
        contenido de los libros o manuales cargados.
 
-B. Modos de Generación: Agregar (Append) vs Sobreescribir con Anti-Duplicados:
+B. Modos de GeneraciÃ³n: Agregar (Append) vs Sobreescribir con Anti-Duplicados:
    - Al invocar la IA desde la interfaz Java (`SettingsFxView.java`), el sistema analiza
      el contenido actual del juego (preguntas, palabras, lugares, etc.).
    - Modo "Agregar (Conserva actuales)":
      * La interfaz muestra un panel destacado con badges/chips de los elementos existentes:
-       `📋 Elementos actuales (la IA evitará duplicados o similares): [X items]`.
-     * `AIService.java` envía la lista `existing_items` a la configuración de ejecución.
+       `ðŸ“‹ Elementos actuales (la IA evitarÃ¡ duplicados o similares): [X items]`.
+     * `AIService.java` envÃ­a la lista `existing_items` a la configuraciÃ³n de ejecuciÃ³n.
      * `ai_worker.py` inyecta una directiva estricta en el prompt:
        `CRITICAL ANTI-DUPLICATION RULE: You must NEVER repeat or generate similar items to: [...]`.
-     * El worker filtra activamente los resultados mediante sets de deduplicación en memoria
-       (`seen_locs`, `seen_words_set`, `seen_existing_q`, etc.), garantizando que sólo
+     * El worker filtra activamente los resultados mediante sets de deduplicaciÃ³n en memoria
+       (`seen_locs`, `seen_words_set`, `seen_existing_q`, etc.), garantizando que sÃ³lo
        se agreguen elementos novedosos.
 
-C. Tipos de Generación Soportados en `ai_prompt.json`:
+C. Tipos de GeneraciÃ³n Soportados en `ai_prompt.json`:
    1. `generation_type`:
-      - `"qa_list"`: Preguntas con opciones, respuesta correcta y explicación (Trivia Quiz, Topic Takedown).
-      - `"word_list"`: Palabras clave en mayúsculas con pista descriptiva (Hangman).
-      - `"hierarchical_categories"`: Categorías temáticas con subelementos asociados.
-      - `"single_image_entities"`: Entidades con término de búsqueda visual (Snap Solve).
-      - `"multi_image_entities"`: Entidades con múltiples referencias visuales (GeoLocation, Guess Character).
+      - `"qa_list"`: Preguntas con opciones, respuesta correcta y explicaciÃ³n (Trivia Quiz, Topic Takedown).
+      - `"word_list"`: Palabras clave en mayÃºsculas con pista descriptiva (Hangman).
+      - `"hierarchical_categories"`: CategorÃ­as temÃ¡ticas con subelementos asociados.
+      - `"single_image_entities"`: Entidades con tÃ©rmino de bÃºsqueda visual (Snap Solve).
+      - `"multi_image_entities"`: Entidades con mÃºltiples referencias visuales (GeoLocation, Guess Character).
 
-   2. Parámetros dinámicos en `user_prompt_template`:
-      - `{prompt}`: Instrucción o tema solicitado.
+   2. ParÃ¡metros dinÃ¡micos en `user_prompt_template`:
+      - `{prompt}`: InstrucciÃ³n o tema solicitado.
       - `{count}`: Cantidad total de elementos requeridos.
       - `{cand_count}`: Opciones o distractores por elemento.
       - `{lang}`: Idioma de destino (`es`, `en`, `fr`, `pt`).
@@ -346,24 +344,24 @@ D. Ejemplo de `ai_prompt.json` con Soporte RAG:
 }
 ```
 
-E. Ejecución Manual y Pruebas del Worker:
+E. EjecuciÃ³n Manual y Pruebas del Worker:
    ```bash
    python ai_worker.py --game "Trivia Quiz" --prompt "Historia Universal" --count 5 --lang es
    ```
 
 F. Resiliencia y Fallback:
-   Si el equipo no cumple los requisitos de hardware (CPU/RAM/GPU) o Python no está
+   Si el equipo no cumple los requisitos de hardware (CPU/RAM/GPU) o Python no estÃ¡
    presente, el sistema activa un fallback transparente cargando los datos base de
    `setup.json`, asegurando que la partida nunca falle.
 
 
 --------------------------------------------------------------------------------
-7. INTERNACIONALIZACIÓN (i18n)
+7. INTERNACIONALIZACIÃ“N (i18n)
 --------------------------------------------------------------------------------
-Game Show Center soporta 4 idiomas oficiales: Español (`es`), Inglés (`en`),
-Francés (`fr`) y Portugués (`pt`).
+Game Show Center soporta 4 idiomas oficiales: EspaÃ±ol (`es`), InglÃ©s (`en`),
+FrancÃ©s (`fr`) y PortuguÃ©s (`pt`).
 
-Los textos dinámicos de los editores y validadores de minijuegos deben recurrir a
+Los textos dinÃ¡micos de los editores y validadores de minijuegos deben recurrir a
 la clase `com.gameshowcenter.offline.i18n.I18n`:
 ```java
 String msg = I18n.get("game.editor.validation.pool_insufficient", count, minRequired);
@@ -372,19 +370,124 @@ Las cadenas maestras se definen en `src/main/resources/i18n/messages_*.propertie
 
 
 --------------------------------------------------------------------------------
-8. GUÍA PASO A PASO PARA COMPILAR Y PROBAR TU JUEGO
+8. GUÃA PASO A PASO PARA COMPILAR Y PROBAR TU JUEGO
 --------------------------------------------------------------------------------
 1. Crea la carpeta `games/MiNuevoJuego/`.
-2. Añade `description.json` con metadatos y la clase visual (`stageClass`).
-3. Añade `setup.json` con el contenido predeterminado.
-4. (Opcional) Añade `ai_prompt.json` si tu juego utilizará la IA local / RAG.
-5. Coloca el código compilado:
-   - Desarrollo interno: añade tus clases a `src/main/java/` y corre `.\mvnw.cmd javafx:run`.
+2. AÃ±ade `description.json` con metadatos y la clase visual (`stageClass`).
+3. AÃ±ade `setup.json` con el contenido predeterminado.
+4. (Opcional) AÃ±ade `ai_prompt.json` si tu juego utilizarÃ¡ la IA local / RAG.
+5. Coloca el cÃ³digo compilado:
+   - Desarrollo interno: aÃ±ade tus clases a `src/main/java/` y corre `.\mvnw.cmd javafx:run`.
    - Desarrollo externo: compila y copia `MiNuevoJuego.jar` a la carpeta del juego.
 6. En la pantalla de Ajustes:
-   - Verifica la aparición de la tarjeta en el catálogo.
+   - Verifica la apariciÃ³n de la tarjeta en el catÃ¡logo.
    - Pulsa "Ajustes" para comprobar la interfaz de tu editor (`IGameSetupEditor`).
-   - Si usas IA, prueba los modos "Agregar" y "Sobreescribir" y corrobora la deduplicación.
+   - Si usas IA, prueba los modos "Agregar" y "Sobreescribir" y corrobora la deduplicaciÃ³n.
 7. En la Arena:
-   - Verifica la interacción con el marcador, teclado y botón de instrucciones.
+   - Verifica la interacciÃ³n con el marcador, teclado y botÃ³n de instrucciones.
+
+
+--------------------------------------------------------------------------------
+9. ARQUITECTURA DE LA CÃSCARA STANDALONE (BUILD & PACKAGING)
+--------------------------------------------------------------------------------
+La CÃ¡scara Standalone es el entorno ejecutable base que no incluye minijuegos pesados
+por defecto, permitiendo descargas ligeras (~20 MB) y distribuciÃ³n modular.
+
+A. Script de CompilaciÃ³n de la CÃ¡scara (`build-cascara.ps1`):
+   - Flujo de EjecuciÃ³n:
+     1. Invoca `mvnw.cmd package -DskipTests` para generar el Uber-JAR sombreado
+        (`template-offline-1.0.0-standalone.jar`).
+     2. Prepara la carpeta de distribuciÃ³n limpia `release\GameShowCenter-Cascara\`.
+     3. Copia el Uber-JAR, la carpeta de recursos `assets/`, los scripts de IA en `scripts/`
+        y las configuraciones `custom_themes.json`.
+     4. Crea las carpetas vacÃ­as requeridas: `games\` y `megacores\`.
+     5. Incluye el lanzador `Lanzar-GameShowCenter.bat` y las herramientas de licencia
+        (`generate-license.bat`, `generate-license.ps1`).
+     6. Comprime el paquete portable `release\GameShowCenter-Cascara-v1.0.zip`.
+     7. Detecta el compilador de Inno Setup (`ISCC.exe`) y compila automÃ¡ticamente
+        el instalador `release\GameShowCenter-Cascara-Setup.exe`.
+
+B. Script de Inno Setup (`installer-cascara.iss`):
+   - Configura el instalador de Windows para crear accesos directos, directorios de trabajo
+     y asociar el comando `javaw -jar template-offline-1.0.0-standalone.jar`.
+
+
+--------------------------------------------------------------------------------
+10. SISTEMA DE EMPAQUETADO E INDUCCIÃ“N DE MEGACORES
+--------------------------------------------------------------------------------
+Los minijuegos se distribuyen en paquetes modulares llamados MegaCores.
+
+A. Manifiesto del Paquete (`megacore.json`):
+   Cada paquete MegaCore contiene en su raÃ­z un archivo `megacore.json` con metadatos:
+   ```json
+   {
+     "megacoreNumber": 1,
+     "title": "MegaCore 1",
+     "description": "Paquete oficial de minijuegos MegaCore 1 para Game Show Center",
+     "version": "1.0.0",
+     "games": ["TimeLine", "Hangman", "TicTacToe", "Trivia Quiz", "Zero Margin"]
+   }
+   ```
+
+B. Empaquetador Automatizado (`package-megacores.ps1`):
+   - Escanea el directorio origen de juegos (`games/`).
+   - Empaqueta MegaCore 1:
+     * Minijuegos: TimeLine, Hangman, TicTacToe, Trivia Quiz, Zero Margin.
+     * Genera `release\megacores\MegaCore-1.zip` y `megacores\MegaCore-1.zip`.
+   - Empaqueta MegaCore 2:
+     * Minijuegos: GeoLocation, Guess Character, Rapid Rhythm, Snap Solve, Topic Takedown.
+     * Genera `release\megacores\MegaCore-2.zip` y `megacores\MegaCore-2.zip`.
+
+C. Servicio de InducciÃ³n (`MegaCoreManagerService.java`):
+   - FunciÃ³n `autoScanAndInstallPacks(File megacoresDir, File gamesDir)`:
+     Invocada al inicio de la aplicaciÃ³n en `MainApp.java`. Escanea cualquier archivo
+     `.zip` o `.megacore` dentro de `megacores/`, descomprime los contenidos en `games/`
+     y mitiga ataques Zip Slip (`!targetPath.startsWith(gamesPath)`).
+   - FunciÃ³n `installPackage(File packageFile, File gamesDir)`:
+     Descomprime paquetes dinÃ¡micamente y deduce el nÃºmero de MegaCore mediante el
+     manifiesto `megacore.json` o analizando los nombres de las carpetas internas.
+   - FunciÃ³n `getCatalogStatus(File gamesDir)`:
+     Retorna el estado de instalaciÃ³n de MegaCore 1 y MegaCore 2 (`isFullyInstalled()`,
+     `getInstalledCount()`, `getTotalCount()`).
+
+D. Vista Interactiva (`MegaCoreManagerDialog.java`):
+   - Accesible desde el botÃ³n `ðŸ“¦ MegaCores` en la barra superior (`MainApp.createHeader`).
+   - Presenta tarjetas con badges verdes/naranjas/grises de estado.
+   - Permite seleccionar paquetes `.zip` mediante `FileChooser` y actualizar
+     inmediatamente el catÃ¡logo en caliente a travÃ©s de un callback `onPacksUpdated`.
+
+
+--------------------------------------------------------------------------------
+11. SUBSISTEMA CRIPTOGRÃFICO DE LICENCIAMIENTO ANUAL V2
+--------------------------------------------------------------------------------
+El sistema de seguridad implementa un licenciamiento anual offline con vinculaciÃ³n estricta
+por hardware y auto-bloqueo.
+
+A. Componentes del Subsistema (`com.gameshowcenter.offline.security`):
+   - `HardwareIdUtil.java`: Genera una huella SHA-256 Ãºnica y estable del equipo host
+     basada en procesador, BIOS, motherboard y adaptadores de red.
+   - `LicensePayload.java`: Estructura DTO serializada con Jackson con campos:
+     * `format`: `"GSC-OFFLINE-LICENSE-V2"`.
+     * `licenseId`: UUID corto identificador (ej: `LIC-D1A9F420`).
+     * `createdAt`: Timestamp UTC de creaciÃ³n.
+     * `maxActivationDays`: Ventana de gracia para activar (por defecto 3 dÃ­as).
+     * `annualValidityDays`: DuraciÃ³n de la suscripciÃ³n (365 dÃ­as).
+     * `status`: `"UNBOUND"` (virgen) o `"BOUND"` (vinculado a una mÃ¡quina).
+     * `boundHwid`: HardwareID del equipo donde se activÃ³.
+     * `activatedAt` / `expiresAt`: Fechas lÃ­mite calculadas.
+     * `signature`: Firma SHA-256 calculada con salt secreto.
+   - `LicenseEncryptorTool.java` / `generate-license.ps1`:
+     Herramientas para generar e inspeccionar licencias (.lic) con cabecera mÃ¡gica
+     binaria `GSC2` (0x47, 0x53, 0x43, 0x32), IV aleatorio de 16 bytes y cifrado AES-256-CBC.
+   - `LicenseManager.java`:
+     * `verifyCurrentInstallation()`: EvalÃºa las licencias en `license.lic` y
+       `%USERPROFILE%\.gsc_offline\license.lic`.
+     * `activateWithFile(File licenseFile)`: Si la licencia es `UNBOUND` y estÃ¡ dentro
+       de los 3 dÃ­as de tolerancia, la vincula al HWID actual, fija `expiresAt = now + 365 dÃ­as`,
+       SOBREESCRIBE el archivo original en disco (para evitar que se entregue a otro usuario)
+       y guarda una copia persistente.
+     * Si la licencia ya fue activada en otra mÃ¡quina, arroja `StatusCategory.HARDWARE_CONFLICT`.
+     * Si pasaron mÃ¡s de 3 dÃ­as antes de activarla, arroja `StatusCategory.ACTIVATION_WINDOW_EXPIRED`.
+     * Si expirÃ³ el ciclo anual, arroja `StatusCategory.ANNUAL_EXPIRED`.
 ================================================================================
+

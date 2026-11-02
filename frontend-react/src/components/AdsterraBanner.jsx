@@ -154,7 +154,7 @@ export default function AdsterraBanner({
                 href="#download"
                 onClick={(e) => {
                   e.preventDefault();
-                  alert("To download the 100% Offline Edition or get enterprise licenses for your school, contact yoniadevs@gmail.com or run template-offline with master key YONIA-ENTERPRISE-PRO-2026.");
+                  alert("To download the 100% Offline Edition or obtain commercial licenses for your school, contact yoniadevs@gmail.com or access the Host Portal.");
                 }}
                 className="w-full py-2 px-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-[10px] font-bold uppercase rounded-lg shadow-md transition-all cursor-pointer block"
               >

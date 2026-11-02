@@ -1,26 +1,66 @@
 ================================================================================
                 GAME SHOW CENTER OFFLINE - MANUAL DE USUARIO
          GUÍA GENERAL DE OPERACIÓN, CONFIGURACIÓN Y CONTROL DEL SISTEMA
-                               YONIA ENTERPRISE
+                                YONIA ENTERPRISE
 ================================================================================
 
-FECHA: Septiembre 2026
+FECHA: Octubre 2026
 VERSIÓN DEL SOFTWARE: 1.0.0 Standalone Desktop (Release Oficial)
 SISTEMA OPERATIVO: Windows 10 / 11 (64-bit)
 
 NOTA IMPORTANTE:
 Este manual está diseñado para ser completamente amigable y accesible, incluso
 para usuarios con poca experiencia en computación. Explica de manera sencilla
-cómo navegar por el sistema, preparar una partida, personalizar las reglas,
-usar la Inteligencia Artificial con tus propios documentos y conducir el evento
-en vivo sin complicaciones técnicas.
+cómo activar tu licencia anual, navegar por el sistema, inducir paquetes de juegos
+MegaCore, preparar una partida, personalizar las reglas, usar la Inteligencia Artificial
+con tus propios documentos PDF y conducir el evento en vivo sin complicaciones técnicas.
 
 
 ================================================================================
-1. PANTALLA PRINCIPAL (INICIO)
+1. ACTIVACIÓN DE LICENCIA ANUAL Y SEGURIDAD HARDWARE ID
 ================================================================================
-Al abrir la aplicación, aparece la pantalla de bienvenida (Inicio), diseñada
-como el punto de partida visual del evento:
+Al iniciar Game Show Center por primera vez o si tu licencia ha caducado, el sistema
+mostrará la pantalla de seguridad "ACTIVACIÓN DE LICENCIA REQUERIDA":
+
+A. Tu Identificador de Hardware (HardwareID / HWID):
+   - En la parte superior de la ventana verás un recuadro oscuro con un código único
+     (por ejemplo: `HWID-A48F-B210-9E74`).
+   - Este código identifica de forma exclusiva a tu computadora física.
+   - Botón "📋 Copiar": Puedes hacer clic en este botón para copiar tu HWID al
+     portapapeles si tu institución, escuela o YonIA Enterprise te lo solicita.
+
+B. Cómo Activar tu Licencia Anual (.lic):
+   Tienes dos formas cómodas de activar tu producto:
+   1. Arrastrar y Soltar (Drag & Drop):
+      Arrastra tu archivo `license.lic` directamente desde el Explorador de Windows
+      hacia el recuadro azul punteado en pantalla.
+   2. Buscar Archivo:
+      Haz clic en el botón azul "📂 Seleccionar Archivo de Licencia (.lic)", selecciona
+      tu archivo de licencia y pulsa "Abrir".
+
+C. Funcionamiento del Candado de Seguridad y Anualidad:
+   - Ventana de Tolerancia (3 días): Las licencias nuevas se emiten con un plazo
+     máximo de 3 días para ser activadas en tu equipo por primera vez.
+   - Vinculación Automática (365 días): Al cargar tu archivo válido, el sistema lo
+     vincula a tu HardwareID y comienza su vigencia anual de 365 días continuos.
+   - Protección Anti-Reutilización: El archivo queda sellado exclusivamente para tu
+     máquina. No puede transferirse ni reutilizarse en otra computadora.
+   - Persistencia: Una vez activada con éxito, la licencia queda guardada de forma
+     permanente en tu equipo (`%USERPROFILE%\.gsc_offline\license.lic`). No tendrás
+     que volver a activarla cada vez que abras el juego.
+
+D. Clave de Activación y Soporte Comercial:
+   Si requieres soporte de activación o emisión de una nueva licencia:
+   1. Contacta al administrador institucional o soporte de YonIA Enterprise.
+   2. Presenta el HardwareID de tu equipo mostrado en la pantalla de activación.
+   3. Se te suministrará el archivo de licencia comercial (.lic) correspondiente.
+
+
+================================================================================
+2. PANTALLA PRINCIPAL (INICIO)
+================================================================================
+Al abrir la aplicación con una licencia activa, aparece la pantalla de bienvenida (Inicio),
+diseñada como el punto de partida visual del evento:
 
 - Encabezado: Presenta el logotipo oficial de Game Show Center y el título del programa.
 - Tarjetas informativas: Explican las características principales: funcionamiento
@@ -31,7 +71,7 @@ como el punto de partida visual del evento:
 
 
 ================================================================================
-2. BARRA SUPERIOR Y AJUSTES GLOBALES
+3. BARRA SUPERIOR Y GESTIÓN GLOBAL
 ================================================================================
 En la parte superior de la ventana encontrarás siempre a mano los siguientes controles:
 
@@ -52,11 +92,43 @@ En la parte superior de la ventana encontrarás siempre a mano los siguientes co
    - Pestaña de Colores y Temas: Personaliza la apariencia gráfica del juego con
      paletas de colores vibrantes para combinar con tu escuela, empresa o evento.
    - Pestaña de Documentos Adicionales (RAG): Te permite cargar tus propios
-     archivos PDF para alimentar a la Inteligencia Artificial (ver Sección 9).
+     archivos PDF para alimentar a la Inteligencia Artificial (ver Sección 10).
+5. Botón de Paquetes MegaCore (📦):
+   Abre el Gestor de Paquetes MegaCore para consultar el estado de los minijuegos
+   instalados y cargar nuevos paquetes comprimidos (.zip) en caliente (ver Sección 4).
+6. Insignia de Estudio:
+   Indica el sello de certificación de calidad oficial de YonIA Enterprise.
 
 
 ================================================================================
-3. PANTALLA DE AJUSTES (PREPARACIÓN DE LA PARTIDA)
+4. GESTIÓN E INDUCCIÓN DE PAQUETES MEGACORE
+================================================================================
+Game Show Center utiliza una arquitectura modular de minijuegos repartidos en paquetes
+llamados MegaCores:
+
+- MegaCore 1 (Clásicos y Palabras): TimeLine, Hangman, TicTacToe, Trivia Quiz, Zero Margin.
+- MegaCore 2 (Multimedia y Agilidad): GeoLocation, Guess Character, Rapid Rhythm, Snap Solve, Topic Takedown.
+
+¿Cómo verificar y cargar minijuegos desde la aplicación?:
+1. Haz clic en el botón `📦 MegaCores` en la barra superior.
+2. Se desplegará la ventana "PAQUETES DE JUEGOS MEGACORE":
+   - Verás dos tarjetas claras que indican:
+     * "INSTALADO (5/5)" con insignia verde si el paquete ya está cargado.
+     * "PARCIAL O NO INSTALADO" si falta incorporar el archivo.
+   - Cada tarjeta lista los minijuegos que contiene el paquete.
+3. Para inducir un nuevo paquete:
+   - Pulsa el botón "📥 Cargar Paquete MegaCore (.zip)".
+   - Elige el archivo comprimido (`MegaCore-1.zip` o `MegaCore-2.zip`).
+   - El sistema descomprimirá los minijuegos e informará el éxito con una alerta verde.
+   - ¡Los nuevos juegos aparecerán al instante en tu menú de selección sin tener que reiniciar!
+4. Carga automática al iniciar:
+   Si prefieres no usar el botón, simplemente coloca los archivos `MegaCore-1.zip` y
+   `MegaCore-2.zip` en la carpeta `megacores\` de tu instalación antes de abrir el juego.
+   El sistema los detectará y los instalará de forma transparente.
+
+
+================================================================================
+5. PANTALLA DE AJUSTES (PREPARACIÓN DE LA PARTIDA)
 ================================================================================
 Esta pantalla es tu mesa de preparación antes de que comience el espectáculo:
 
@@ -80,7 +152,7 @@ B. Memoria Automática (Sin esfuerzo):
 
 
 ================================================================================
-4. MODOS DE JUEGO Y PARTICIPANTES
+6. MODOS DE JUEGO Y PARTICIPANTES
 ================================================================================
 En el bloque "Modo de Juego" defines cómo competirán las personas:
 
@@ -103,7 +175,7 @@ Personalización de Perfiles:
 
 
 ================================================================================
-5. BOTONES DE PUNTUACIÓN RÁPIDA (MARCADOR)
+7. BOTONES DE PUNTUACIÓN RÁPIDA (MARCADOR)
 ================================================================================
 Durante la partida, no necesitas usar calculadora ni escribir números a mano. La
 aplicación cuenta con una botonera táctil configurable:
@@ -119,7 +191,7 @@ aplicación cuenta con una botonera táctil configurable:
 
 
 ================================================================================
-6. BANCOS DE IMÁGENES Y FUENTES MULTIMEDIA
+8. BANCOS DE IMÁGENES Y FUENTES MULTIMEDIA
 ================================================================================
 En la sección de fuentes de imágenes puedes elegir de dónde tomará la aplicación
 las fotografías e ilustraciones para los juegos que las utilicen:
@@ -131,7 +203,7 @@ las fotografías e ilustraciones para los juegos que las utilicen:
 
 
 ================================================================================
-7. SELECCIÓN DE MINIJUEGOS Y NÚMERO DE ORDEN (#)
+9. SELECCIÓN DE MINIJUEGOS Y NÚMERO DE ORDEN (#)
 ================================================================================
 El catálogo muestra todos los minijuegos disponibles:
 
@@ -149,7 +221,7 @@ B. El Número de Orden (#1, #2, #3...):
 
 
 ================================================================================
-8. EL BOTÓN "AJUSTES" DE CADA JUEGO (CONFIGURACIÓN INDIVIDUAL)
+10. EL BOTÓN "AJUSTES" DE CADA JUEGO Y MODO BATTLE ROYALE (⚔️)
 ================================================================================
 Cada tarjeta de juego tiene su propio botón "Ajustes" (o "Setup"):
 
@@ -179,7 +251,7 @@ Cada tarjeta de juego tiene su propio botón "Ajustes" (o "Setup"):
 
 
 ================================================================================
-9. INTELIGENCIA ARTIFICIAL OFFLINE Y TUS PROPIOS DOCUMENTOS PDF (RAG)
+11. INTELIGENCIA ARTIFICIAL OFFLINE Y TUS PROPIOS DOCUMENTOS PDF (RAG)
 ================================================================================
 Game Show Center incluye un Asistente de Inteligencia Artificial que funciona en tu
 computadora sin necesidad de internet ni suscripciones externas:
@@ -209,7 +281,7 @@ B. Generar Contenido con la IA:
 
 
 ================================================================================
-10. LA ARENA EN VIVO (EL SHOW)
+12. LA ARENA EN VIVO (EL SHOW)
 ================================================================================
 La Arena es la pantalla principal donde transcurre la competencia:
 
@@ -229,7 +301,7 @@ La Arena es la pantalla principal donde transcurre la competencia:
 
 
 ================================================================================
-11. PODIO DE VICTORIA Y CIERRE
+13. PODIO DE VICTORIA Y CIERRE
 ================================================================================
 Al finalizar la competencia:
 - El sistema calcula los totales y presenta el Podio de Premiación con música festiva.

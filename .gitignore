@@ -105,3 +105,27 @@ empty_temp/
 *.bak
 ~$*
 *.tmp
+# Security & Licensing System (Monetization & Private Generator) - STRICTLY CONFIDENTIAL
+*.lic
+license.lic
+**/license.lic
+License_Generator/
+License_Generator/**
+**/License_Generator/
+**/License_Generator/**
+[Ll]icense_[Gg]enerator/
+[Ll]icense_[Gg]enerator/**
+**/[Ll]icense_[Gg]enerator/
+**/[Ll]icense_[Gg]enerator/**
+generate-license.ps1
+generate-license.bat
+**/generate-license.ps1
+**/generate-license.bat
+Generate-License.ps1
+Generate-License.bat
+Inspect-License.bat
+Inspect-License.ps1
+**/Generate-License.ps1
+**/Generate-License.bat
+**/Inspect-License.bat
+**/Inspect-License.ps1

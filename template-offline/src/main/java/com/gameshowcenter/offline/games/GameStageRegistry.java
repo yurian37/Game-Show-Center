@@ -45,12 +45,15 @@ public class GameStageRegistry {
 
         register("Rapid Rhythm", (profiles, setupData, listener) -> new RapidRhythmFxStage(profiles, setupData));
         register("Rapid_Rhythm", (profiles, setupData, listener) -> new RapidRhythmFxStage(profiles, setupData));
+        register("Rapid Rhytim", (profiles, setupData, listener) -> new RapidRhythmFxStage(profiles, setupData));
+        register("Rapid_Rhytim", (profiles, setupData, listener) -> new RapidRhythmFxStage(profiles, setupData));
 
         register("Topic Takedown", (profiles, setupData, listener) -> new TopicTakedownFxStage(profiles, setupData));
         register("Topic_Takedown", (profiles, setupData, listener) -> new TopicTakedownFxStage(profiles, setupData));
 
         register("Snap Solve", (profiles, setupData, listener) -> new com.gameshowcenter.offline.games.views.SnapSolveFxStage(profiles, setupData));
         register("Snap_Solve", (profiles, setupData, listener) -> new com.gameshowcenter.offline.games.views.SnapSolveFxStage(profiles, setupData));
+        register("Snap", (profiles, setupData, listener) -> new com.gameshowcenter.offline.games.views.SnapSolveFxStage(profiles, setupData));
 
         register("TimeLine", (profiles, setupData, listener) -> new TimeLineFxStage(profiles, setupData, listener));
         register("Time_Line", (profiles, setupData, listener) -> new TimeLineFxStage(profiles, setupData, listener));

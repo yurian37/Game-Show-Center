@@ -25,10 +25,13 @@ public class GameEditorRegistry {
         register("Guess_The_Character", GuessCharacterSetupEditor.class);
         register("Rapid Rhythm", RapidRhythmSetupEditor.class);
         register("Rapid_Rhythm", RapidRhythmSetupEditor.class);
+        register("Rapid Rhytim", RapidRhythmSetupEditor.class);
+        register("Rapid_Rhytim", RapidRhythmSetupEditor.class);
         register("Topic Takedown", TopicTakedownSetupEditor.class);
         register("Topic_Takedown", TopicTakedownSetupEditor.class);
         register("Snap Solve", SnapSolveSetupEditor.class);
         register("Snap_Solve", SnapSolveSetupEditor.class);
+        register("Snap", SnapSolveSetupEditor.class);
         register("TimeLine", TimeLineSetupEditor.class);
         register("Time_Line", TimeLineSetupEditor.class);
     }

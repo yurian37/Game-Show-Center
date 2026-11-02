@@ -10,7 +10,7 @@
 **Game Show Center** transforms any classroom, auditorium, corporate event, or family gathering into an authentic TV-style game show. It combines broadcast-quality aesthetics with pedagogical tools, allowing educators, hosts, and developers to run trivia, word challenges, and competitive rounds seamlessly.
 
 ### Key Highlights
-- **100% Offline Desktop Runtime (`template-offline` v1.0.0)**: Zero-latency JavaFX 22 application that runs entirely without an internet connection, featuring native Windows `.exe` packaging and per-game Battle Royale mode.
+- **100% Offline Desktop Runtime (`template-offline` v1.1 - Cáscara)**: Zero-latency JavaFX 22 application that runs entirely without an internet connection, featuring native Windows `.exe` packaging, modular MegaCore activities with bundled assets, and per-game Battle Royale mode.
 - **Private Local AI with RAG**: Offline LLM inference using quantized GGUF models. Hosts and teachers can upload custom PDF textbooks/manuals (up to 10 files) to automatically generate curriculum-aligned questions and challenges with zero API costs and full student data privacy.
 - **Modern Web Showcase & Host Portal (`frontend-react`)**: Responsive React 18 + Vite platform for online demonstrations, minigame catalog, and host management.
 - **Spring Boot Backend (`backend-java`)**: Robust REST API for online licensing, game distribution, and cloud integration.
@@ -46,7 +46,7 @@ cd template-offline
 ./mvnw javafx:run
 ```
 
-*For developer testing, use the master activation key: `YONIA-ENTERPRISE-PRO-2026`.*
+*To activate, import your annual license file (`.lic`) generated for your institution.*
 
 ### 2. Web Portal (`frontend-react`)
 Requirements: **Node.js 18+**, **npm**.
@@ -73,9 +73,11 @@ cd backend-java
 ## 📚 Documentation
 
 Detailed technical and operational guides can be found in the [`docs/`](./docs) folder:
+- **`Pasos Instalacion.txt`**: Complete installation guide, annual license activation (AES-256 GSC2), and MegaCore game package induction.
 - **`Manual de Programador.txt`**: Guide for developing and compiling custom minigames and plugins.
 - **`Manual de Usuario Offline.txt`**: Complete host guide for operating the desktop game show.
 - **`Business Plan.txt`**: Commercial strategy, licensing tiers, K-12 education, and university packages.
+- **`Comandos.txt`**: Project-wide execution, packaging, and build command cheatsheet.
 
 ---
 

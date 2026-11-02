@@ -1,6 +1,6 @@
-# 🎮 Game Show Center - Standalone Offline Engine (v1.0.0)
+# 🎮 Game Show Center - Standalone Offline Engine (v1.1.0 - Cáscara)
 
-> **Release Oficial 1.0.0** — Motor ejecutable nativo 100% offline desarrollado por **YonIA Enterprise**.  
+> **Release Oficial 1.1.0 (Cáscara Modular)** — Motor ejecutable nativo 100% offline desarrollado por **YonIA Enterprise**.  
 > Plataforma interactiva de concursos televisivos para educación, auditorios, salones de clase y eventos en vivo.
 
 ---
@@ -61,7 +61,6 @@ template-offline/
 cd template-offline
 .\mvnw.cmd javafx:run
 ```
-*Clave Maestra de Desarrollador para Pruebas Pro: `YONIA-ENTERPRISE-PRO-2026`*
 
 ### 2. Generar el JAR Standalone
 ```powershell
@@ -82,8 +81,38 @@ El script generará automáticamente:
 1. `template-offline/release/GameShowCenter/GameShowCenter.exe`
 2. `template-offline/release/GameShowCenter-Offline-v1.0.zip`
 
-### 4. Generar Instalador con Inno Setup (Opcional)
-Compila `installer-setup.iss` con Inno Setup Compiler para crear `GameShowCenter-Offline-Setup.exe`.
+### 4. Generar la CÁSCARA Base v1.1 (Limpia sin minijuegos)
+Para generar la distribución ligera de la Cáscara (~20 MB):
+```powershell
+.\build-cascara.ps1 -AppVersion "1.1.0" -ReleaseTag "v1.1"
+```
+Genera:
+- `release/GameShowCenter-Cascara/` (Carpeta portable con lanzador `.bat`)
+- `release/GameShowCenter-Cascara-v1.1.zip` (Paquete comprimido portable)
+- `release/GameShowCenter-Cascara-Setup.exe` (Instalador Inno Setup)
+
+### 5. Empaquetar Módulos de Minijuegos MegaCore (Juegos + Assets)
+Para generar los paquetes de minijuegos independientes incluyendo todos sus recursos (gráficos y audio):
+```powershell
+.\package-megacores.ps1
+```
+Genera paquetes modulares escalables que contienen tanto las carpetas de los juegos como sus assets vinculados (`assets/games/...`):
+- **MegaCore 1**: `MegaCore-1.zip` (TimeLine, Hangman, TicTacToe, Trivia Quiz, Zero Margin + assets)
+- **MegaCore 2**: `MegaCore-2.zip` (GeoLocation, Guess Character, Rapid Rhythm, Snap Solve, Topic Takedown + assets)
+- Compatible con futuros paquetes modulares: MegaCore 3, 4, 5...
+
+### 6. Sistema de Licencia Anual (.lic)
+Genera una licencia anual encriptada (AES-256 GSC2) con ventana de gracia de 3 días y 365 días de vigencia:
+```powershell
+# Modo rápido:
+.\generate-license.bat
+
+# Modo personalizado en PowerShell:
+.\generate-license.ps1 -OutFile "license.lic" -GraceDays 3 -ValidityDays 365
+
+# Inspeccionar archivo de licencia:
+.\generate-license.ps1 -Inspect "license.lic"
+```
 
 ---
 

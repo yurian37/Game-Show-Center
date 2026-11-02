@@ -129,11 +129,38 @@ public class HomeFxView extends ScrollPane {
             }
         });
 
-        HBox actionsRow = new HBox(16, startBtn, customizeThemeBtn);
+        Button managePacksBtn = new Button("📦 Paquetes MegaCore");
+        managePacksBtn.setStyle(String.format(
+                "-fx-background-color: %s; -fx-text-fill: %s; -fx-font-size: 13px; -fx-font-weight: bold; -fx-border-color: rgba(255, 255, 255, 0.15); -fx-border-radius: 14px; -fx-background-radius: 14px; -fx-padding: 13px 24px; -fx-cursor: hand;",
+                ThemeManager.getCardHex(), ThemeManager.toHex(ThemeManager.getCurrentPalette().textPrimary)));
+        managePacksBtn.setOnAction(e -> {
+            if (mainApp != null) {
+                MegaCoreManagerDialog.show(mainApp.getPrimaryStage(), mainApp.getGamesDir(), mainApp::reloadAvailableGames);
+            }
+        });
+
+        HBox actionsRow = new HBox(16, startBtn, customizeThemeBtn, managePacksBtn);
         actionsRow.setAlignment(Pos.CENTER);
 
-        // ASSEMBLE CONTENT
-        contentBox.getChildren().addAll(heroSection, featureGrid, actionsRow);
+        // If shell has no games installed yet, show a prominent banner
+        if (mainApp != null && (mainApp.getAvailableGames() == null || mainApp.getAvailableGames().isEmpty())) {
+            VBox noGamesBanner = new VBox(8);
+            noGamesBanner.setAlignment(Pos.CENTER);
+            noGamesBanner.setPadding(new Insets(16, 24, 16, 24));
+            noGamesBanner.setStyle("-fx-background-color: rgba(245, 158, 11, 0.14); -fx-border-color: #f59e0b; -fx-border-radius: 14px; -fx-background-radius: 14px;");
+            Label noGamesTitle = new Label("📦 Cáscara Instalada — Aún no hay minijuegos instalados");
+            noGamesTitle.setStyle("-fx-font-size: 15px; -fx-font-weight: 900; -fx-text-fill: #fbbf24;");
+            Label noGamesSub = new Label("Para comenzar a jugar, carga cualquier paquete comprimido MegaCore (.zip) con tus actividades.");
+            noGamesSub.setStyle("-fx-font-size: 12px; -fx-text-fill: #f1f5f9;");
+            Button loadBtn = new Button("📥 Cargar Paquete MegaCore (.zip)");
+            loadBtn.setStyle("-fx-background-color: #f59e0b; -fx-text-fill: #0f172a; -fx-font-weight: 900; -fx-font-size: 12px; -fx-padding: 8px 18px; -fx-background-radius: 8px; -fx-cursor: hand;");
+            loadBtn.setOnAction(ev -> MegaCoreManagerDialog.show(mainApp.getPrimaryStage(), mainApp.getGamesDir(), mainApp::reloadAvailableGames));
+            noGamesBanner.getChildren().addAll(noGamesTitle, noGamesSub, loadBtn);
+
+            contentBox.getChildren().addAll(heroSection, noGamesBanner, featureGrid, actionsRow);
+        } else {
+            contentBox.getChildren().addAll(heroSection, featureGrid, actionsRow);
+        }
 
         // Apply dynamic initial styles
         updateViewStyles();

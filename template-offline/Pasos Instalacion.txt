@@ -1,0 +1,413 @@
+================================================================================
+             GAME SHOW CENTER OFFLINE - GUÍA DE INSTALACIÓN
+       MANUAL PASO A PASO: INSTALACIÓN, LICENCIA ANUAL E INDUCCIÓN DE MEGACORES
+                                YONIA ENTERPRISE
+================================================================================
+
+FECHA: Octubre 2026
+VERSIÓN: 1.0.0 Standalone Desktop (Release Oficial)
+SISTEMA OPERATIVO DESTINO: Windows 10 / Windows 11 (64-bit)
+
+--------------------------------------------------------------------------------
+ÍNDICE DE CONTENIDO
+--------------------------------------------------------------------------------
+1. REQUISITOS DEL SISTEMA
+2. CONCEPTO DE ARQUITECTURA: CÁSCARA BASE Y MEGACORES
+3. MÉTODOS DE INSTALACIÓN DE LA CÁSCARA
+   - Opción A: Instalador Automatizado (.exe)
+   - Opción B: Paquete Portable (.zip / Carpeta)
+   - Opción C: Ejecución para Desarrolladores (Maven)
+4. ACTIVACIÓN Y USO DE LA LICENCIA ANUAL ENCRIPTADA (.lic)
+   - 4.1. Cómo funciona el licenciamiento anual protegido (AES-256 GSC2)
+   - 4.2. Generación e inspección de licencias anuales
+   - 4.3. Activación paso a paso en la aplicación
+   - 4.4. Reglas de HardwareID (HWID), ventana de gracia y caducidad
+   - 4.5. Clave Maestra de Desarrollador (Master Key)
+5. GUÍA DE INDUCCIÓN DE PAQUETES DE MINIJUEGOS MEGACORE
+   - 5.1. Contenido de los paquetes MegaCore 1 y MegaCore 2
+   - 5.2. Generación de paquetes comprimidos (package-megacores.ps1)
+   - 5.3. Método 1: Inducción automática por carpeta (megacores/)
+   - 5.4. Método 2: Inducción interactiva desde la interfaz (Botón MegaCores)
+   - 5.5. Método 3: Copia directa en el directorio de juegos (games/)
+6. VERIFICACIÓN Y PRIMERA PARTIDA
+7. RESOLUCIÓN DE PROBLEMAS Y PREGUNTAS FRECUENTES (FAQ)
+
+
+================================================================================
+1. REQUISITOS DEL SISTEMA
+================================================================================
+Requisitos Mínimos:
+- Sistema Operativo: Windows 10 o Windows 11 de 64 bits.
+- Procesador: Intel Core i3 / AMD Ryzen 3 o superior (2.0 GHz+).
+- Memoria RAM: 4 GB mínimo (8 GB recomendados para multijugador fluido).
+- Espacio en Disco: 
+  * Cáscara base: ~150 MB libres.
+  * Con MegaCore 1 y MegaCore 2 instalados: ~500 MB libres.
+- Entorno Java: Java Runtime Environment (JRE) o Java Development Kit (JDK) 17 o 21+
+  (si se utiliza la versión portable JAR o ejecución por scripts).
+- Pantalla / Monitor: Resolución mínima de 1280x720 (ideal 1920x1080 Full HD o proyectores).
+
+Requisitos Opcionales para Inteligencia Artificial Local (RAG):
+- Python 3.10 o superior instalado en el PATH.
+- Librerías `pypdf`, `requests` y dependencias de inferencia si se usará el asistente
+  generador de cuestionarios con PDFs. Si Python no está presente, el software opera
+  con bancos de preguntas precargados de forma 100% transparente y estable.
+
+
+================================================================================
+2. CONCEPTO DE ARQUITECTURA: CÁSCARA BASE Y MEGACORES
+================================================================================
+Game Show Center Offline utiliza una arquitectura modular y desacoplada pensada para
+distribución flexible en escuelas, empresas y eventos:
+
+1. LA CÁSCARA BASE (SHELL):
+   Es el núcleo de la aplicación. Contiene el motor gráfico JavaFX, la barra superior,
+   los temas cromáticos, el podio de premiación, el marcador en vivo, el sistema de
+   audio, el módulo de IA/RAG y el validador de licencias.
+   La Cáscara NO incluye minijuegos pesados por defecto, lo que hace que su descarga
+   e instalación sea extremadamente ligera y rápida (~20 MB).
+
+2. LOS PAQUETES MEGACORE:
+   Son paquetes modulares comprimidos (.zip o .megacore) que contienen colecciones de
+   minijuegos listos para jugar, con sus imágenes, reglas, sonidos y bancos de preguntas.
+   * MegaCore 1: Paquete de juegos clásicos de ingenio, palabras y cultura general.
+   * MegaCore 2: Paquete de juegos multimedia con imágenes, geografía, música y personajes.
+
+
+================================================================================
+3. MÉTODOS DE INSTALACIÓN DE LA CÁSCARA
+================================================================================
+Puedes elegir cualquiera de los siguientes tres métodos según tus necesidades:
+
+--------------------------------------------------------------------------------
+OPCIÓN A: INSTALADOR AUTOMATIZADO (.EXE) - RECOMENDADO PARA USUARIOS FINALES
+--------------------------------------------------------------------------------
+1. Obtén el archivo del instalador:
+   `GameShowCenter-Cascara-Setup.exe` (ubicado en `release\`).
+2. Haz doble clic sobre el archivo ejecutable del instalador.
+3. El asistente guiado te permitirá:
+   - Seleccionar la carpeta de instalación (por defecto: `C:\Program Files\Game Show Center Offline`
+     o la carpeta de tu usuario).
+   - Crear un acceso directo en el Escritorio.
+   - Crear las carpetas de trabajo necesarias (`games/` y `megacores/`).
+4. Haz clic en "Instalar" y luego en "Finalizar".
+5. Se creará un acceso directo en tu Escritorio y en el Menú Inicio para abrir el juego.
+
+--------------------------------------------------------------------------------
+OPCIÓN B: PAQUETE PORTABLE (.ZIP O CARPETA) - IDEAL PARA MEMORIAS USB
+--------------------------------------------------------------------------------
+1. Localiza el archivo comprimido `GameShowCenter-Cascara-v1.0.zip` (o la carpeta
+   `release\GameShowCenter-Cascara\`).
+2. Descomprime el contenido en la ubicación deseada (por ejemplo: `C:\GameShowCenter\` o en una USB).
+3. La estructura de la carpeta contendrá:
+   ```text
+   GameShowCenter-Cascara/
+   ├── assets/                      # Iconos, audios, logotipos oficiales
+   ├── games/                       # Directorio destino para minijuegos (inicialmente vacío)
+   ├── megacores/                   # Directorio para depositar paquetes MegaCore
+   ├── scripts/                     # Scripts auxiliares y worker de IA
+   ├── template-offline-1.0.0-standalone.jar  # Motor JavaFX con dependencias integradas
+   ├── custom_themes.json           # Paletas de color personalizadas
+   ├── generate-license.bat         # Lanzador rápido para generar licencias de prueba
+   ├── generate-license.ps1         # Script en PowerShell del generador criptográfico
+   ├── Lanzar-GameShowCenter.bat    # Lanzador de un solo clic
+   └── README-CASCARA.txt           # Resumen de instrucciones
+   ```
+4. Para abrir la aplicación, simplemente haz doble clic sobre:
+   `Lanzar-GameShowCenter.bat`
+
+--------------------------------------------------------------------------------
+OPCIÓN C: EJECUCIÓN PARA DESARROLLADORES (MAVEN WRAPPER)
+--------------------------------------------------------------------------------
+Si estás desarrollando o ejecutando desde el repositorio de código fuente:
+1. Abre una terminal (PowerShell o CMD) en la carpeta del proyecto `template-offline\`:
+   ```powershell
+   cd "template-offline"
+   ```
+2. Ejecuta el wrapper de Maven con el plugin de JavaFX:
+   ```powershell
+   .\mvnw.cmd javafx:run
+   ```
+3. El motor compilará las clases en caliente y lanzará la ventana principal del juego.
+
+
+================================================================================
+4. ACTIVACIÓN Y USO DE LA LICENCIA ANUAL ENCRIPTADA (.lic)
+================================================================================
+
+--------------------------------------------------------------------------------
+4.1. CÓMO FUNCIONA EL LICENCIAMIENTO ANUAL PROTEGIDO (AES-256 GSC2)
+--------------------------------------------------------------------------------
+El sistema de seguridad de Game Show Center garantiza un ciclo de monetización
+ordenado mediante licencias anuales encriptadas en formato binario `GSC2`:
+
+- Formato de Archivo: `license.lic` con cabecera mágica 'GSC2', vector de inicialización
+  aleatorio (IV de 16 bytes) y cifrado simétrico AES-256-CBC con padding PKCS7.
+- Ventana de Activación Inicial (Gracia de 3 días):
+  Cuando se emite una licencia nueva, su estado es `UNBOUND` (no vinculada a ninguna máquina).
+  Tiene un período de tolerancia de 3 días para ser activada en el equipo del cliente.
+  Si pasan más de 3 días desde su creación sin activarse, el software la rechazará por
+  seguridad, exigiendo la emisión de una licencia vigente.
+- Vinculación al Hardware (HardwareID / HWID):
+  Al activarse en el equipo, la aplicación extrae la huella de hardware del equipo
+  (combinación de procesador, placa base, disco y red mediante SHA-256).
+  La licencia cambia a estado `BOUND` y se estampa con el HardwareID del equipo.
+- Auto-Bloqueo de Reutilización:
+  En el instante exacto en que la licencia es activada, el motor SOBREESCRIBE
+  el archivo `.lic` original en el disco. A partir de ese momento, ese archivo ya no
+  puede ser copiado a otra computadora. Si otra persona intenta activarlo en otra máquina,
+  el sistema detectará un conflicto de HardwareID y bloqueará el acceso.
+- Vigencia Anual (365 días):
+  El reloj de 365 días comienza a correr a partir del momento de la activación.
+  Al cabo de un año, el software solicitará la renovación de la anualidad.
+- Persistencia Doble:
+  La licencia activa se guarda en la carpeta del juego (`license.lic`) y en el perfil
+  del usuario de Windows (`%USERPROFILE%\.gsc_offline\license.lic`) para que siga activa
+  incluso si se traslada o reinstala el programa en la misma máquina.
+
+--------------------------------------------------------------------------------
+4.2. GENERACIÓN E INSPECCIÓN DE LICENCIAS ANUALES
+--------------------------------------------------------------------------------
+Para generar un archivo de licencia anual para un cliente o para pruebas:
+
+MÉTODO RÁPIDO (BATCH):
+- Haz doble clic sobre `generate-license.bat` ubicado en la carpeta del juego.
+- Se generará automáticamente el archivo `license.lic` configurado con 3 días para
+  activarse y 365 días de vigencia anual tras la activación.
+
+MÉTODO AVANZADO (POWERSHELL):
+Abre PowerShell en la carpeta de la aplicación y ejecuta:
+```powershell
+.\generate-license.ps1 -OutFile "license.lic" -GraceDays 3 -ValidityDays 365
+```
+
+Parámetros disponibles:
+- `-OutFile`: Nombre y ruta del archivo de salida (por defecto `license.lic`).
+- `-GraceDays`: Días que tiene el usuario para activarla antes de caducar (por defecto `3`).
+- `-ValidityDays`: Días de duración de la suscripción anual (por defecto `365`).
+
+CÓMO INSPECCIONAR UNA LICENCIA SIN ABRIR EL JUEGO:
+Puedes examinar el estado, fechas y equipo vinculado de cualquier archivo de licencia:
+```powershell
+.\generate-license.ps1 -Inspect "license.lic"
+```
+Salida de ejemplo:
+```text
+  -> Archivo:                license.lic
+  -> ID Licencia:            LIC-A4B7F912
+  -> Fecha Creacion:         13/10/2026 10:15:00
+  -> Limite Activacion:      16/10/2026 10:15:00 (3 dias)
+  -> Estado:                 UNBOUND
+  -> HardwareID Vinculado:   NONE
+  -> RESULTADO: VALIDA PARA ACTIVAR en cualquier equipo dentro del plazo
+```
+
+--------------------------------------------------------------------------------
+4.3. ACTIVACIÓN PASO A PASO EN LA APLICACIÓN
+--------------------------------------------------------------------------------
+1. Inicia Game Show Center ejecutando `Lanzar-GameShowCenter.bat` o el acceso directo.
+2. Si el programa no detecta una licencia activa, mostrará la pantalla:
+   "ACTIVACIÓN DE LICENCIA REQUERIDA" (Candado de Seguridad).
+3. En pantalla verás tu "HardwareID del Equipo" (ej: `HWID-A8F2-9C01-44B8`). Puedes hacer
+   clic en "📋 Copiar HWID" si tu proveedor de software te solicita dicho identificador.
+4. Para activar el producto tienes dos métodos:
+   - Método Drag & Drop: Arrastra tu archivo `license.lic` directamente dentro del cuadro
+     azul punteado con el texto "Cargar Archivo de Licencia Encriptado".
+   - Método Explorador: Haz clic en el botón azul "📂 Seleccionar Archivo de Licencia (.lic)",
+     busca el archivo `license.lic` en tu equipo y pulsa "Abrir".
+5. El sistema validará la firma digital, enlazará la licencia a tu hardware y mostrará
+   un mensaje de confirmación verde:
+   "¡Licencia anual activada con éxito! Vinculada al equipo [HWID-...]. Vigente por 365 días".
+6. Inmediatamente el sistema te dará acceso a la pantalla principal del juego.
+
+--------------------------------------------------------------------------------
+4.4. REGLAS DE HARDWAREID, VENTANA DE GRACIA Y CADUCIDAD
+--------------------------------------------------------------------------------
+Si se produce algún error durante la activación, la pantalla mostrará una tarjeta
+explicativa de color con la causa exacta:
+
+- ⚠️ CONFLICTO DE HARDWARE (Tarjeta Naranja/Roja):
+  Ocurre si intentas activar un archivo de licencia que ya fue vinculado en otra computadora.
+  El mensaje indicará el HardwareID original al que pertenece y el HardwareID de tu máquina.
+  Solución: Solicitar un nuevo archivo de licencia limpio (`UNBOUND`).
+
+- ⏳ VENTANA DE ACTIVACIÓN VENCIDA (Tarjeta Ámbar):
+  Ocurre si el archivo de licencia fue generado hace más de 3 días y nunca se activó.
+  Solución: Generar o solicitar una nueva licencia actualizada.
+
+- 📅 ANUALIDAD VENCIDA (Tarjeta Roja):
+  Ocurre si han transcurrido los 365 días de servicio desde la fecha en que se activó.
+  Solución: Renovar la suscripción anual.
+
+--------------------------------------------------------------------------------
+4.5. ACTIVACIÓN MEDIANTE CLAVE DIRECTA O SOPORTE ADMINISTRATIVO
+--------------------------------------------------------------------------------
+Si dispones de una clave de producto anual asignada por YonIA Enterprise para tu HardwareID:
+
+1. En la pantalla de activación de licencia, despliega la sección inferior:
+   "Opción avanzada: Clave manual de producto".
+2. En la casilla de texto, introduce tu clave personalizada de activación.
+3. Haz clic en "Activar".
+4. El sistema validará la clave contra el HardwareID del equipo y activará el acceso anual.
+
+
+================================================================================
+5. GUÍA DE INDUCCIÓN DE PAQUETES DE MINIJUEGOS MEGACORE
+================================================================================
+
+--------------------------------------------------------------------------------
+5.1. CONTENIDO DE LOS PAQUETES MEGACORE 1 Y MEGACORE 2
+--------------------------------------------------------------------------------
+Los 10 minijuegos oficiales de Game Show Center se encuentran agrupados en dos paquetes:
+
+📦 MEGACORE 1 (Clásicos y Cultura General):
+- 1. TimeLine: Juego de ordenamiento cronológico de eventos e hitos históricos.
+- 2. Hangman: El clásico juego del ahorcado con pistas temáticas y teclado interactivo.
+- 3. TicTacToe: Juego de tres en raya táctico competitivo.
+- 4. Trivia Quiz: Concurso clásico de preguntas de opción múltiple con explicación didáctica.
+- 5. Zero Margin: Desafío de precisión temporal y cronómetro a ciegas.
+
+📦 MEGACORE 2 (Multimedia, Imágenes y Agilidad):
+- 1. GeoLocation: Adivina países, capitales y monumentos mediante fotos del mundo.
+- 2. Guess Character: Descubre personajes célebres, figuras históricas o celebridades con pistas.
+- 3. Rapid Rhythm: Desafío musical y prueba de reconocimiento auditivo de canciones.
+- 4. Snap Solve: Revelado progresivo de imágenes ocultas con filtros visuales dinámicos.
+- 5. Topic Takedown: Panel gigante estilo Jeopardy con categorías y puntajes estratégicos.
+
+--------------------------------------------------------------------------------
+5.2. GENERACIÓN DE PAQUETES COMPRIMIDOS (PACKAGE-MEGACORES.PS1)
+--------------------------------------------------------------------------------
+Si eres el administrador o distribuidor y deseas generar los archivos comprimidos
+`MegaCore-1.zip` y `MegaCore-2.zip` desde la plantilla base:
+
+1. Abre PowerShell en la carpeta `template-offline\`.
+2. Ejecuta el script empaquetador oficial:
+   ```powershell
+   .\package-megacores.ps1
+   ```
+3. El script recopilará los minijuegos, creará el manifiesto `megacore.json` para cada
+   paquete y generará los archivos comprimidos en:
+   - `template-offline\release\megacores\MegaCore-1.zip`
+   - `template-offline\release\megacores\MegaCore-2.zip`
+   - `template-offline\megacores\MegaCore-1.zip`
+   - `template-offline\megacores\MegaCore-2.zip`
+
+--------------------------------------------------------------------------------
+5.3. MÉTODO 1: INDUCCIÓN AUTOMÁTICA POR CARPETA (MEGACORES/) - RECOMENDADO
+--------------------------------------------------------------------------------
+Este método es el más cómodo para instaladores y administradores:
+
+1. Ve a la carpeta raíz de tu instalación de Game Show Center.
+2. Abre la subcarpeta llamada:
+   `megacores\`
+3. Copia dentro de esta carpeta los archivos comprimidos:
+   - `MegaCore-1.zip`
+   - `MegaCore-2.zip`
+   (o cualquier otro archivo con extensión `.zip` o `.megacore`).
+4. Inicia el juego haciendo doble clic en `Lanzar-GameShowCenter.bat`.
+5. Durante el arranque, el servicio `MegaCoreManagerService` escaneará la carpeta `megacores/`,
+   descomprimirá e instalará automáticamente todos los minijuegos en la carpeta `games/`,
+   sin que el usuario tenga que hacer nada.
+6. En la pantalla principal verás el mensaje:
+   "Discovered 10 offline games in /games/ folder"
+   y todos los juegos estarán disponibles inmediatamente en el selector.
+
+--------------------------------------------------------------------------------
+5.4. MÉTODO 2: INDUCCIÓN INTERACTIVA DESDE LA INTERFAZ (BOTÓN MEGACORES)
+--------------------------------------------------------------------------------
+Este método permite a cualquier docente o anfitrión cargar paquetes en caliente
+mientras el programa está abierto, sin tocar carpetas de Windows:
+
+1. Abre Game Show Center y ve a la pantalla principal.
+2. En la barra superior, busca y haz clic en el botón:
+   `📦 MegaCores`
+3. Se abrirá la ventana:
+   "GESTOR DE PAQUETES MEGACORE — GAME SHOW CENTER".
+4. En esta ventana verás el estado actual de cada paquete en tiempo real:
+   - MegaCore 1: "INSTALADO (5/5)" o "PARCIAL O NO INSTALADO (0/5)".
+   - MegaCore 2: "INSTALADO (5/5)" o "PARCIAL O NO INSTALADO (0/5)".
+   Junto con la lista de los minijuegos que componen cada uno.
+5. Haz clic en el botón azul destacado:
+   `📥 Cargar Paquete MegaCore (.zip)`
+6. Se abrirá el selector de archivos de Windows. Selecciona tu paquete:
+   `MegaCore-1.zip` o `MegaCore-2.zip` (o cualquier archivo `.megacore`).
+7. Pulsa "Abrir".
+8. El gestor descomprimirá el paquete, validará la seguridad de rutas (protección anti-traversal)
+   e instalará los juegos de inmediato.
+9. Aparecerá un aviso verde de confirmación:
+   "✅ ¡MegaCore 1 cargado con éxito! Se han instalado 5 minijuegos: Hangman, TicTacToe, TimeLine, Trivia Quiz, Zero Margin."
+10. La etiqueta cambiará a color verde: "INSTALADO (5/5)".
+11. Al cerrar la ventana, el catálogo del menú de Ajustes se actualizará instantáneamente
+    mostrando las nuevas tarjetas de minijuegos listas para jugar.
+
+--------------------------------------------------------------------------------
+5.5. MÉTODO 3: COPIA DIRECTA EN EL DIRECTORIO DE JUEGOS (GAMES/)
+--------------------------------------------------------------------------------
+Para usuarios avanzados o integración manual de juegos individuales:
+
+1. Ve a la carpeta `games\` de la instalación.
+2. Descomprime manualmente cada juego como una subcarpeta directa. Por ejemplo:
+   ```text
+   games/
+   ├── Hangman/
+   ├── Trivia Quiz/
+   ├── TimeLine/
+   └── ...
+   ```
+3. Cada subcarpeta debe contener su archivo obligatorio `description.json` y `setup.json`.
+4. Al abrir el juego, el escáner del sistema reconocerá las carpetas automáticamente.
+
+
+================================================================================
+6. VERIFICACIÓN Y PRIMERA PARTIDA
+================================================================================
+Una vez completada la instalación, la licencia y la inducción de los MegaCores:
+
+1. Inicia Game Show Center (`Lanzar-GameShowCenter.bat` o acceso directo).
+2. Verifica en la pantalla de bienvenida que el título y logotipo se muestren correctamente.
+3. Haz clic en "Comenzar" / "Start Game".
+4. En la pantalla de Ajustes (Preparación):
+   - Comprueba que en la sección de juegos aparezcan los 10 minijuegos con sus tarjetas.
+   - Elige el modo de juego (1 vs 1, Por Equipos o Todos contra Todos).
+   - Escribe los nombres de los competidores o equipos.
+   - Selecciona 3 o 4 juegos haciendo clic sobre sus tarjetas (verás los números de orden #1, #2, #3).
+   - Opcional: Entra al botón "Ajustes" de cualquier juego para personalizar preguntas o activar [⚔️ BR] (Battle Royale).
+5. Haz clic en "Comenzar Partida".
+6. ¡La Arena en vivo se abrirá a pantalla completa lista para el concurso!
+
+
+================================================================================
+7. RESOLUCIÓN DE PROBLEMAS Y PREGUNTAS FRECUENTES (FAQ)
+================================================================================
+
+P1: Al hacer doble clic en `Lanzar-GameShowCenter.bat`, la ventana se cierra de inmediato y no abre el juego.
+R1: Esto indica que Java no está instalado o no se encuentra en el PATH del sistema.
+    Descarga e instala Java 17 o 21 (por ejemplo, Eclipse Temurin o Java Oracle de 64 bits).
+    Para comprobarlo, abre una consola de Windows (CMD) y escribe:
+    `java -version`
+    Debe responder con una versión 17.0.x o 21.0.x.
+
+P2: El programa me dice "⚠️ CONFLICTO DE HARDWARE: Este archivo de licencia ya fue utilizado previamente".
+R2: El archivo `license.lic` que estás intentando cargar ya fue activado en otra computadora.
+    Cada licencia anual se bloquea al primer equipo donde se activa. Solicita un archivo de
+    licencia nuevo a YonIA Enterprise para este equipo.
+
+P3: El programa indica "El archivo de licencia ha vencido su período de activación permitido (máximo 3 días)".
+R3: Pasaron más de 72 horas desde que se generó la licencia hasta que intentaste activarla.
+    Genera un archivo nuevo ejecutando `generate-license.bat` o solicita una nueva emisión.
+
+P4: Abrí la aplicación pero la lista de minijuegos está vacía ("No hay juegos disponibles").
+R4: Tienes la Cáscara limpia instalada pero aún no has inducido los MegaCores.
+    Sigue las instrucciones de la Sección 5: copia `MegaCore-1.zip` y `MegaCore-2.zip` en la
+    carpeta `megacores\` o haz clic en el botón `📦 MegaCores` en la barra superior del juego
+    para cargarlos.
+
+P5: ¿Puedo usar un proyector o pantalla de televisión para el evento?
+R5: Sí, perfectamente. En la barra superior haz clic en el botón con icono de pantalla (🖥️)
+    o presiona la tecla `F11` de tu teclado para activar la Pantalla Completa.
+    Toda la tipografía e interfaz se adaptarán fluidamente sin distorsión.
+
+================================================================================
+                     YONIA ENTERPRISE - COPYRIGHT © 2026
+                 TODOS LOS DERECHOS RESERVADOS A NIVEL GLOBAL
+================================================================================

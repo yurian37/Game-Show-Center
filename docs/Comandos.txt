@@ -1,3 +1,89 @@
+================================================================================
+             GAME SHOW CENTER - HOJA DE COMANDOS OFICIAL (CHEATSHEET)
+                  COMANDOS DE DESARROLLO, BUILD, LICENCIA Y DISTRIBUCIÓN
+                                YONIA ENTERPRISE 2026
+================================================================================
+
+--------------------------------------------------------------------------------
+1. DESKTOP OFFLINE ENGINE (template-offline/)
+--------------------------------------------------------------------------------
+# Entrar al directorio
+cd template-offline
+
+# Ejecución en caliente para desarrollo (Hot Reload con JavaFX)
 .\mvnw.cmd javafx:run
+
+# Compilación de Uber-JAR Standalone (Empaqueta dependencias en target/)
+.\mvnw.cmd package -DskipTests
+
+# Empaquetar módulos de minijuegos MegaCore 1 y MegaCore 2
+.\package-megacores.ps1
+
+# Generar y ensamblar la CÁSCARA limpia (sin minijuegos) + ZIP + Instalador
+.\build-cascara.ps1 -AppVersion "1.0.0" -ReleaseTag "v1.0"
+
+# Generar el ejecutable nativo completo (.exe con jpackage)
+.\build-exe.ps1 -AppVersion "1.0.0" -ReleaseTag "v1.0"
+# (o doble clic sobre build-exe.bat)
+
+# Generación de Licencia Anual Encriptada (.lic):
+# - Modo rápido (Batch):
+.\generate-license.bat
+
+# - Modo personalizado (PowerShell con ventana de 3 días y 365 de vigencia):
+.\generate-license.ps1 -OutFile "license.lic" -GraceDays 3 -ValidityDays 365
+
+# Inspeccionar metadatos, estado y HWID de un archivo de licencia:
+.\generate-license.ps1 -Inspect "license.lic"
+
+# Lanzar la aplicación compilada (Cáscara o completa):
+.\Lanzar-GameShowCenter.bat
+# o directamente:
+javaw -jar target\template-offline-1.0.0-standalone.jar
+
+# Probar worker de IA Local (RAG y generación de trivias offline):
+python scripts\ai_worker.py --game "Trivia Quiz" --prompt "Historia Universal" --count 5 --lang es
+
+--------------------------------------------------------------------------------
+2. PORTAL WEB & HOST ONLINE (frontend-react/)
+--------------------------------------------------------------------------------
+# Entrar al directorio
+cd frontend-react
+
+# Instalar dependencias
+npm install
+
+# Servidor de desarrollo local (Vite + React)
 npm run dev
+
+# Compilar para producción (HTML, CSS y JS optimizados en dist/)
+npm run build
+
+# Previsualizar bundle de producción localmente
+npm run preview
+
+--------------------------------------------------------------------------------
+3. BACKEND CLOUD & REST API (backend-java/)
+--------------------------------------------------------------------------------
+# Entrar al directorio
+cd backend-java
+
+# Ejecutar servidor de backend Spring Boot
 .\mvnw.cmd spring-boot:run
+
+# Compilar y empaquetar JAR de producción
+.\mvnw.cmd clean package -DskipTests
+
+--------------------------------------------------------------------------------
+4. LICENCIAMIENTO Y CONSTANTES DE OPERACIÓN
+--------------------------------------------------------------------------------
+- Formato de Licencia:
+  Archivo encriptado GSC2 (.lic) con vinculación a HardwareID.
+- Emisión de Licencia Comercial:
+  Carpeta privada License_Generator/ mediante Generate-License.bat
+- Ubicación de persistencia de licencia en el sistema operativo:
+  %USERPROFILE%\.gsc_offline\license.lic
+- Carpetas de inducción de juegos en la Cáscara:
+  megacores\  -> depositar MegaCore-1.zip y MegaCore-2.zip (auto-instalación al inicio)
+  games\      -> carpetas directas de minijuegos con description.json
+================================================================================

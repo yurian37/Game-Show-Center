@@ -1,10 +1,13 @@
 param(
-    [string]$AppVersion = "1.0.0",
-    [string]$ReleaseTag = "v1.0"
+    [string]$AppVersion = "1.1.0",
+    [string]$ReleaseTag = "v1.1"
 )
 
 # Script de compilacion y generacion de ejecutable .EXE para Game Show Center Offline
 # Desarrollado por YonIA Enterprise
+
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
+Set-Location $ScriptDir
 
 Write-Host "==================================================" -ForegroundColor Cyan
 Write-Host "   Game Show Center Offline - Generador de .EXE   " -ForegroundColor Cyan
@@ -32,6 +35,12 @@ if (-not $jarFile) {
 $mainJarName = $jarFile.Name
 Write-Host "  -> Utilizando JAR: $mainJarName" -ForegroundColor DarkGray
 
+if (-not (Test-Path "assets\icons\app_icon.ico")) {
+    if (Test-Path "make-icon.ps1") {
+        & powershell -ExecutionPolicy Bypass -File .\make-icon.ps1 | Out-Null
+    }
+}
+
 $stagingDir = "dist-staging"
 if (Test-Path $stagingDir) { Remove-Item -Recurse -Force $stagingDir }
 New-Item -ItemType Directory -Force -Path $stagingDir | Out-Null
@@ -52,26 +61,46 @@ if (Test-Path "release\GameShowCenter") {
 
 # 3. Empaquetar con jpackage directamente a release/
 Write-Host "[3/4] Creando ejecutable nativo (.EXE) y runtime integrado con jpackage..." -ForegroundColor Yellow
-$jpackagePath = "C:\Program Files\Java\jdk-22\bin\jpackage.exe"
-if (-not (Test-Path $jpackagePath)) {
-    $jpackageCmd = Get-Command jpackage -ErrorAction SilentlyContinue
-    if ($jpackageCmd) {
-        $jpackagePath = $jpackageCmd.Source
-    } else {
-        Write-Host "No se encontro jpackage.exe. Por favor verifica que el JDK este instalado." -ForegroundColor Red
-        exit 1
+$jpackageCmd = Get-Command jpackage -ErrorAction SilentlyContinue
+$jpackagePath = $null
+if ($jpackageCmd) {
+    $jpackagePath = $jpackageCmd.Source
+} else {
+    $candidates = @(
+        "C:\Program Files\Eclipse Adoptium\jdk-21.0.12.101-hotspot\bin\jpackage.exe",
+        "C:\Program Files\Java\jdk-22\bin\jpackage.exe",
+        "C:\Program Files\Java\jdk-21\bin\jpackage.exe"
+    )
+    foreach ($c in $candidates) {
+        if (Test-Path $c) {
+            $jpackagePath = $c
+            break
+        }
     }
 }
 
-& $jpackagePath --type app-image `
-    --name "GameShowCenter" `
-    --input $stagingDir `
-    --main-jar $mainJarName `
-    --main-class "com.gameshowcenter.offline.Launcher" `
-    --dest "release" `
-    --vendor "YonIA Enterprise" `
-    --app-version $AppVersion `
-    --description "Game Show Center Offline Executable"
+if (-not $jpackagePath) {
+    Write-Host "No se encontro jpackage.exe. Por favor verifica que el JDK este instalado." -ForegroundColor Red
+    exit 1
+}
+
+$jpArgs = @(
+    "--type", "app-image",
+    "--name", "GameShowCenter",
+    "--input", $stagingDir,
+    "--main-jar", $mainJarName,
+    "--main-class", "com.gameshowcenter.offline.Launcher",
+    "--dest", "release",
+    "--vendor", "YonIA Enterprise",
+    "--app-version", $AppVersion,
+    "--description", "Game Show Center Offline Executable"
+)
+
+if (Test-Path "assets\icons\app_icon.ico") {
+    $jpArgs += @("--icon", "assets\icons\app_icon.ico")
+}
+
+& $jpackagePath @jpArgs
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Error al ejecutar jpackage." -ForegroundColor Red

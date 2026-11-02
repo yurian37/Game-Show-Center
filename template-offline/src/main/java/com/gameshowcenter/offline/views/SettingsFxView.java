@@ -190,7 +190,20 @@ public class SettingsFxView extends ScrollPane {
                 ThemeManager.getButtonHex(), ThemeManager.getTextOnButtonPrimaryHex()));
         resetSetupBtn.setOnAction(e -> handleResetSetup());
 
-        setupActionsBar.getChildren().addAll(importSetupBtn, exportSetupBtn, resetSetupBtn);
+        Button loadMegaCoreBtn = new Button("📦 Paquetes MegaCore");
+        loadMegaCoreBtn.setTooltip(new Tooltip("Cargar o gestionar paquetes de minijuegos MegaCore"));
+        loadMegaCoreBtn.setStyle(String.format(
+                "-fx-background-color: %s; -fx-text-fill: #10b981; -fx-font-size: 12px; -fx-font-weight: bold; -fx-border-color: #059669; -fx-border-radius: 10px; -fx-background-radius: 10px; -fx-padding: 8px 16px; -fx-cursor: hand;",
+                ThemeManager.getButtonHex()));
+        loadMegaCoreBtn.setOnAction(e -> {
+            final File finalGDir = com.gameshowcenter.offline.service.MegaCoreManagerService.getInstance().resolveGamesDir();
+            MegaCoreManagerDialog.show((Stage) getScene().getWindow(), finalGDir, () -> {
+                List<GameDescriptor> rescanned = new com.gameshowcenter.offline.service.GameScannerService().scanGamesFolder(finalGDir);
+                updateAvailableGames(rescanned);
+            });
+        });
+
+        setupActionsBar.getChildren().addAll(importSetupBtn, exportSetupBtn, resetSetupBtn, loadMegaCoreBtn);
         titleBox.getChildren().addAll(titleLabel, subLabel, setupActionsBar);
 
         modeBox = new VBox(10);
@@ -2795,5 +2808,14 @@ public class SettingsFxView extends ScrollPane {
         }
 
         javafx.application.Platform.runLater(() -> setVvalue(currentV));
+    }
+
+    public void updateAvailableGames(List<GameDescriptor> newGames) {
+        this.availableGames.clear();
+        if (newGames != null) {
+            this.availableGames.addAll(newGames);
+        }
+        resetGameSelections();
+        renderGameCards();
     }
 }

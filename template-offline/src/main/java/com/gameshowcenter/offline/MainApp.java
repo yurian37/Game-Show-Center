@@ -10,6 +10,7 @@ import com.gameshowcenter.offline.util.SvgEmoji;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.scene.control.Button;
@@ -93,10 +94,9 @@ public class MainApp extends Application {
         });
 
         // Scan /games/ folder for offline minigames
-        File gamesDir = new File("games");
-        if (!gamesDir.exists()) {
-            gamesDir = new File("template-offline/games");
-        }
+        File gamesDir = getGamesDir();
+        File megacoresDir = com.gameshowcenter.offline.service.MegaCoreManagerService.getInstance().resolveMegacoresDir();
+        com.gameshowcenter.offline.service.MegaCoreManagerService.getInstance().autoScanAndInstallPacks(megacoresDir, gamesDir);
         availableGames = scannerService.scanGamesFolder(gamesDir);
         System.out.println("Discovered " + availableGames.size() + " offline games in /games/ folder.");
 
@@ -320,6 +320,14 @@ public class MainApp extends Application {
                 ThemeManager.getButtonHex(), ThemeManager.getTextOnButtonPrimaryHex()));
         themeBtn.setOnAction(e -> ThemeCustomizerDialog.show(primaryStage, this::refreshTheme));
 
+        // MegaCore Packs Manager Button
+        Button megaCoresBtn = new Button("MegaCores");
+        SvgEmoji.setGraphic(megaCoresBtn, "package", 14);
+        megaCoresBtn.setStyle(String.format(
+                "-fx-background-color: %s; -fx-text-fill: %s; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 7px 14px; -fx-background-radius: 8px; -fx-cursor: hand;",
+                ThemeManager.getButtonHex(), ThemeManager.getTextOnButtonPrimaryHex()));
+        megaCoresBtn.setOnAction(e -> com.gameshowcenter.offline.views.MegaCoreManagerDialog.show(primaryStage, getGamesDir(), this::reloadAvailableGames));
+
         // Studio Branding Badge
         HBox badgeBox = new HBox(4);
         badgeBox.setAlignment(Pos.CENTER);
@@ -336,11 +344,11 @@ public class MainApp extends Application {
         badgeBox.getChildren().addAll(byText, studioText);
 
         if (logoView != null) {
-            header.getChildren().addAll(logoView, logoText, spacer, langCombo, fullScreenBtn, themeBtn, badgeBox);
+            header.getChildren().addAll(logoView, logoText, spacer, langCombo, fullScreenBtn, themeBtn, megaCoresBtn, badgeBox);
         } else {
             Label fallbackIcon = new Label();
             SvgEmoji.setGraphic(fallbackIcon, "target", 24);
-            header.getChildren().addAll(fallbackIcon, logoText, spacer, langCombo, fullScreenBtn, themeBtn, badgeBox);
+            header.getChildren().addAll(fallbackIcon, logoText, spacer, langCombo, fullScreenBtn, themeBtn, megaCoresBtn, badgeBox);
         }
 
         if (I18n.isSwitchingLocked()) {
@@ -355,7 +363,14 @@ public class MainApp extends Application {
         footer.getStyleClass().add("app-footer");
         footer.setStyle("-fx-padding: 8px 16px;");
 
-        Label footerText = new Label(I18n.get("app.footer.copyright"));
+        String licenseExtra = "";
+        if (com.gameshowcenter.offline.security.LicenseManager.isActivated()) {
+            long remaining = com.gameshowcenter.offline.security.LicenseManager.getRemainingDays();
+            String expDate = com.gameshowcenter.offline.security.LicenseManager.getExpirationDateFormatted();
+            licenseExtra = String.format(" | Licencia Anual Activa (%d días restantes - Vence: %s)", remaining, expDate);
+        }
+
+        Label footerText = new Label(I18n.get("app.footer.copyright") + licenseExtra);
         footerText.setStyle(String.format("-fx-font-size: 11px; -fx-text-fill: %s;", ThemeManager.getTextOnAppBgSecondaryHex()));
         footerText.getStyleClass().add("app-footer-text");
 
@@ -425,6 +440,27 @@ public class MainApp extends Application {
         });
         centerContainer.getChildren().setAll(winnerStageView);
         applyRootBackground();
+    }
+
+    public File getGamesDir() {
+        return com.gameshowcenter.offline.service.MegaCoreManagerService.getInstance().resolveGamesDir();
+    }
+
+    public List<GameDescriptor> getAvailableGames() {
+        return availableGames;
+    }
+
+    public void reloadAvailableGames() {
+        availableGames = scannerService.scanGamesFolder(getGamesDir());
+        refreshHeaderOnly();
+        if (centerContainer != null && !centerContainer.getChildren().isEmpty()) {
+            Node current = centerContainer.getChildren().get(0);
+            if (current instanceof HomeFxView) {
+                showHomeView();
+            } else if (current instanceof SettingsFxView) {
+                showSettingsView();
+            }
+        }
     }
 
     @Override

@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/match")
-@CrossOrigin(origins = "*") 
 public class GameMatchController {
 
     // Inyección de dependencias: conectamos el servicio al controlador
