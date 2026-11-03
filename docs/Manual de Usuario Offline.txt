@@ -309,4 +309,24 @@ Al finalizar la competencia:
 - Se muestra la tabla con los puestos y puntajes de todos los participantes.
 - Tienes las opciones "Jugar de Nuevo" (para una revancha inmediata sin tener que
   volver a configurar nada) o "Menú Principal" para volver a la pantalla de bienvenida.
+
+
 ================================================================================
+14. TÉRMINOS DE LICENCIA, PRIVACIDAD Y CONTACTO COMERCIAL
+================================================================================
+El uso del software Game Show Center Standalone Desktop y sus expansiones MegaCore
+está sujeto al Contrato de Licencia de Usuario Final (EULA) y Términos de Servicio:
+- Consulta el documento legal completo en: 'docs/USER_LICENSE_AND_AGREEMENT.md'.
+
+Compromisos de Privacidad y Legalidad:
+1. Privacidad Educativa Garantizada: El software opera 100% desconectado de la red.
+   Tus documentos escolares, preguntas, avatares y puntuaciones jamás salen de tu computadora.
+   Cumple rigurosamente con los estándares FERPA, COPPA, GDPR e ISO/IEC 27001.
+2. Licenciamiento Anual: Cada licencia está vinculada de forma exclusiva a una computadora
+   física mediante su Identificador de Hardware (HWID), protegiendo la inversión institucional.
+3. Soporte y Emisión de Licencias Institucionales:
+   Para solicitar licencias de sitio para escuelas, universidades, empresas o soporte técnico:
+   * Desarrollador / Licenciante: YONIA ENTERPRISE
+   * Correo Electrónico Oficial: yoniadevs@gmail.com
+================================================================================
+

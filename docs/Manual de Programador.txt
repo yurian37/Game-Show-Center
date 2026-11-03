@@ -1,4 +1,4 @@
-﻿================================================================================
+================================================================================
               GAME SHOW CENTER OFFLINE - MANUAL DEL PROGRAMADOR
       GUÃA TÃ‰CNICA DE ARQUITECTURA, EXTENSIÃ“N, IA LOCAL (RAG) Y MINIJUEGOS
                                YONIA ENTERPRISE
@@ -451,43 +451,132 @@ C. Servicio de InducciÃ³n (`MegaCoreManagerService.java`):
      `getInstalledCount()`, `getTotalCount()`).
 
 D. Vista Interactiva (`MegaCoreManagerDialog.java`):
-   - Accesible desde el botÃ³n `ðŸ“¦ MegaCores` en la barra superior (`MainApp.createHeader`).
+   - Accesible desde el botón `📦 MegaCores` en la barra superior (`MainApp.createHeader`).
    - Presenta tarjetas con badges verdes/naranjas/grises de estado.
    - Permite seleccionar paquetes `.zip` mediante `FileChooser` y actualizar
-     inmediatamente el catÃ¡logo en caliente a travÃ©s de un callback `onPacksUpdated`.
+     inmediatamente el catálogo en caliente a través de un callback `onPacksUpdated`.
 
 
 --------------------------------------------------------------------------------
-11. SUBSISTEMA CRIPTOGRÃFICO DE LICENCIAMIENTO ANUAL V2
+11. SUBSISTEMA CRIPTOGRÁFICO DE LICENCIAMIENTO ANUAL V2 Y V3
 --------------------------------------------------------------------------------
-El sistema de seguridad implementa un licenciamiento anual offline con vinculaciÃ³n estricta
+El sistema de seguridad implementa un licenciamiento anual offline con vinculación estricta
 por hardware y auto-bloqueo.
 
 A. Componentes del Subsistema (`com.gameshowcenter.offline.security`):
-   - `HardwareIdUtil.java`: Genera una huella SHA-256 Ãºnica y estable del equipo host
+   - `HardwareIdUtil.java`: Genera una huella SHA-256 única y estable del equipo host
      basada en procesador, BIOS, motherboard y adaptadores de red.
    - `LicensePayload.java`: Estructura DTO serializada con Jackson con campos:
-     * `format`: `"GSC-OFFLINE-LICENSE-V2"`.
+     * `format`: `"GSC-OFFLINE-LICENSE-V2"` / `"GSC-OFFLINE-LICENSE-V3"`.
      * `licenseId`: UUID corto identificador (ej: `LIC-D1A9F420`).
-     * `createdAt`: Timestamp UTC de creaciÃ³n.
-     * `maxActivationDays`: Ventana de gracia para activar (por defecto 3 dÃ­as).
-     * `annualValidityDays`: DuraciÃ³n de la suscripciÃ³n (365 dÃ­as).
-     * `status`: `"UNBOUND"` (virgen) o `"BOUND"` (vinculado a una mÃ¡quina).
-     * `boundHwid`: HardwareID del equipo donde se activÃ³.
-     * `activatedAt` / `expiresAt`: Fechas lÃ­mite calculadas.
-     * `signature`: Firma SHA-256 calculada con salt secreto.
+     * `createdAt`: Timestamp UTC de creación.
+     * `maxActivationDays`: Ventana de gracia para activar (por defecto 3 días).
+     * `annualValidityDays`: Duración de la suscripción (365 días).
+     * `status`: `"UNBOUND"` (virgen) o `"BOUND"` (vinculado a una máquina).
+     * `boundHwid`: HardwareID del equipo donde se activó.
+     * `activatedAt` / `expiresAt`: Fechas límite calculadas.
+     * `signature`: Firma criptográfica asimétrica Ed25519 (V3) o SHA-256 (V2).
    - `LicenseEncryptorTool.java` / `generate-license.ps1`:
-     Herramientas para generar e inspeccionar licencias (.lic) con cabecera mÃ¡gica
-     binaria `GSC2` (0x47, 0x53, 0x43, 0x32), IV aleatorio de 16 bytes y cifrado AES-256-CBC.
+     Herramientas administrativas segregadas en `License_Generator/` (excluidas del control
+     de versiones) para emitir licencias con cabecera mágica binaria `GSC2` / `GSC3`,
+     vector IV aleatorio y cifrado AES-256-CBC.
    - `LicenseManager.java`:
-     * `verifyCurrentInstallation()`: EvalÃºa las licencias en `license.lic` y
+     * `verifyCurrentInstallation()`: Evalúa las licencias en `license.lic` y
        `%USERPROFILE%\.gsc_offline\license.lic`.
-     * `activateWithFile(File licenseFile)`: Si la licencia es `UNBOUND` y estÃ¡ dentro
-       de los 3 dÃ­as de tolerancia, la vincula al HWID actual, fija `expiresAt = now + 365 dÃ­as`,
+     * `activateWithFile(File licenseFile)`: Si la licencia es `UNBOUND` y está dentro
+       de los 3 días de tolerancia, la vincula al HWID actual, fija `expiresAt = now + 365 días`,
        SOBREESCRIBE el archivo original en disco (para evitar que se entregue a otro usuario)
        y guarda una copia persistente.
-     * Si la licencia ya fue activada en otra mÃ¡quina, arroja `StatusCategory.HARDWARE_CONFLICT`.
-     * Si pasaron mÃ¡s de 3 dÃ­as antes de activarla, arroja `StatusCategory.ACTIVATION_WINDOW_EXPIRED`.
-     * Si expirÃ³ el ciclo anual, arroja `StatusCategory.ANNUAL_EXPIRED`.
+     * Si la licencia ya fue activada en otra máquina, arroja `StatusCategory.HARDWARE_CONFLICT`.
+     * Si pasaron más de 3 días antes de activarla, arroja `StatusCategory.ACTIVATION_WINDOW_EXPIRED`.
+     * Si expiró el ciclo anual, arroja `StatusCategory.ANNUAL_EXPIRED`.
+
+
+--------------------------------------------------------------------------------
+12. ARQUITECTURA DE LA PLATAFORMA WEB ONLINE, ADSTERRA Y CANARIO ADBLOCKER
+--------------------------------------------------------------------------------
+La versión Web/Cloud (`frontend-react/` y `backend-java/`) proporciona la experiencia
+interactiva online, centro de descargas y vitrina publicitaria:
+
+A. Componente `AdsterraBanner.jsx` (Sandboxing y Aislamiento):
+   - Ejecuta las directivas `atOptions` de Adsterra dentro de un `iframe` aislado (`srcDoc`),
+     evitando colisiones con el objeto global `window` de la SPA en React.
+   - Tamaños soportados: Skyscraper 160x600 (marcos laterales) y rectángulos 300x250.
+
+B. Detección Proactiva de Bloqueadores de Anuncios (Canary Fetch + PostMessage):
+   - Petición Canario en segundo plano: Al montar el componente, ejecuta:
+     `fetch(canaryUrl, { method: 'HEAD', mode: 'no-cors' })`
+     donde `canaryUrl` apunta al script de red de Adsterra (`topcreativeformat.com`).
+     Si el navegador o una extensión (uBlock Origin, AdBlock Plus, Brave Shields) bloquea
+     la petición arrojando `ERR_BLOCKED_BY_CLIENT`, se captura inmediatamente conmutando
+     el estado a `adBlocked = true`.
+   - Manejador de Error en Iframe: El script inyectado en el iframe posee el atributo
+     `onerror="window.parent.postMessage({ type: 'ADSTERRA_BLOCKED' }, '*')"` para
+     detectar fallas de carga secundaria o bloqueos de red perimetrales.
+
+C. Vitrina de la Plantilla Game Show Center y Contacto YonIA Enterprise:
+   - Cuando se detecta un bloqueador de anuncios, el espacio publicitario se transforma
+     de forma instantánea en la vitrina comercial de la plantilla:
+     * Banner Izquierdo: Presentación de la plantilla Game Show Center (online y offline,
+       10+ minijuegos, dinámicas multi-equipo para escuelas y eventos).
+     * Banner Derecho: Minijuegos a medida, IA local con RAG y licencias de sitio escolar.
+     * Ambos banners exhiben prominentemente el correo oficial de YonIA Enterprise:
+       `yoniadevs@gmail.com` con selector visual y botón interactivo `mailto:`.
+
+D. Soporte para Modo Incógnito y Política de Seguridad de Contenido (CSP):
+   - Evaluación de Consentimiento: `consent !== 'rejected'` permite que usuarios en
+     ventanas de navegación privada o primera visita reciban anuncios sin quedar bloqueados.
+   - Directivas CSP en `SecurityConfig.java` e `index.html`: Se habilitó `https:` en
+     `connect-src`, `frame-src` y `script-src` para autorizar a Adsterra y sus subdominios
+     analíticos (`protrafficinspector.com`, etc.).
+
+E. Manejo de Avatares e Internacionalización:
+   - Sanitización de perfiles en `frontend-react/` para admitir WebP, PNG y SVG Data URIs
+     sin corrupción visual de imágenes ni desbordamiento de memoria.
+   - Internacionalización completa: Toda la versión online está desplegada al 100% en inglés.
+   - Segregación de Almacenamiento: Las configuraciones de actividades se guardan en
+     `localStorage`/estado de sesión en lugar de cookies masivas, previniendo cabeceras
+     saturadas (Error 431) y cumpliendo estrictamente con GDPR e ISO 27701.
+
+
+--------------------------------------------------------------------------------
+13. SUBSISTEMA CRIPTOGRÁFICO ASIMÉTRICO ED25519 (V3) Y CI/CD DEVSECOPS
+--------------------------------------------------------------------------------
+A. Validación Asimétrica con Curvas de Edwards (Ed25519 / RFC 8032):
+   - El cliente `template-offline` solo posee la Llave Pública X.509 codificada en Base64.
+   - La Llave Privada PKCS#8 reside únicamente en la carpeta confidencial `License_Generator/`.
+   - Esto hace matemáticamente imposible que un atacante emita licencias legítimas aunque
+     descompile o modifique el binario cliente.
+
+B. Endpoints Seguros de Descargas (`DownloadController.java`):
+   - Descargas autorizadas mediante tokens HMAC-SHA256 efímeros (15 minutos de vigencia)
+     con protección anti-replay basada en identificador único JTI y filtro de tasa límite
+     (`RateLimitingFilter.java`).
+
+C. Trazabilidad Forense y Pipeline DevSecOps:
+   - Logging estructurado con `incidentId` (UUID) en Logback y rotación GZIP a 30 días.
+   - Pipeline de CI en GitHub Actions con 4 fases: Gitleaks (escaneo de secretos),
+     Backend Tests (17 pruebas), Desktop Tests (10 pruebas), Frontend SAST con Oxlint.
+   - Generación automática de SBOMs en formato CycloneDX v1.5 y Dependabot en 4 ecosistemas.
+   - Script de firma digital Authenticode RFC 3161 (`template-offline/build-cascara.ps1`).
+
+
+--------------------------------------------------------------------------------
+14. MARCO LEGAL, ACUERDO DE LICENCIA (EULA) Y CONTACTO COMERCIAL
+--------------------------------------------------------------------------------
+El proyecto cuenta con un contrato legal formal de términos y licencias disponible en:
+`docs/USER_LICENSE_AND_AGREEMENT.md`
+
+Aspectos legales clave:
+1. Licenciamiento por Puesto Físico (Single-Seat HWID) y Licencias Educativas de Sitio.
+2. Cumplimiento con leyes de privacidad educativa: FERPA, COPPA, GDPR, CCPA/CPRA e ISO 27701.
+3. Procesamiento de IA y documentos escolares 100% en local (Zero Cloud Telemetry).
+4. Prohibición estricta de ingeniería inversa, falsificación o evasión de licencias.
+5. Canal oficial de atención, cotizaciones institucionales y soporte técnico:
+
+   YONIA ENTERPRISE
+   Correo Oficial: yoniadevs@gmail.com
+   Repositorio: https://github.com/yurian37/Game-Show-Center
 ================================================================================
+
 

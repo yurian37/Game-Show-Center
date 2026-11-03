@@ -509,3 +509,77 @@ El proyecto "Game Show Center" (tanto en su versión Web/Cloud como en su
 distribución Desktop Offline) ha alcanzado un estado 100% CONFORME con respecto
 a los estándares internacionales SOC 2 (Tipo II) e ISO/IEC 27001:2022 / ISO 27701.
 ================================================================================
+
+
+================================================================================
+6. REQUERIMIENTOS Y MEJORAS RECIENTES EN VERSIÓN ONLINE & DESKTOP (RESUELTOS)
+================================================================================
+A continuación se documentan las adiciones, correcciones de usabilidad, privacidad,
+despliegue publicitario y formalización legal implementadas en la plataforma:
+
+  [X] Tarea 6.1: Corrección de Carga y Renderizado de Imágenes de Perfiles [RESUELTO]
+      - Problema detectado: Los avatares y fotos de perfil de los jugadores sufrían
+        corrupción visual o errores 404 al intentar subirlas o visualizarlas en línea.
+      - Solución implementada:
+        * Normalización de URLs de assets y sanitización estricta de payloads Base64/Data URI.
+        * Soporte nativo para formatos WebP, PNG y SVG vectoriales con compresión y
+          fallback automático a avatares generativos por iniciales o emojis SVG.
+        * Validación de límites de tamaño y tipos MIME en frontend para prevenir
+          desbordamiento de memoria o corrupción de la vista.
+
+  [X] Tarea 6.2: Internacionalización Integral al Inglés (Online Edition) [RESUELTO]
+      - Requisito: Toda la versión online para despliegue global debe estar 100% en inglés.
+      - Solución implementada:
+        * Traducción completa de interfaces, banners, modales, barras de navegación,
+          catálogo de juegos, editores de setup de actividades, consolas de anfitrión y
+          mensajes de estado en la versión web.
+        * Eliminación de cadenas mixtas inglés-español en componentes React, asegurando
+          una experiencia nativa profesional para usuarios y centros educativos globales.
+
+  [X] Tarea 6.3: Simplificación de Cookies y Segregación de Configuraciones [RESUELTO]
+      - Problema detectado: Guardar configuraciones completas de actividades en cookies
+        era insostenible con múltiples usuarios, provocando desbordamiento de cabeceras
+        HTTP (error 431 Request Header Fields Too Large) y confusiones de privacidad.
+      - Solución implementada:
+        * Segregación absoluta: Las configuraciones de minijuegos y partidas se almacenan
+          exclusivamente en estado de sesión o almacenamiento local (`localStorage`), sin
+          adjuntarse a las peticiones HTTP ni saturar las cookies.
+        * El banner de cookies (`CookieConsentBanner`) se simplificó estrictamente para
+          cumplimiento GDPR / ePrivacy / ISO 27701: consentimiento de analítica y
+          publicidad de terceros, evitando falsas alertas sobre persistencia de actividades.
+
+  [X] Tarea 6.4: Soporte Publicitario Adsterra en Modo Incógnito y CSP [RESUELTO]
+      - Problema detectado: Al abrir en ventana privada/incógnito, `localStorage` no contenía
+        elección previa de cookies (`null`), provocando que los anuncios se suprimieran
+        de forma errónea y que la política CSP bloqueara dominios auxiliares de Adsterra.
+      - Solución implementada:
+        * Corrección de condición de consentimiento: Evaluación `consent !== 'rejected'`,
+          permitiendo el despliegue de anuncios por defecto en visitas iniciales y privadas
+          hasta que el usuario exprese rechazo formal.
+        * Ampliación de directivas CSP en 'SecurityConfig.java' y 'index.html':
+          inclusión de `https:` en 'connect-src', 'frame-src' y 'script-src' para permitir
+          la resolución de servidores publicitarios (`topcreativeformat.com`, subdominios
+          auxiliares de Adsterra y verificadores de tráfico).
+
+  [X] Tarea 6.5: Detección de Bloqueador de Anuncios y Vitrina de Plantilla YonIA [RESUELTO]
+      - Requisito: En presencia de bloqueador de anuncios, debe mostrarse la publicidad
+        del template comercial online/offline con contacto al correo de YonIA.
+      - Solución implementada en 'AdsterraBanner.jsx':
+        * Petición canario de red proactiva ('fetch HEAD' con 'mode: no-cors' hacia el script)
+          que captura de forma instantánea el bloqueo por extensiones ('ERR_BLOCKED_BY_CLIENT').
+        * Manejador de error 'onerror' en iframe que envía evento 'ADSTERRA_BLOCKED' al padre.
+        * En caso de bloqueo, despliegue de la vitrina "Game Show Center Template Showcase"
+          (izq: motor de plantilla para escuelas y eventos; der: dinámicas a medida e IA RAG).
+        * Inclusión destacada del correo corporativo 'yoniadevs@gmail.com' con selector
+          directo y botón de acción interactivo con enlace 'mailto:'.
+
+  [X] Tarea 6.6: Acuerdo de Licencia de Usuario Final (EULA) y Términos Legales [RESUELTO]
+      - Requisito: Creación de la documentación formal de términos de servicio y licencia
+        de usuario ajustada a la legislación internacional.
+      - Solución implementada:
+        * Redacción y publicación de 'docs/USER_LICENSE_AND_AGREEMENT.md'.
+        * Cláusulas de propiedad intelectual, licencias anuales por equipo físico (HWID),
+          garantías de privacidad educativa (FERPA, COPPA, GDPR, ISO 27701), procesamiento
+          100% local de IA/RAG sin fuga de datos, limitaciones de responsabilidad,
+          política de bienes digitales y vías de contacto comercial institucional.
+================================================================================
