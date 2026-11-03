@@ -57,7 +57,35 @@ export default function AdsterraBanner({
     return () => window.removeEventListener('gsc_cookie_consent_updated', handleConsentChange);
   }, []);
 
-  // HTML content payload for isolated iframe execution
+  // Proactive AdBlocker Detection (Canary fetch + iframe error listener)
+  useEffect(() => {
+    let isMounted = true;
+    const canaryUrl = `https://www.topcreativeformat.com/${effectiveZoneKey}/invoke.js`;
+
+    // Attempt lightweight canary fetch. If an adblocker extension is active, the browser rejects with ERR_BLOCKED_BY_CLIENT
+    fetch(canaryUrl, { method: 'HEAD', mode: 'no-cors' })
+      .catch(() => {
+        if (isMounted) {
+          setAdBlocked(true);
+        }
+      });
+
+    const handleMessage = (event) => {
+      if (event.data?.type === 'ADSTERRA_BLOCKED') {
+        if (isMounted) {
+          setAdBlocked(true);
+        }
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => {
+      isMounted = false;
+      window.removeEventListener('message', handleMessage);
+    };
+  }, [effectiveZoneKey]);
+
+  // HTML content payload for isolated iframe execution with onerror canary
   const adHtml = `<!DOCTYPE html>
 <html>
   <head>
@@ -87,7 +115,7 @@ export default function AdsterraBanner({
         'params' : {}
       };
     </script>
-    <script type="text/javascript" src="https://www.topcreativeformat.com/${effectiveZoneKey}/invoke.js"></script>
+    <script type="text/javascript" src="https://www.topcreativeformat.com/${effectiveZoneKey}/invoke.js" onerror="window.parent.postMessage({ type: 'ADSTERRA_BLOCKED', pos: '${position}' }, '*')"></script>
   </body>
 </html>`;
 
@@ -96,11 +124,11 @@ export default function AdsterraBanner({
       {/* HEADER LABEL */}
       <div className="flex items-center justify-center mb-3 w-full">
         <span className="text-[9px] font-black uppercase tracking-widest text-slate-400 bg-slate-800/70 px-2.5 py-1 rounded-md border border-slate-700/50 inline-flex items-center gap-1.5 select-none">
-          <SvgEmoji name="megaphone" size={13} /> {label}
+          <SvgEmoji name={adBlocked ? "shield" : "megaphone"} size={13} /> {adBlocked ? "Template Showcase • YonIA" : label}
         </span>
       </div>
 
-      {/* AD CONTAINER: REAL ADSTERRA IFRAME (SANDBOXED) OR BRANDED FALLBACK */}
+      {/* AD CONTAINER: REAL ADSTERRA IFRAME OR TEMPLATE ADVERTISING FALLBACK */}
       {hasLiveKey && hasTrackingConsent && !adBlocked ? (
         <div
           className="flex justify-center items-center overflow-hidden rounded-xl bg-slate-900/60 border border-slate-800/60"
@@ -117,42 +145,42 @@ export default function AdsterraBanner({
           />
         </div>
       ) : (
-        /* ELEGANT BRANDED FALLBACK CARD (OFFLINE PRO & LOCAL AI HIGHLIGHTS) */
-        <div className="w-full flex flex-col items-center text-center p-3 py-4 bg-gradient-to-b from-[#181f33] to-[#0e1322] border border-indigo-500/20 rounded-xl shadow-inner">
+        /* OFFICIAL SHOWCASE: GAME SHOW CENTER TEMPLATE & YONIA CONTACT */
+        <div className="w-full flex flex-col items-center text-center p-3 py-4 bg-gradient-to-b from-[#181f33] to-[#0e1322] border border-indigo-500/30 rounded-xl shadow-inner">
           {position === 'left' ? (
             <>
               <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center mb-2 text-indigo-400">
                 <SvgEmoji name="desktop" size={20} />
               </div>
-              <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest bg-indigo-500/10 px-2 py-0.5 rounded-full mb-1">
-                Offline Runtime
+              <span className="text-[10px] font-black text-amber-400 uppercase tracking-widest bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded-full mb-1">
+                Ad Blocker Detected
               </span>
               <h4 className="text-xs font-black text-white mt-1 mb-1">
-                Zero Internet Required
+                Game Show Center Template
               </h4>
-              <p className="text-[10px] text-slate-400 leading-tight mb-3">
-                Download the standalone Windows <code className="text-indigo-300 font-mono">.exe</code> for lag-free auditorium and classroom game shows.
+              <p className="text-[10px] text-slate-300 leading-tight mb-3">
+                Complete interactive game show engine for schools, auditoriums, and live events.
               </p>
-              <div className="w-full bg-[#111625] border border-slate-800 rounded-lg p-2 text-left mb-3 space-y-1">
-                <div className="flex items-center gap-1.5 text-[9px] text-slate-300 font-semibold">
-                  <span className="text-emerald-400">✓</span> 100% Zero Network Latency
+              <div className="w-full bg-[#111625] border border-slate-800 rounded-lg p-2.5 text-left mb-3 space-y-1.5">
+                <div className="flex items-center gap-1.5 text-[9px] text-slate-200 font-semibold">
+                  <span className="text-emerald-400">✓</span> Online & Standalone Offline
                 </div>
-                <div className="flex items-center gap-1.5 text-[9px] text-slate-300 font-semibold">
-                  <span className="text-emerald-400">✓</span> Battle Royale Mode
+                <div className="flex items-center gap-1.5 text-[9px] text-slate-200 font-semibold">
+                  <span className="text-emerald-400">✓</span> 10+ Integrated Minigames
                 </div>
-                <div className="flex items-center gap-1.5 text-[9px] text-slate-300 font-semibold">
-                  <span className="text-emerald-400">✓</span> Custom Classroom Themes
+                <div className="flex items-center gap-1.5 text-[9px] text-slate-200 font-semibold">
+                  <span className="text-emerald-400">✓</span> Multi-Team Classroom Dynamic
                 </div>
               </div>
+              <div className="w-full bg-[#0d111c] border border-indigo-500/20 rounded-lg p-2 mb-3">
+                <span className="text-[9px] text-slate-400 block mb-0.5 uppercase tracking-wider font-bold">Contact YonIA Enterprise:</span>
+                <span className="text-[11px] font-mono font-bold text-emerald-400 select-all block">yoniadevs@gmail.com</span>
+              </div>
               <a
-                href="#download"
-                onClick={(e) => {
-                  e.preventDefault();
-                  alert("To download the 100% Offline Edition or obtain commercial licenses for your school, contact yoniadevs@gmail.com or access the Host Portal.");
-                }}
-                className="w-full py-2 px-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-[10px] font-bold uppercase rounded-lg shadow-md transition-all cursor-pointer block"
+                href="mailto:yoniadevs@gmail.com?subject=I%20am%20interested%20in%20game-show-center%20template"
+                className="w-full py-2.5 px-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white text-[10px] font-black uppercase tracking-wider rounded-xl shadow-lg transition-all cursor-pointer block active:scale-95 text-center"
               >
-                Get Desktop App
+                ✉ Contact YonIA
               </a>
             </>
           ) : (
@@ -160,45 +188,45 @@ export default function AdsterraBanner({
               <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center mb-2 text-purple-400">
                 <SvgEmoji name="robot" size={20} />
               </div>
-              <span className="text-[10px] font-bold text-purple-400 uppercase tracking-widest bg-purple-500/10 px-2 py-0.5 rounded-full mb-1">
-                Private Local AI
+              <span className="text-[10px] font-black text-amber-400 uppercase tracking-widest bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded-full mb-1">
+                Ad Blocker Detected
               </span>
               <h4 className="text-xs font-black text-white mt-1 mb-1">
-                PDF Textbook RAG
+                Custom Dynamics & Software
               </h4>
-              <p className="text-[10px] text-slate-400 leading-tight mb-3">
-                Upload up to 10 school PDFs to generate tailored questions automatically with offline Qwen LLM.
+              <p className="text-[10px] text-slate-300 leading-tight mb-3">
+                Need customized minigames, school site licenses, or local AI question generators?
               </p>
-              <div className="w-full bg-[#111625] border border-slate-800 rounded-lg p-2 text-left mb-3 space-y-1">
-                <div className="flex items-center gap-1.5 text-[9px] text-slate-300 font-semibold">
-                  <span className="text-purple-400">★</span> Offline Quantized GGUF
+              <div className="w-full bg-[#111625] border border-slate-800 rounded-lg p-2.5 text-left mb-3 space-y-1.5">
+                <div className="flex items-center gap-1.5 text-[9px] text-slate-200 font-semibold">
+                  <span className="text-purple-400">★</span> Custom Themed Minigames
                 </div>
-                <div className="flex items-center gap-1.5 text-[9px] text-slate-300 font-semibold">
-                  <span className="text-purple-400">★</span> Zero API Costs
+                <div className="flex items-center gap-1.5 text-[9px] text-slate-200 font-semibold">
+                  <span className="text-purple-400">★</span> Offline PDF Textbook AI RAG
                 </div>
-                <div className="flex items-center gap-1.5 text-[9px] text-slate-300 font-semibold">
-                  <span className="text-purple-400">★</span> Strict COPPA/FERPA Privacy
+                <div className="flex items-center gap-1.5 text-[9px] text-slate-200 font-semibold">
+                  <span className="text-purple-400">★</span> Commercial Annual Licensing
                 </div>
               </div>
+              <div className="w-full bg-[#0d111c] border border-purple-500/20 rounded-lg p-2 mb-3">
+                <span className="text-[9px] text-slate-400 block mb-0.5 uppercase tracking-wider font-bold">Contact YonIA Enterprise:</span>
+                <span className="text-[11px] font-mono font-bold text-emerald-400 select-all block">yoniadevs@gmail.com</span>
+              </div>
               <a
-                href="#ai-rag"
-                onClick={(e) => {
-                  e.preventDefault();
-                  alert("Local AI with PDF RAG operates 100% offline in template-offline with no external API calls, ensuring student data never leaves your computer.");
-                }}
-                className="w-full py-2 px-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white text-[10px] font-bold uppercase rounded-lg shadow-md transition-all cursor-pointer block"
+                href="mailto:yoniadevs@gmail.com?subject=I%20am%20interested%20in%20game-show-center%20template"
+                className="w-full py-2.5 px-3 bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 hover:from-purple-500 hover:to-rose-500 text-white text-[10px] font-black uppercase tracking-wider rounded-xl shadow-lg transition-all cursor-pointer block active:scale-95 text-center"
               >
-                Discover Local AI
+                ✉ Contact YonIA
               </a>
             </>
           )}
         </div>
       )}
 
-      {/* FOOTER ADSTERRA BADGE */}
+      {/* FOOTER BADGE */}
       <div className="mt-2 text-[9px] text-slate-500 flex items-center justify-center gap-1 select-none">
-        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-        <span>Adsterra Verified Partner</span>
+        <span className={`w-1.5 h-1.5 rounded-full ${adBlocked ? 'bg-amber-400' : 'bg-emerald-400'}`}></span>
+        <span>{adBlocked ? "YonIA Enterprise Verified Template" : "Adsterra Verified Partner"}</span>
       </div>
     </div>
   );
