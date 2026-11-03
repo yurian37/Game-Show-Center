@@ -20,12 +20,12 @@ export default function AdsterraBanner({
   const [hasTrackingConsent, setHasTrackingConsent] = useState(() => {
     try {
       const consent = localStorage.getItem('gsc_cookie_consent');
-      return consent === 'accepted';
+      // In incognito or initial visits, consent is null: display ads by default unless explicitly rejected
+      return consent !== 'rejected';
     } catch {
-      return false;
+      return true;
     }
   });
-  const iframeRef = useRef(null);
 
   // Read zone key from prop, Vite environment variables, or verified default key
   const effectiveZoneKey =
@@ -45,82 +45,51 @@ export default function AdsterraBanner({
 
   // Listen for cookie consent updates in real time
   useEffect(() => {
-    const handleConsentChange = () => {
+    const handleConsentChange = (e) => {
       try {
-        const consent = localStorage.getItem('gsc_cookie_consent');
-        setHasTrackingConsent(consent === 'accepted');
+        const choice = e?.detail?.choice || localStorage.getItem('gsc_cookie_consent');
+        setHasTrackingConsent(choice !== 'rejected');
       } catch {
-        setHasTrackingConsent(false);
+        setHasTrackingConsent(true);
       }
     };
     window.addEventListener('gsc_cookie_consent_updated', handleConsentChange);
     return () => window.removeEventListener('gsc_cookie_consent_updated', handleConsentChange);
   }, []);
 
-  useEffect(() => {
-    if (!hasLiveKey || !hasTrackingConsent || !iframeRef.current) return;
-
-    try {
-      const iframe = iframeRef.current;
-      const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
-      if (!iframeDoc) return;
-
-      const adHtml = `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8" />
-            <meta name="viewport" content="width=device-width, initial-scale=1" />
-            <style>
-              body, html {
-                margin: 0;
-                padding: 0;
-                overflow: hidden;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                background: transparent;
-                width: 100%;
-                height: 100%;
-              }
-            </style>
-          </head>
-          <body>
-            <script type="text/javascript">
-              atOptions = {
-                'key' : '${effectiveZoneKey}',
-                'format' : 'iframe',
-                'height' : ${height},
-                'width' : ${width},
-                'params' : {}
-              };
-            </script>
-            <script type="text/javascript" src="https://www.topcreativeformat.com/${effectiveZoneKey}/invoke.js" onerror="parent.postMessage('adsterra_blocked_${position}', '*')"></script>
-          </body>
-        </html>
-      `;
-
-      iframeDoc.open();
-      iframeDoc.write(adHtml);
-      iframeDoc.close();
-    } catch (err) {
-      console.warn(`[Adsterra] Banner initialization error (${position}):`, err);
-      setAdBlocked(true);
-    }
-
-    const handleMessage = (event) => {
-      // Security Validation: Ensure message originates strictly from our sandboxed child iframe
-      if (iframeRef.current && event.source === iframeRef.current.contentWindow) {
-        if (event.data === `adsterra_blocked_${position}`) {
-          console.warn(`[Adsterra] Banner (${position}) fue bloqueado (posible AdBlocker activo o dominio sin inventario en Adsterra). Mostrando respaldo.`);
-          setAdBlocked(true);
-        }
+  // HTML content payload for isolated iframe execution
+  const adHtml = `<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body, html {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: transparent;
+        width: 100%;
+        height: 100%;
       }
-    };
-
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
-  }, [effectiveZoneKey, hasLiveKey, hasTrackingConsent, height, width, position]);
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+      atOptions = {
+        'key' : '${effectiveZoneKey}',
+        'format' : 'iframe',
+        'height' : ${height},
+        'width' : ${width},
+        'params' : {}
+      };
+    </script>
+    <script type="text/javascript" src="https://www.topcreativeformat.com/${effectiveZoneKey}/invoke.js"></script>
+  </body>
+</html>`;
 
   return (
     <div className="w-full bg-[#111625]/95 border border-slate-800/80 rounded-2xl p-3 my-2 shadow-xl text-center relative overflow-hidden flex flex-col items-center">
@@ -138,13 +107,12 @@ export default function AdsterraBanner({
           style={{ width: `${width}px`, minHeight: `${height}px` }}
         >
           <iframe
-            ref={iframeRef}
             title={`Adsterra ${position} Banner`}
             width={width}
             height={height}
+            srcDoc={adHtml}
             frameBorder="0"
             scrolling="no"
-            sandbox="allow-scripts allow-popups allow-forms allow-same-origin"
             className="border-0 overflow-hidden"
           />
         </div>
