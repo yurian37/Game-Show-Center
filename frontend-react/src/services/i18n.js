@@ -9,7 +9,7 @@ export const SUPPORTED_LANGUAGES = [
   { code: 'pt', name: 'Português', flagIcon: 'flag-br' }
 ];
 
-let currentLang = 'es';
+let currentLang = 'en';
 
 try {
   const saved = localStorage.getItem(STORAGE_KEY);
@@ -81,7 +81,7 @@ export function getLocalizedGameProperty(game, property, lang = currentLang) {
 }
 
 export function getGameName(game, lang = currentLang) {
-  return getLocalizedGameProperty(game, 'name', lang) || game?.name || 'Juego';
+  return getLocalizedGameProperty(game, 'name', lang) || game?.name || 'Game';
 }
 
 export function getGameDescription(game, lang = currentLang) {

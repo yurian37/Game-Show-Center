@@ -172,7 +172,7 @@ export default function App() {
               />
             )}
 
-            {/* VISTA ARENA DE JUEGO EN VIVO */}
+            {/* VIEW: LIVE GAME ARENA STAGE */}
             {screen === 'arena' && (
               <ArenaStage
                 matchData={matchData || {}}
@@ -180,7 +180,7 @@ export default function App() {
               />
             )}
 
-            {/* VISTA GANADOR / PODIO FINAL */}
+            {/* VIEW: WINNER & FINAL PODIUM STAGE */}
             {screen === 'winner' && (
               <WinnerStage
                 matchData={matchData || {}}

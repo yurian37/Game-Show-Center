@@ -4,6 +4,8 @@ import GameArenaDriver from './games/GameArenaDriver';
 import soundManager from '../services/soundManager';
 import ArenaRouletteModal from './ArenaRouletteModal';
 
+const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236366f1'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
+
 export default function ArenaStage({ matchData, onNavigate }) {
   const [currentGameIndex, setCurrentGameIndex] = useState(0);
   const [isRouletteModalOpen, setIsRouletteModalOpen] = useState(false);
@@ -169,7 +171,12 @@ export default function ArenaStage({ matchData, onNavigate }) {
                 {/* FOTO DE PERFIL */}
                 <div className="w-14 h-14 rounded-xl bg-[#0f121d] border border-slate-700 overflow-hidden relative flex items-center justify-center shadow-inner">
                   {p.avatar ? (
-                    <img src={p.avatar} alt={p.name} className="w-full h-full object-cover" />
+                    <img 
+                      src={p.avatar} 
+                      alt={p.name} 
+                      className="w-full h-full object-cover" 
+                      onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = DEFAULT_AVATAR; }}
+                    />
                   ) : (
                     <span className="text-xl text-slate-500 font-bold flex items-center justify-center">
                       <SvgEmoji name="user" />
@@ -184,7 +191,7 @@ export default function ArenaStage({ matchData, onNavigate }) {
                   {p.name}
                 </span>
 
-                {/* PUNTAJE SIEMPRE VISIBLE EN EL PERFIL */}
+                {/* COMPETITOR SCORE BADGE */}
                 <div className={`w-full py-1 px-2 rounded-xl text-xs font-black tracking-wide border shadow-sm ${
                   currentScore > 0 
                     ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' 
@@ -200,7 +207,7 @@ export default function ArenaStage({ matchData, onNavigate }) {
         </div>
       </div>
 
-      {/* PANEL DE CONTROL DE PUNTOS DEL PERFIL SELECCIONADO (4 BOTONES DE SCORE) */}
+      {/* ACTIVE COMPETITOR SCORE CONTROLS */}
       {activeProfile && (
         <div className="mb-8 bg-[#121624] border-2 border-indigo-500/40 p-5 rounded-3xl shadow-2xl animate-fadeIn relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/5 via-purple-500/5 to-transparent pointer-events-none" />
@@ -209,7 +216,12 @@ export default function ArenaStage({ matchData, onNavigate }) {
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-2xl bg-[#0f121d] border border-indigo-500/40 overflow-hidden shrink-0 shadow-md">
                 {activeProfile.avatar ? (
-                  <img src={activeProfile.avatar} alt={activeProfile.name} className="w-full h-full object-cover" />
+                  <img 
+                    src={activeProfile.avatar} 
+                    alt={activeProfile.name} 
+                    className="w-full h-full object-cover" 
+                    onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = DEFAULT_AVATAR; }}
+                  />
                 ) : (
                   <span className="w-full h-full flex items-center justify-center text-xl text-slate-400 font-bold"><SvgEmoji name="user" /></span>
                 )}
@@ -233,7 +245,7 @@ export default function ArenaStage({ matchData, onNavigate }) {
             </button>
           </div>
 
-          {/* LOS 4 BOTONES DE PUNTOS */}
+          {/* 4 SCORE ACTION BUTTONS */}
           <div>
             <span className="block text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-3">
               <span className="inline-flex items-center gap-1.5"><SvgEmoji name="lightning" /> Quick Score Adjuster (4 Score Action Buttons)</span>
@@ -281,7 +293,7 @@ export default function ArenaStage({ matchData, onNavigate }) {
               ← Previous Game
             </button>
 
-            {/* SELECTOR DE PÍLDORAS DIRECTAS POR JUEGO */}
+            {/* DIRECT MINIGAME SELECTOR PILLS */}
             <div className="flex flex-wrap items-center justify-center gap-2">
               {selectedGames.map((g, idx) => (
                 <button

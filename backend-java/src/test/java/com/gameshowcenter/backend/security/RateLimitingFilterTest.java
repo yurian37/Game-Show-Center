@@ -43,7 +43,7 @@ class RateLimitingFilterTest {
         assertEquals(429, response6.getStatus());
         assertEquals("0", response6.getHeader("X-RateLimit-Remaining"));
         assertNotNull(response6.getHeader("Retry-After"));
-        assertTrue(response6.getContentAsString().contains("Demasiadas peticiones"));
+        assertTrue(response6.getContentAsString().contains("Too many requests"));
     }
 
     @Test

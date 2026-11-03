@@ -50,7 +50,7 @@ public class DownloadController {
             error.put("status", HttpServletResponse.SC_FORBIDDEN);
             error.put("error", "Forbidden");
             error.put("code", validationResult.getStatus().name());
-            error.put("message", "Acceso denegado: " + validationResult.getMessage());
+            error.put("message", "Access denied: " + validationResult.getMessage());
 
             response.getWriter().write(MAPPER.writeValueAsString(error));
             response.getWriter().flush();
@@ -86,33 +86,36 @@ public class DownloadController {
             // Instructions
             String instructions = """
                 ====================================================
-                GAME SHOW CENTER - MODO OFFLINE (Developed by YonIA Enterprise)
+                GAME SHOW CENTER - OFFLINE EDITION (Developed by YonIA Enterprise)
                 ====================================================
 
-                INSTRUCCIONES DE USO:
-                1. Asegurate de tener instalado Java 17 o superior en tu equipo.
-                2. Para iniciar el programa, haz doble clic en:
+                QUICK START INSTRUCTIONS:
+                1. Ensure Java 17 or higher is installed on your operating system.
+                2. To launch the application, double-click:
                    'template-offline-1.0.0-standalone.jar'
-                   o ejecuta en consola:
+                   or run in terminal:
                    java -jar template-offline-1.0.0-standalone.jar
 
-                3. Al abrir por primera vez, selecciona 'Examinar Archivo de Licencia (.lic)'
-                   e introduce el archivo de licencia comercial (.lic) proporcionado
-                   por el administrador para tu suscripcion anual.
+                3. On first startup, click 'Browse License File (.lic)'
+                   and select your official commercial license file (.lic)
+                   issued for your subscription.
 
-                4. La carpeta 'games/' contiene los minijuegos instalados. Puedes
-                   agregar o actualizar juegos mediante el gestor de paquetes MegaCore.
+                4. The 'games/' directory contains your installed minigames.
+                   You can add or update games via the MegaCore package manager.
                 ====================================================
                 """;
-            zipBytes(zos, "GameShowCenter-Offline/INSTRUCCIONES_DE_USO.txt", instructions.getBytes("UTF-8"));
+            zipBytes(zos, "GameShowCenter-Offline/README_INSTRUCTIONS.txt", instructions.getBytes("UTF-8"));
 
             // Executable Standalone JAR
-            File jarFile = new File(templateOfflineDir, "target/template-offline-1.0.0-standalone.jar");
+            File jarFile = new File(templateOfflineDir, "target/template-offline-1.1.0-standalone.jar");
             if (!jarFile.exists()) {
-                jarFile = new File(templateOfflineDir, "target/template-offline-1.0.0.jar");
+                jarFile = new File(templateOfflineDir, "target/template-offline-1.0.0-standalone.jar");
+            }
+            if (!jarFile.exists()) {
+                jarFile = new File(templateOfflineDir, "target/template-offline-1.1.0.jar");
             }
             if (jarFile.exists()) {
-                zipFile(zos, jarFile, "GameShowCenter-Offline/template-offline-1.0.0-standalone.jar");
+                zipFile(zos, jarFile, "GameShowCenter-Offline/" + jarFile.getName());
             }
 
             // Games Folder (Basic minigames)

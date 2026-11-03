@@ -44,7 +44,6 @@ public class GlobalExceptionHandler {
         errorResponse.put("error", "Internal server error");
         errorResponse.put("incidentId", incidentId);
         errorResponse.put("message", "An unexpected internal error occurred. Please contact administrator referencing the incident ID.");
-        errorResponse.put("mensaje", "Ocurrió un error interno no esperado. Contacte al administrador indicando el ID de incidente.");
         errorResponse.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);

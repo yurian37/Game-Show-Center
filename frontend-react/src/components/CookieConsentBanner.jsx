@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import SvgEmoji from './SvgEmoji';
 
 /**
- * CookieConsentBanner - Hardened Privacy & Cookie Tracking Consent Banner.
+ * CookieConsentBanner - Hardened Privacy & Cookie Tracking Consent Banner (100% English).
  * Complies with GDPR (Art. 7), ePrivacy Directive, SOC 2 CC6.1, and ISO/IEC 27701 (Privacy Information Management).
- * Allows users to accept all cookies (including third-party ad networks) or restrict to strictly essential cookies.
+ * Clarifies that no server-side activity configurations or persistent match histories are stored.
  */
 export default function CookieConsentBanner({ onOpenPrivacyPolicy }) {
   const [isVisible, setIsVisible] = useState(false);
@@ -52,10 +52,10 @@ export default function CookieConsentBanner({ onOpenPrivacyPolicy }) {
               <span className="text-[10px] text-slate-400">ISO/IEC 27701 & GDPR</span>
             </div>
             <h4 className="text-sm font-bold text-white mb-1">
-              Consentimiento de Cookies y Privacidad
+              Privacy & Cookie Preferences
             </h4>
             <p className="text-xs text-slate-300 leading-relaxed max-w-2xl">
-              Utilizamos cookies esenciales para el funcionamiento de la plataforma y el guardado de partidas. Con tu consentimiento, nuestras redes asociadas de anuncios (Adsterra) utilizan identificadores para mostrar patrocinios relevantes que mantienen el servicio gratuito.
+              We use strictly necessary session cookies for security and core navigation. Game Show Center runs purely in-memory in your browser—<strong>we do not store or archive your custom activity configurations or match setups on remote servers</strong>. With your consent, verified partner networks (Adsterra) use anonymous identifiers to deliver relevant sponsorships that keep this platform free.
             </p>
           </div>
         </div>
@@ -67,20 +67,20 @@ export default function CookieConsentBanner({ onOpenPrivacyPolicy }) {
               onClick={onOpenPrivacyPolicy}
               className="px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:text-white bg-slate-800/60 hover:bg-slate-800 transition-all cursor-pointer whitespace-nowrap"
             >
-              Políticas
+              Privacy Policy
             </button>
           )}
           <button
             onClick={() => handleConsent('essential_only')}
             className="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white bg-slate-800/90 hover:bg-slate-700 border border-slate-700/80 transition-all cursor-pointer whitespace-nowrap"
           >
-            Solo Necesarias
+            Strictly Necessary
           </button>
           <button
             onClick={() => handleConsent('accepted')}
             className="px-5 py-2.5 rounded-xl text-xs font-black text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-lg shadow-indigo-600/30 transition-all cursor-pointer whitespace-nowrap"
           >
-            Aceptar Todo
+            Accept All
           </button>
         </div>
 

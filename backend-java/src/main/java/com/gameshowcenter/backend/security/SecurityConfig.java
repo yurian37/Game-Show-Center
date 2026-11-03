@@ -52,7 +52,7 @@ public class SecurityConfig {
                     .policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)
                 )
                 .contentSecurityPolicy(csp -> csp
-                    .policyDirectives("default-src 'self'; script-src 'self' 'unsafe-inline' https://www.topcreativeformat.com; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; frame-src 'self' https://www.topcreativeformat.com; connect-src 'self' http://localhost:8080 http://127.0.0.1:8080;")
+                    .policyDirectives("default-src 'self'; script-src 'self' 'unsafe-inline' https://www.topcreativeformat.com; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline'; frame-src 'self' https://www.topcreativeformat.com; connect-src 'self' http://localhost:8080 http://127.0.0.1:8080;")
                 )
             )
 

@@ -11,7 +11,7 @@ export default function TopicTakedownSetup({ value, onChange }) {
     const result = [];
     for (let c = 0; c < targetNumCats; c++) {
       const existingCat = currentCats[c] || {};
-      const catName = existingCat.category_name || existingCat.categoryName || `Categoría #${c + 1}`;
+      const catName = existingCat.category_name || existingCat.categoryName || `Category #${c + 1}`;
       const existingQuestions = Array.isArray(existingCat.questions) ? existingCat.questions : [];
 
       const questions = [];
@@ -107,24 +107,24 @@ export default function TopicTakedownSetup({ value, onChange }) {
         <h3 className="text-lg font-black text-amber-400 flex items-center gap-2">
           <span className="inline-flex items-center gap-1.5"><SvgEmoji name="target" /> Topic Takedown</span>
           <span className="text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded-full uppercase font-bold tracking-wider">
-            Online Mode (Texto)
+            Online Mode (Text-Only)
           </span>
         </h3>
         <span className="text-xs font-mono text-slate-400 bg-[#121624] px-3 py-1 rounded-lg border border-slate-800">
-          Tablero Rectangular: <strong className="text-purple-300">{numCategories} Col.</strong> × <strong className="text-indigo-300">{questionsPerCategory} Filas</strong> ({numCategories * questionsPerCategory} preguntas)
+          Rectangular Board: <strong className="text-purple-300">{numCategories} Cols</strong> × <strong className="text-indigo-300">{questionsPerCategory} Rows</strong> ({numCategories * questionsPerCategory} questions)
         </span>
       </div>
 
       <p className="text-xs text-slate-400 mb-6 leading-relaxed">
-        Configura el tablero de categorías y preguntas. En el modo online se admiten hasta un máximo de <strong>3 categorías</strong> y <strong>4 preguntas por categoría</strong> (únicamente en formato texto).
+        Configure the category and question board. In online mode, up to a maximum of <strong>3 categories</strong> and <strong>4 questions per category</strong> are supported (text-only format).
       </p>
 
       {/* Grid Configuration Controls */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 bg-[#121624] p-4 rounded-xl border border-slate-800/80">
         <div>
           <label className="block text-[11px] font-black text-indigo-300 uppercase tracking-wider mb-2 flex items-center justify-between">
-            <span># Categorías (Columnas)</span>
-            <span className="text-[10px] text-amber-400 font-normal">Máximo 3</span>
+            <span># Categories (Columns)</span>
+            <span className="text-[10px] text-amber-400 font-normal">Max 3</span>
           </label>
           <div className="flex items-center gap-2">
             {[1, 2, 3].map((num) => (
@@ -138,7 +138,7 @@ export default function TopicTakedownSetup({ value, onChange }) {
                     : 'bg-[#1b2238] hover:bg-[#232c48] text-slate-400 border border-slate-800'
                 }`}
               >
-                {num} {num === 1 ? 'Categoría' : 'Categorías'}
+                {num} {num === 1 ? 'Category' : 'Categories'}
               </button>
             ))}
           </div>
@@ -146,8 +146,8 @@ export default function TopicTakedownSetup({ value, onChange }) {
 
         <div>
           <label className="block text-[11px] font-black text-indigo-300 uppercase tracking-wider mb-2 flex items-center justify-between">
-            <span># Preguntas por Categoría (Filas)</span>
-            <span className="text-[10px] text-amber-400 font-normal">Máximo 4</span>
+            <span># Questions per Category (Rows)</span>
+            <span className="text-[10px] text-amber-400 font-normal">Max 4</span>
           </label>
           <div className="flex items-center gap-2">
             {[1, 2, 3, 4].map((num) => (
@@ -161,7 +161,7 @@ export default function TopicTakedownSetup({ value, onChange }) {
                     : 'bg-[#1b2238] hover:bg-[#232c48] text-slate-400 border border-slate-800'
                 }`}
               >
-                {num} {num === 1 ? 'Pregunta' : 'Preguntas'}
+                {num} {num === 1 ? 'Question' : 'Questions'}
               </button>
             ))}
           </div>
@@ -171,8 +171,8 @@ export default function TopicTakedownSetup({ value, onChange }) {
       {/* Rectangular Categories and Questions Editor */}
       <div className="space-y-6">
         <h4 className="text-xs font-black text-indigo-300 uppercase tracking-wider flex items-center justify-between">
-          <span>Categorías y Preguntas del Tablero</span>
-          <span className="text-[11px] text-slate-500 font-normal">Todas las filas deben estar completas</span>
+          <span>Board Categories & Questions</span>
+          <span className="text-[11px] text-slate-500 font-normal">All rows must be filled</span>
         </h4>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -187,16 +187,16 @@ export default function TopicTakedownSetup({ value, onChange }) {
                 <div className="border-b border-slate-800 pb-3">
                   <div className="flex items-center justify-between mb-1.5">
                     <span className="text-[10px] font-black uppercase text-purple-400 tracking-wider">
-                      Columna #{catIdx + 1}
+                      Column #{catIdx + 1}
                     </span>
                     <span className="text-[10px] font-mono text-slate-500">
-                      {questionsPerCategory} preguntas
+                      {questionsPerCategory} questions
                     </span>
                   </div>
                   <input
                     type="text"
                     value={cat.category_name || cat.categoryName || ''}
-                    placeholder={`Nombre Categoría #${catIdx + 1}`}
+                    placeholder={`Category Name #${catIdx + 1}`}
                     onChange={(e) => handleCategoryNameChange(catIdx, e.target.value)}
                     className="w-full bg-[#1b2238] border border-slate-700/80 rounded-lg px-3 py-1.5 text-xs font-bold text-slate-100 focus:outline-none focus:border-purple-500 placeholder:text-slate-600"
                   />
@@ -218,21 +218,21 @@ export default function TopicTakedownSetup({ value, onChange }) {
                         }`}
                       >
                         <div className="flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase">
-                          <span className="text-amber-400">Pregunta #{qIdx + 1}</span>
+                          <span className="text-amber-400">Question #{qIdx + 1}</span>
                           {!isFilled && (
                             <span className="text-amber-400/80 text-[9px] lowercase font-normal">
-                              requerida
+                              required
                             </span>
                           )}
                         </div>
 
                         <div>
                           <label className="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">
-                            Pregunta (Texto)
+                            Question (Text)
                           </label>
                           <input
                             type="text"
-                            placeholder="Texto de la pregunta..."
+                            placeholder="Question text..."
                             value={qObj.question || ''}
                             onChange={(e) => handleQuestionChange(catIdx, qIdx, 'question', e.target.value)}
                             className="w-full bg-[#0f121d] border border-slate-800 rounded px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 font-medium placeholder:text-slate-700"
@@ -241,11 +241,11 @@ export default function TopicTakedownSetup({ value, onChange }) {
 
                         <div>
                           <label className="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">
-                            Respuesta Correcta (Texto)
+                            Correct Answer (Text)
                           </label>
                           <input
                             type="text"
-                            placeholder="Respuesta..."
+                            placeholder="Answer..."
                             value={qObj.answer || ''}
                             onChange={(e) => handleQuestionChange(catIdx, qIdx, 'answer', e.target.value)}
                             className="w-full bg-[#0f121d] border border-slate-800 rounded px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 font-medium placeholder:text-slate-700"
@@ -287,7 +287,7 @@ export function serialize(value) {
     }
 
     categories.push({
-      categoryName: (rawCat.category_name || rawCat.categoryName || `Categoría #${c + 1}`).trim(),
+      categoryName: (rawCat.category_name || rawCat.categoryName || `Category #${c + 1}`).trim(),
       questions
     });
   }

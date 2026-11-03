@@ -3,27 +3,27 @@ import SvgEmoji from '../../../SvgEmoji';
 
 const FALLBACK_CATEGORIES = [
   {
-    category_name: "Ciencia y Naturaleza",
+    category_name: "Science & Nature",
     questions: [
-      { question: "¿Cuál es el elemento químico más abundante en el universo?", answer: "Hidrógeno" },
-      { question: "¿Qué planeta de nuestro sistema solar tiene el mayor número de lunas?", answer: "Saturno" },
-      { question: "¿Cómo se llama el proceso por el cual las plantas convierten la luz solar en energía?", answer: "Fotosíntesis" }
+      { question: "What is the most abundant chemical element in the universe?", answer: "Hydrogen" },
+      { question: "Which planet in our solar system has the most moons?", answer: "Saturn" },
+      { question: "What is the process by which plants convert sunlight into chemical energy?", answer: "Photosynthesis" }
     ]
   },
   {
-    category_name: "Historia Universal",
+    category_name: "World History",
     questions: [
-      { question: "¿En qué año llegó el ser humano a la Luna por primera vez?", answer: "1969" },
-      { question: "¿Quién fue el primer presidente de los Estados Unidos?", answer: "George Washington" },
-      { question: "¿Qué civilización antigua construyó la mítica ciudad de Machu Picchu?", answer: "Los Incas" }
+      { question: "In what year did humans first land on the Moon?", answer: "1969" },
+      { question: "Who was the first President of the United States?", answer: "George Washington" },
+      { question: "Which ancient civilization built the historic sanctuary of Machu Picchu?", answer: "The Incas" }
     ]
   },
   {
-    category_name: "Cine y Cultura Pop",
+    category_name: "Pop Culture & Cinema",
     questions: [
-      { question: "¿Cómo se llama la inteligencia artificial del traje de Iron Man?", answer: "J.A.R.V.I.S." },
-      { question: "¿Qué película ganó el premio Óscar a Mejor Película en 1997 narrando un famoso naufragio?", answer: "Titanic" },
-      { question: "¿En qué ficticio país africano transcurre la historia de Black Panther?", answer: "Wakanda" }
+      { question: "What is the name of the AI assistant built into Iron Man's armor?", answer: "J.A.R.V.I.S." },
+      { question: "Which film won the Academy Award for Best Picture in 1997 detailing a historic shipwreck?", answer: "Titanic" },
+      { question: "In which fictional African nation is the story of Black Panther set?", answer: "Wakanda" }
     ]
   }
 ];
@@ -34,7 +34,7 @@ export default function TopicTakedownPlay({ profiles = [], setupData = {} }) {
     const rawCats = setupData?.categories || setupData?.categoryList;
     if (Array.isArray(rawCats) && rawCats.length > 0) {
       return rawCats.map((cat, idx) => ({
-        categoryName: cat.categoryName || cat.category_name || `Categoría #${idx + 1}`,
+        categoryName: cat.categoryName || cat.category_name || `Category #${idx + 1}`,
         questions: Array.isArray(cat.questions) ? cat.questions : []
       }));
     }
@@ -73,16 +73,16 @@ export default function TopicTakedownPlay({ profiles = [], setupData = {} }) {
 
     const cat = categories[catIdx];
     const qData = cat?.questions?.[qIdx] || {
-      question: `Pregunta ${qIdx + 1}`,
-      answer: "Respuesta no configurada"
+      question: `Question ${qIdx + 1}`,
+      answer: "Answer not configured"
     };
 
     setActiveQuestion({
       catIdx,
       qIdx,
-      categoryName: cat?.categoryName || `Categoría #${catIdx + 1}`,
-      question: qData.question || 'Sin enunciado',
-      answer: qData.answer || 'Sin respuesta',
+      categoryName: cat?.categoryName || `Category #${catIdx + 1}`,
+      question: qData.question || 'No question prompt provided',
+      answer: qData.answer || 'No answer provided',
       imageUrl: qData.imageUrl || qData.image_url || null,
       audioUrl: qData.audioUrl || qData.audio_url || null
     });
@@ -125,14 +125,14 @@ export default function TopicTakedownPlay({ profiles = [], setupData = {} }) {
           <div className="text-left">
             <h2 className="text-lg font-black text-white tracking-wide">Topic Takedown</h2>
             <p className="text-[11px] font-bold text-slate-400">
-              {numCategories} Categorías × {questionsPerCategory} Preguntas
+              {numCategories} Categories × {questionsPerCategory} Questions
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
           <div className="px-4 py-1.5 rounded-xl bg-[#121624] border border-slate-800 text-xs font-mono font-bold text-slate-300">
-            Preguntas Reveladas: <strong className="text-amber-400">{revealedSet.size}</strong> / {totalQuestions}
+            Revealed Questions: <strong className="text-amber-400">{revealedSet.size}</strong> / {totalQuestions}
           </div>
 
           <button
@@ -203,7 +203,7 @@ export default function TopicTakedownPlay({ profiles = [], setupData = {} }) {
                     {isRevealed ? (
                       <>
                         <span className="text-[10px] font-extrabold uppercase text-slate-500 tracking-wider">
-                          <span className="inline-flex items-center gap-1"><SvgEmoji name="check" /> Revelada</span>
+                          <span className="inline-flex items-center gap-1"><SvgEmoji name="check" /> Revealed</span>
                         </span>
                         <span className="text-lg sm:text-xl font-black text-slate-600 line-through">
                           {questionNumber}
@@ -212,7 +212,7 @@ export default function TopicTakedownPlay({ profiles = [], setupData = {} }) {
                     ) : (
                       <>
                         <span className="text-[10px] font-extrabold uppercase text-slate-400 tracking-wider">
-                          Pregunta
+                          Question
                         </span>
                         <span className="text-lg sm:text-xl font-black text-amber-300">
                           {questionNumber}
@@ -236,7 +236,7 @@ export default function TopicTakedownPlay({ profiles = [], setupData = {} }) {
             {/* Category & Question Number Badge */}
             <div className="flex flex-col items-center gap-1.5 z-10 text-center">
               <span className="text-[10px] font-black uppercase text-amber-400 tracking-widest bg-amber-500/10 border border-amber-500/30 px-3 py-1 rounded-full">
-                {activeQuestion.categoryName} • Pregunta #{activeQuestion.qIdx + 1}
+                {activeQuestion.categoryName} • Question #{activeQuestion.qIdx + 1}
               </span>
             </div>
 
@@ -245,7 +245,7 @@ export default function TopicTakedownPlay({ profiles = [], setupData = {} }) {
               <div className="w-full max-h-56 overflow-hidden rounded-2xl border border-slate-800 bg-[#0b0e17] flex items-center justify-center z-10">
                 <img
                   src={activeQuestion.imageUrl}
-                  alt="Pregunta Clue"
+                  alt="Question Clue"
                   className="max-h-56 w-auto object-contain rounded-xl"
                   onError={(e) => { e.currentTarget.style.display = 'none'; }}
                 />
@@ -257,7 +257,7 @@ export default function TopicTakedownPlay({ profiles = [], setupData = {} }) {
               <div className="w-full bg-[#0b0e17] p-3 rounded-2xl border border-slate-800 z-10">
                 <audio controls className="w-full">
                   <source src={activeQuestion.audioUrl} type="audio/mpeg" />
-                  Tu navegador no soporta el reproductor de audio.
+                  Your browser does not support the audio player.
                 </audio>
               </div>
             )}
@@ -265,7 +265,7 @@ export default function TopicTakedownPlay({ profiles = [], setupData = {} }) {
             {/* Question Text */}
             <div className="space-y-2 z-10 text-center px-2">
               <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest block">
-                Enunciado
+                Prompt
               </span>
               <h3 className="text-lg sm:text-2xl font-black text-white leading-relaxed">
                 "{activeQuestion.question}"
@@ -275,7 +275,7 @@ export default function TopicTakedownPlay({ profiles = [], setupData = {} }) {
             {/* Hidden / Revealed Answer Section */}
             <div className="w-full max-w-md bg-[#0b0e17] border border-slate-800 p-4 sm:p-5 rounded-2xl z-10 transition-all">
               <span className="text-[10px] font-black text-amber-400 uppercase tracking-widest block mb-2 text-center">
-                Respuesta
+                Answer
               </span>
 
               {showAnswerInView ? (

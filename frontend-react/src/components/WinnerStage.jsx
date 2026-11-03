@@ -1,6 +1,8 @@
 import React from 'react';
 import SvgEmoji from './SvgEmoji';
 
+const DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236366f1'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
+
 export default function WinnerStage({ matchData, onNavigate }) {
   const profiles = Array.isArray(matchData?.profiles) ? matchData.profiles : [];
   const scores = (matchData?.scores && typeof matchData.scores === 'object') ? matchData.scores : {};
@@ -55,6 +57,7 @@ export default function WinnerStage({ matchData, onNavigate }) {
                   src={primaryWinner.avatar} 
                   alt={primaryWinner.name} 
                   className="w-full h-full object-cover"
+                  onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = DEFAULT_AVATAR; }}
                 />
               ) : (
                 <span className="text-6xl text-amber-400 font-bold flex items-center justify-center">
@@ -122,7 +125,12 @@ export default function WinnerStage({ matchData, onNavigate }) {
 
                   <div className="w-11 h-11 rounded-xl bg-[#0f121d] border border-slate-700 overflow-hidden flex items-center justify-center shrink-0">
                     {comp.avatar ? (
-                      <img src={comp.avatar} alt={comp.name} className="w-full h-full object-cover" />
+                      <img 
+                        src={comp.avatar} 
+                        alt={comp.name} 
+                        className="w-full h-full object-cover" 
+                        onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = DEFAULT_AVATAR; }}
+                      />
                     ) : (
                       <span className="text-base text-slate-500 font-bold flex items-center justify-center">
                         <SvgEmoji name="user" />

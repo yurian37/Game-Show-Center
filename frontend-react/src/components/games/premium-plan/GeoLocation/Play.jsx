@@ -4,7 +4,7 @@ import SvgEmoji from '../../../SvgEmoji';
 // Default rich landmarks pool with 3 high-quality, verified public images per location
 const DEFAULT_LOCATIONS = [
   {
-    location_name: "Chichén Itzá, México",
+    location_name: "Chichen Itza, Mexico",
     images: [
       "https://images.unsplash.com/photo-1518638150340-f706e86654de?auto=format&fit=crop&w=1200&q=80",
       "https://images.unsplash.com/photo-1568402102990-bc541580b59f?auto=format&fit=crop&w=1200&q=80",
@@ -12,7 +12,7 @@ const DEFAULT_LOCATIONS = [
     ]
   },
   {
-    location_name: "Coliseo Romano, Italia",
+    location_name: "Colosseum (Rome), Italy",
     images: [
       "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=1200&q=80",
       "https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?auto=format&fit=crop&w=1200&q=80",
@@ -20,7 +20,7 @@ const DEFAULT_LOCATIONS = [
     ]
   },
   {
-    location_name: "Machu Picchu, Perú",
+    location_name: "Machu Picchu, Peru",
     images: [
       "https://images.unsplash.com/photo-1526392060635-9d6019884377?auto=format&fit=crop&w=1200&q=80",
       "https://images.unsplash.com/photo-1587595431973-160d0d94add1?auto=format&fit=crop&w=1200&q=80",
@@ -28,7 +28,7 @@ const DEFAULT_LOCATIONS = [
     ]
   },
   {
-    location_name: "Torre Eiffel (París), Francia",
+    location_name: "Eiffel Tower (Paris), France",
     images: [
       "https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?auto=format&fit=crop&w=1200&q=80",
       "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1200&q=80",
@@ -44,7 +44,7 @@ const DEFAULT_LOCATIONS = [
     ]
   },
   {
-    location_name: "Gran Muralla China, China",
+    location_name: "Great Wall of China, China",
     images: [
       "https://images.unsplash.com/photo-1508804185872-d7badad00f7d?auto=format&fit=crop&w=1200&q=80",
       "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=1200&q=80",
@@ -52,7 +52,7 @@ const DEFAULT_LOCATIONS = [
     ]
   },
   {
-    location_name: "Estatua de la Libertad (Nueva York), EE. UU.",
+    location_name: "Statue of Liberty (New York), USA",
     images: [
       "https://images.unsplash.com/photo-1605130284535-11dd9eedc58a?auto=format&fit=crop&w=1200&q=80",
       "https://images.unsplash.com/photo-1543783207-ec64e4d95325?auto=format&fit=crop&w=1200&q=80",
@@ -60,7 +60,7 @@ const DEFAULT_LOCATIONS = [
     ]
   },
   {
-    location_name: "Cristo Redentor (Río de Janeiro), Brasil",
+    location_name: "Christ the Redeemer (Rio de Janeiro), Brazil",
     images: [
       "https://images.unsplash.com/photo-1598970434795-0c54fe7c0648?auto=format&fit=crop&w=1200&q=80",
       "https://images.unsplash.com/photo-1516306580123-e6e52b1b7b5f?auto=format&fit=crop&w=1200&q=80",
@@ -68,7 +68,7 @@ const DEFAULT_LOCATIONS = [
     ]
   },
   {
-    location_name: "Pirámides de Guiza, Egipto",
+    location_name: "Pyramids of Giza, Egypt",
     images: [
       "https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?auto=format&fit=crop&w=1200&q=80",
       "https://images.unsplash.com/photo-1539650116574-8efeb43e2750?auto=format&fit=crop&w=1200&q=80",
@@ -76,7 +76,7 @@ const DEFAULT_LOCATIONS = [
     ]
   },
   {
-    location_name: "Ópera de Sídney, Australia",
+    location_name: "Sydney Opera House, Australia",
     images: [
       "https://images.unsplash.com/photo-1624138784614-87fd1b6528f8?auto=format&fit=crop&w=1200&q=80",
       "https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&w=1200&q=80",
@@ -84,6 +84,7 @@ const DEFAULT_LOCATIONS = [
     ]
   }
 ];
+
 
 export default function GeoLocationPlay({ profiles = [], setupData = {}, onSelectWinner }) {
   // Calculation of total match rounds by competitors & rounds per player

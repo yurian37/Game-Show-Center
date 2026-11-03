@@ -102,7 +102,7 @@ public class RateLimitingFilter extends OncePerRequestFilter {
             Map<String, Object> errorBody = new HashMap<>();
             errorBody.put("status", 429);
             errorBody.put("error", "Too Many Requests");
-            errorBody.put("message", "Demasiadas peticiones. Has superado el límite de seguridad permitido para este servicio.");
+            errorBody.put("message", "Too many requests. You have exceeded the permitted security rate limit for this service.");
             errorBody.put("retryAfterSeconds", remainingSeconds);
 
             response.getWriter().write(MAPPER.writeValueAsString(errorBody));

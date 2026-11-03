@@ -21,11 +21,11 @@ public class TimeLineSetup extends GameSetup {
     @Override
     public void validate(int numPlayers) {
         if (events == null || events.size() < 3) {
-            throw new IllegalArgumentException("TimeLine: Se requieren al menos 3 hitos en la línea de tiempo.");
+            throw new IllegalArgumentException("TimeLine: At least 3 milestone events are required on the timeline.");
         }
         for (TimeLineEvent ev : events) {
             if (ev.getTitle() == null || ev.getTitle().trim().isEmpty()) {
-                throw new IllegalArgumentException("TimeLine: Todos los hitos deben incluir un título.");
+                throw new IllegalArgumentException("TimeLine: All milestone events must include a title.");
             }
         }
     }

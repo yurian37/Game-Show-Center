@@ -204,9 +204,9 @@ export default function LegalModal({ isOpen, onClose, initialTab = 'privacy' }) 
               </div>
 
               <div className="bg-[#1b2238] p-4 rounded-xl border border-slate-800">
-                <h3 className="text-sm font-bold text-slate-200 mb-2">3. Local Storage</h3>
+                <h3 className="text-sm font-bold text-slate-200 mb-2">3. Ephemeral In-Memory Execution</h3>
                 <p>
-                  Game Show Center does not store personally identifiable information (PII) on remote servers without explicit consent. Match setups, score presets, and contestant lists are stored entirely within your browser's local memory (localStorage) to provide a responsive, latency-free hosting experience.
+                  Game Show Center operates as a transient live show engine. We do not store, archive, or retain your custom match setups, activity configurations, or historical game data on remote servers. Matches run strictly within transient browser session memory to eliminate persistent storage overhead and guarantee complete privacy.
                 </p>
               </div>
 

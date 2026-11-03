@@ -65,11 +65,65 @@ export default function OnGameHost({ selectedGames = [], gameMode = '1vs1', init
   };
 
   const handleAvatarChange = (id, e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setProfiles(profiles.map(p => p.id === id ? { ...p, avatar: imageUrl } : p));
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      alert('Please select a valid image file (JPEG, PNG, WebP, GIF, SVG).');
+      return;
     }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const rawDataUrl = event.target?.result;
+      if (!rawDataUrl) return;
+
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const maxDim = 512;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          const optimizedDataUrl = canvas.toDataURL('image/jpeg', 0.88);
+          setProfiles(prev => prev.map(p => p.id === id ? { ...p, avatar: optimizedDataUrl } : p));
+        } catch {
+          // If canvas export fails, fall back to safe raw data URL
+          setProfiles(prev => prev.map(p => p.id === id ? { ...p, avatar: rawDataUrl } : p));
+        }
+      };
+      img.onerror = () => {
+        setProfiles(prev => prev.map(p => p.id === id ? { ...p, avatar: rawDataUrl } : p));
+      };
+      img.src = rawDataUrl;
+    };
+    reader.onerror = () => {
+      console.warn("Failed to read image file:", reader.error);
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
+
+  const handleRemoveAvatar = (id, e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setProfiles(prev => prev.map(p => p.id === id ? { ...p, avatar: DEFAULT_AVATAR } : p));
   };
 
   // --- CLIENT VALIDATION RULES ---
@@ -371,14 +425,39 @@ export default function OnGameHost({ selectedGames = [], gameMode = '1vs1', init
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 {profiles.map((profile) => (
                   <div key={profile.id} className="bg-[#121624] p-4 rounded-xl border border-slate-800/80 flex items-center gap-4">
-                    <label className="w-16 h-16 shrink-0 rounded-xl bg-[#0f121d] border-2 border-dashed border-slate-700 hover:border-indigo-500 transition-colors flex flex-col items-center justify-center cursor-pointer overflow-hidden relative group" title="Click to choose an image or avatar">
-                      {profile.avatar ? (
-                        <img src={profile.avatar} alt="Avatar" className="w-full h-full object-cover" />
-                      ) : (
-                        <span className="text-xl text-slate-500 group-hover:text-indigo-400">+</span>
+                    <div className="relative group/avatar">
+                      <label className="w-16 h-16 shrink-0 rounded-xl bg-[#0f121d] border-2 border-dashed border-slate-700 hover:border-indigo-500 transition-colors flex flex-col items-center justify-center cursor-pointer overflow-hidden relative" title="Click to choose a photo or avatar">
+                        {profile.avatar && profile.avatar !== DEFAULT_AVATAR ? (
+                          <img
+                            src={profile.avatar}
+                            alt="Avatar"
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.currentTarget.onerror = null;
+                              e.currentTarget.src = DEFAULT_AVATAR;
+                            }}
+                          />
+                        ) : (
+                          <span className="text-xl text-slate-500 group-hover/avatar:text-indigo-400 font-bold">+</span>
+                        )}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleAvatarChange(profile.id, e)}
+                          className="hidden"
+                        />
+                      </label>
+                      {profile.avatar && profile.avatar !== DEFAULT_AVATAR && (
+                        <button
+                          type="button"
+                          onClick={(e) => handleRemoveAvatar(profile.id, e)}
+                          className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-rose-600 hover:bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center shadow cursor-pointer transition-all"
+                          title="Remove custom photo"
+                        >
+                          ✕
+                        </button>
                       )}
-                      <input type="file" accept="image/*" onChange={(e) => handleAvatarChange(profile.id, e)} className="hidden" />
-                    </label>
+                    </div>
 
                     <div className="flex-1">
                       <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Participant: {profile.id}</label>
