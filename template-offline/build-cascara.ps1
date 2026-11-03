@@ -1,7 +1,66 @@
 param(
     [string]$AppVersion = "1.1.0",
-    [string]$ReleaseTag = "v1.1"
+    [string]$ReleaseTag = "v1.1",
+    [string]$CertPath = $env:GSC_SIGNING_CERT_PATH,
+    [string]$CertPassword = $env:GSC_SIGNING_CERT_PASSWORD,
+    [string]$TimestampUrl = "http://timestamp.digicert.com"
 )
+
+function Invoke-CodeSigning {
+    param(
+        [string]$FilePath,
+        [string]$Description
+    )
+
+    if (-not (Test-Path $FilePath)) { return }
+
+    if ([string]::IsNullOrWhiteSpace($CertPath) -or (-not (Test-Path $CertPath))) {
+        Write-Host "  -> [AUTHENTICODE] Omitiendo firma digital para $Description." -ForegroundColor DarkGray
+        Write-Host "     (Certificado no especificado o no encontrado en `'$CertPath`'. Para firmar en CI/CD, configure GSC_SIGNING_CERT_PATH)." -ForegroundColor DarkGray
+        return
+    }
+
+    Write-Host "  -> [AUTHENTICODE] Firmando digitalmente $Description..." -ForegroundColor Cyan
+
+    $signtoolPath = $null
+    $stCmd = Get-Command signtool.exe -ErrorAction SilentlyContinue
+    if ($stCmd) {
+        $signtoolPath = $stCmd.Source
+    } else {
+        $candidates = @(
+            (Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin\*\x64\signtool.exe" -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -ExpandProperty FullName -First 1),
+            "C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Bin\signtool.exe"
+        )
+        foreach ($c in $candidates) {
+            if ($c -and (Test-Path $c)) {
+                $signtoolPath = $c
+                break
+            }
+        }
+    }
+
+    if (-not $signtoolPath) {
+        Write-Host "  -> [ADVERTENCIA] signtool.exe no detectado en el sistema. Omitiendo firma digital." -ForegroundColor Yellow
+        return
+    }
+
+    $passArg = ""
+    if (-not [string]::IsNullOrWhiteSpace($CertPassword)) {
+        $passArg = "/p `"$CertPassword`""
+    }
+
+    $signArgs = "sign /fd SHA256 /tr `"$TimestampUrl`" /td SHA256 /f `"$CertPath`" $passArg /d `"$Description`" `"$FilePath`""
+    Start-Process -FilePath $signtoolPath -ArgumentList $signArgs -NoNewWindow -Wait
+
+    # Verificacion forense de firma digital
+    $verifyArgs = "verify /pa /v `"$FilePath`""
+    $verifyProc = Start-Process -FilePath $signtoolPath -ArgumentList $verifyArgs -NoNewWindow -Wait -PassThru
+    if ($verifyProc.ExitCode -eq 0) {
+        Write-Host "  -> [EXITO] Binario firmado y verificado con exito: $FilePath" -ForegroundColor Green
+    } else {
+        Write-Host "  -> [ADVERTENCIA] Verificacion de firma devolvio codigo de salida: $($verifyProc.ExitCode)" -ForegroundColor Yellow
+    }
+}
 
 # Script de compilacion y generacion del ejecutable (.EXE) e instalador de la CASCARA VIRGEN de Game Show Center
 # Desarrollado por YonIA Enterprise - 2026
@@ -155,6 +214,12 @@ start "" "GameShowCenter.exe"
 "@
 [System.IO.File]::WriteAllText((Join-Path $cascaraDir "Lanzar-GameShowCenter.bat"), $launcherBat, [System.Text.Encoding]::ASCII)
 
+# Firma digital Authenticode del ejecutable nativo principal si se configuro certificado
+$mainExePath = Join-Path $cascaraDir "GameShowCenter.exe"
+if (Test-Path $mainExePath) {
+    Invoke-CodeSigning -FilePath $mainExePath -Description "Game Show Center Offline Executable"
+}
+
 $readmeContent = @"
 ======================================================================
   GAME SHOW CENTER OFFLINE - CASCARA BASE VIRGEN v$AppVersion
@@ -220,6 +285,8 @@ if ($isccPath) {
     if ($LASTEXITCODE -eq 0 -and (Test-Path $installerExe)) {
         $instLen = (Get-Item $installerExe).Length
         Write-Host "  -> [EXITO] Instalador virgen compilado: $installerExe ($([math]::Round($instLen/1MB, 2)) MB)" -ForegroundColor Green
+        # Firma digital Authenticode del instalador setup
+        Invoke-CodeSigning -FilePath $installerExe -Description "Game Show Center Installer Setup"
     } else {
         Write-Host "  -> Advertencia: Fallo al compilar el script Inno Setup." -ForegroundColor Yellow
     }

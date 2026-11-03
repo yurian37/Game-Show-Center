@@ -27,6 +27,8 @@ SolidCompression=yes
 WizardStyle=modern
 PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=dialog
+; Firma digital Authenticode (activada cuando se pasa el parametro /S o SignTool en Inno Setup)
+; SignTool=signtool sign /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 /f $q%GSC_SIGNING_CERT_PATH%$q /p $q%GSC_SIGNING_CERT_PASSWORD%$q $f
 
 [Languages]
 Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"

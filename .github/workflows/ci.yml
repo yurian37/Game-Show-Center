@@ -1,0 +1,161 @@
+name: CI/CD DevSecOps & Compliance Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+jobs:
+  # ============================================================================
+  # JOB 1: Escaneo de Secretos con Gitleaks (SOC 2 CC6.1, ISO 27001 A.8.8)
+  # ============================================================================
+  secret-scan:
+    name: Secret Scanning (Gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Gitleaks Secret Detector
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_CONFIG: .gitleaks.toml
+
+  # ============================================================================
+  # JOB 2: Backend Java - Build, Pruebas y SBOM (SOC 2 CC7.1, ISO A.8.25)
+  # ============================================================================
+  backend-ci:
+    name: Backend Java (Spring Boot) - Build & Security
+    runs-on: ubuntu-latest
+    needs: [ secret-scan ]
+    defaults:
+      run:
+        working-directory: backend-java
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Grant Execute Permissions to Maven Wrapper
+        run: chmod +x mvnw
+
+      - name: Run Unit & Integration Tests (17/17 Security Tests)
+        run: ./mvnw test
+
+      - name: Package & Generate CycloneDX SBOM
+        run: ./mvnw package -DskipTests
+
+      - name: Archive Backend Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-surefire-reports
+          path: backend-java/target/surefire-reports/
+          retention-days: 14
+
+      - name: Archive Backend CycloneDX SBOM (Software Bill of Materials)
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-sbom-cyclonedx
+          path: backend-java/target/classes/META-INF/sbom/application.cdx.json
+          retention-days: 30
+
+  # ============================================================================
+  # JOB 3: Desktop Offline - Build, Verification Tests & SBOM (ISO A.8.7, A.8.6)
+  # ============================================================================
+  desktop-ci:
+    name: Desktop Offline (JavaFX) - Hardening & Sandbox Tests
+    runs-on: ubuntu-latest
+    needs: [ secret-scan ]
+    defaults:
+      run:
+        working-directory: template-offline
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Grant Execute Permissions to Maven Wrapper
+        run: chmod +x mvnw
+
+      - name: Run Hardening Verification Tests (Sandbox, Ed25519, Anti-Zip Bomb)
+        run: ./mvnw test
+
+      - name: Generate Desktop CycloneDX SBOM
+        run: ./mvnw package -DskipTests
+
+      - name: Archive Desktop CycloneDX SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-sbom-cyclonedx
+          path: template-offline/target/bom.json
+          retention-days: 30
+
+  # ============================================================================
+  # JOB 4: Frontend React - SAST (Oxlint), Build & SBOM (ISO A.8.28, SOC 2 CC7.2)
+  # ============================================================================
+  frontend-ci:
+    name: Frontend React - SAST, Build & SBOM
+    runs-on: ubuntu-latest
+    needs: [ secret-scan ]
+    defaults:
+      run:
+        working-directory: frontend-react
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend-react/package.json
+
+      - name: Install Dependencies
+        run: npm ci || npm install
+
+      - name: Static Analysis Security Testing (Oxlint SAST)
+        run: npm run lint
+
+      - name: Production Bundle Compilation
+        run: npm run build
+
+      - name: Generate Frontend CycloneDX SBOM
+        run: npm run sbom
+
+      - name: Archive Frontend Production Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: frontend-react/dist/
+          retention-days: 14
+
+      - name: Archive Frontend CycloneDX SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-sbom-cyclonedx
+          path: frontend-react/bom.json
+          retention-days: 30

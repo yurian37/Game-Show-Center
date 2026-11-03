@@ -1,0 +1,51 @@
+# Gitleaks Configuration for Game Show Center
+# Hardening SOC 2 (CC6.1, CC6.8) & ISO/IEC 27001 (A.8.8, A.8.28)
+
+title = "Game Show Center - Secret Detection Config"
+
+[allowlist]
+description = "Global allowlist for build artifacts, documentation examples and test mocks"
+paths = [
+    '''(^|/)target/''',
+    '''(^|/)node_modules/''',
+    '''(^|/)docs/''',
+    '''(^|/)\.git/''',
+    '''(^|/)release/''',
+    '''(^|/)empty_temp/'''
+]
+regexes = [
+    '''c5bbc0b0-c50a-4d1a-ae88-229436a75c88''', # Test mock UUID in DownloadTokenServiceTest
+    '''1e11e3a5-8857-4c1d-b74a-e1742c352b06''', # Test mock UUID in DownloadTokenServiceTest
+    '''f32af443-ece7-4dcb-8ed4-379954668400'''  # Test mock UUID in DownloadTokenServiceTest
+]
+
+[[rules]]
+id = "generic-api-key"
+description = "Generic API Key or Secret detected"
+regex = '''(?i)(?:key|api|token|secret|password|passwd|auth)[\s:=]+['"][0-9a-zA-Z\-_]{20,}['"]'''
+entropy = 3.5
+keywords = ["key", "api", "token", "secret", "password", "passwd", "auth"]
+
+[[rules]]
+id = "asymmetric-private-key"
+description = "Asymmetric Private Key detected (PKCS#8, RSA, OpenSSH, Ed25519)"
+regex = '''-----BEGIN (?:RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----'''
+keywords = ["PRIVATE KEY"]
+
+[[rules]]
+id = "jwt-secret-token"
+description = "JSON Web Token (JWT) detected"
+regex = '''ey[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}'''
+keywords = ["ey"]
+
+[[rules]]
+id = "github-pat"
+description = "GitHub Personal Access Token"
+regex = '''gh[pousr]-[A-Za-z0-9_]{36,255}'''
+keywords = ["ghp", "gho", "ghu", "ghs", "ghr"]
+
+[[rules]]
+id = "stripe-secret-key"
+description = "Stripe Secret Key"
+regex = '''(?:sk|rk)_(?:live|test)_[0-9a-zA-Z]{24}'''
+keywords = ["sk_live", "sk_test", "rk_live", "rk_test"]

@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "oxlint",
+    "sbom": "npx -y @cyclonedx/cyclonedx-npm --output-file bom.json",
     "preview": "vite preview"
   },
   "dependencies": {

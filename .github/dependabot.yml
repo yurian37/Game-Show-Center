@@ -1,0 +1,51 @@
+# Dependabot configuration for Game Show Center
+# Hardening SOC 2 (CC7.1) & ISO/IEC 27001 (A.8.8 - Management of Technical Vulnerabilities)
+
+version: 2
+updates:
+  # 1. Backend Java Dependencies (Spring Boot, Security, Jackson)
+  - package-ecosystem: "maven"
+    directory: "/backend-java"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 10
+    labels:
+      - "security"
+      - "backend"
+      - "dependencies"
+
+  # 2. Offline Desktop Template Dependencies (JavaFX, Shade, Jackson)
+  - package-ecosystem: "maven"
+    directory: "/template-offline"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 10
+    labels:
+      - "security"
+      - "desktop"
+      - "dependencies"
+
+  # 3. Frontend React Dependencies (React, Vite, TailwindCSS)
+  - package-ecosystem: "npm"
+    directory: "/frontend-react"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 10
+    labels:
+      - "security"
+      - "frontend"
+      - "dependencies"
+
+  # 4. GitHub Actions Workflows
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "ci/cd"
+      - "github-actions"
