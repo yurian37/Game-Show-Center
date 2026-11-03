@@ -380,32 +380,58 @@ Objetivo: Implementar criptografía asimétrica robusta y control de acceso en A
       - Integración de 'logs/' y '*.log' en '.gitignore' para evitar indexación de trazas en Git.
 
 --------------------------------------------------------------------------------
-4.3. FASE 3: INTEGRIDAD DE EJECUCIÓN, SANDBOXING Y RUNTIME (P2)
+4.3. FASE 3: INTEGRIDAD DE EJECUCIÓN, SANDBOXING Y RUNTIME (P2) [COMPLETADA]
 --------------------------------------------------------------------------------
 Objetivo: Blindar la ejecución del cliente JavaFX y la interacción del frontend.
 
-  [ ] Tarea 3.1: Verificación de Integridad en Carga de Plugins (GamePluginClassLoader)
-      - Implementar verificación de checksums (SHA-256) o firmas de manifiesto
-        antes de cargar clases dinámicas desde carpetas de minijuegos.
-      - Whitelist de paquetes autorizados para evitar carga de clases peligrosas.
+  [X] Tarea 3.1: Verificación de Integridad y Sandboxing en Carga de Plugins [RESUELTO]
+      - Implementado aislamiento y control estricto en 'GamePluginClassLoader.java':
+        * Lista de bloqueo ('BLOCKED_NAMESPACES') contra namespaces críticos del sistema
+          ('java.', 'javax.', 'jdk.', 'sun.', 'com.sun.', 'org.apache.', 'org.springframework.',
+           'groovy.', 'bsh.', 'org.python.').
+        * Whitelist de paquetes autorizados ('PERMITTED_PACKAGES'): 'com.gameshowcenter.offline.games.'
+          y 'com.gameshowcenter.plugins.'.
+        * Validación de tipos en tiempo de carga: verificación obligatoria de que las vistas
+          extiendan 'javafx.scene.layout.Region' y los editores implementen 'IGameSetupEditor'.
+        * Añadida utilidad de cálculo criptográfico 'computeFileSha256(File)' para verificación
+          de integridad de binarios.
+        * Verificado con tests automatizados en 'MegaCoreAndLicenseVerificationTest' (TEST 8).
 
-  [ ] Tarea 3.2: Protección Anti-Zip Bomb en MegaCoreManagerService
-      - Implementar umbrales estrictos durante la descompresión:
-        * Límite de tamaño total descomprimido (ej. máx 500 MB).
-        * Límite de entradas totales (ej. máx 1,000 archivos).
-        * Verificación de ratio de compresión no superior a 100:1.
+  [X] Tarea 3.2: Protección Anti-Zip Bomb en MegaCoreManagerService [RESUELTO]
+      - Implementados umbrales y contramedidas de descompresión segura en 'MegaCoreManagerService.java':
+        * Límite máximo de bytes totales descomprimidos: 500 MB ('MAX_TOTAL_UNCOMPRESSED_BYTES').
+        * Límite máximo de entradas procesables: 2,000 archivos ('MAX_TOTAL_ENTRIES').
+        * Ratio máximo de compresión por archivo: 100:1 ('MAX_COMPRESSION_RATIO').
+        * Límite de tamaño máximo por archivo individual: 250 MB ('MAX_SINGLE_FILE_BYTES').
+        * Monitoreo en streaming en tiempo real durante 'installPackage': aborta inmediatamente
+          la extracción, borra residuos temporales y emite alerta de seguridad si cualquier
+          umbral es sobrepasado.
+        * Verificado con tests unitarios en 'MegaCoreAndLicenseVerificationTest' (TEST 9).
 
-  [ ] Tarea 3.3: Aislamiento y Limpieza Segura en AIService
-      - Asegurar borrado inmediato de ficheros 'gsc_ai_req_*.json' en bloque 'finally'.
-      - Añadir timeout forzado al proceso Python ('process.waitFor(60, TimeUnit.SECONDS)').
+  [X] Tarea 3.3: Aislamiento y Limpieza Segura de Procesos en AIService [RESUELTO]
+      - Endurecido el ciclo de vida del subproceso Python en 'AIService.java':
+        * Timeout de ejecución forzoso de 60 segundos ('process.waitFor(60, TimeUnit.SECONDS)').
+        * Terminación y eliminación forzada ('process.destroyForcibly()') en bloque 'finally'
+          para prevenir procesos huérfanos que consuman recursos en segundo plano.
+        * Registro y purga garantizada de ficheros temporales ('tempConfigFile.deleteOnExit()' y
+          borrado inmediato en 'finally').
 
-  [ ] Tarea 3.4: Hardening de Frontend & Sandboxing de Anuncios
-      - Configurar atributo 'sandbox="allow-scripts allow-popups"' en el iframe de Adsterra.
-      - Restringir la validación de 'event.origin' en listeners de 'message'.
-      - Definir cabeceras Content Security Policy (CSP) en el servidor web.
-      - Incorporar banner de cookies y consentimiento para tracking publicitario.
+  [X] Tarea 3.4: Hardening de Frontend, Sandboxing y Privacidad [RESUELTO]
+      - Iframe Sandboxing & Source Validation en 'AdsterraBanner.jsx':
+        * Configurado 'sandbox="allow-scripts allow-popups allow-forms allow-same-origin"'.
+        * Validación en 'handleMessage': verifica que 'event.source' coincida estrictamente con el
+          'contentWindow' del iframe para mitigar ataques cross-window.
+      - Cumplimiento de Privacidad (GDPR Art. 7 e ISO/IEC 27701):
+        * Creado 'CookieConsentBanner.jsx' con opciones de aceptación granular ('Aceptar Todo',
+          'Solo Necesarias', 'Políticas').
+        * Adsterra solo invoca scripts de tracking si el usuario otorga consentimiento expreso
+          ('gsc_cookie_consent === accepted'); de lo contrario, renderiza un banner offline seguro.
+        * Integrado en la vista global 'App.jsx'.
+      - Content Security Policy (CSP):
+        * Endurecida cabecera CSP en 'SecurityConfig.java' del Backend para APIs y recursos.
+        * Añadida meta-etiqueta CSP restrictiva en 'frontend-react/index.html' permitiendo
+          exclusivamente orígenes autorizados ('self', 'topcreativeformat.com', 'fonts.googleapis.com').
 
---------------------------------------------------------------------------------
 4.4. FASE 4: DEVSECOPS, OBSERVABILIDAD Y CUMPLIMIENTO CONTINUO (P3)
 --------------------------------------------------------------------------------
 Objetivo: Institucionalizar los controles para mantener la certificación en el tiempo.

@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 public class AIService {
 
@@ -230,9 +231,11 @@ public class AIService {
             }
 
             File tempConfigFile = null;
+            Process process = null;
             try {
-                // Write temp config JSON file
+                // Write temp config JSON file with automatic cleanup registration
                 tempConfigFile = File.createTempFile("gsc_ai_req_", ".json");
+                tempConfigFile.deleteOnExit();
                 ObjectNode reqNode = objectMapper.createObjectNode();
                 reqNode.put("game", gameName);
                 reqNode.put("prompt", prompt);
@@ -289,12 +292,13 @@ public class AIService {
                 pb.environment().put("PYTHONIOENCODING", "utf-8");
                 pb.redirectErrorStream(false);
 
-                Process process = pb.start();
+                process = pb.start();
+                final Process activeProcess = process;
 
                 // Read stderr asynchronously to prevent Windows OS pipe buffer deadlocks (64KB limit)
                 StringBuilder stderr = new StringBuilder();
                 Thread stderrReaderThread = new Thread(() -> {
-                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream(), StandardCharsets.UTF_8))) {
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(activeProcess.getErrorStream(), StandardCharsets.UTF_8))) {
                         String line;
                         while ((line = reader.readLine()) != null) {
                             stderr.append(line).append("\n");
@@ -329,7 +333,16 @@ public class AIService {
                     }
                 }
 
-                int exitCode = process.waitFor();
+                // Security timeout: Enforce maximum execution window of 60 seconds
+                boolean completed = process.waitFor(60, TimeUnit.SECONDS);
+                if (!completed) {
+                    process.destroyForcibly();
+                    result.setSuccess(false);
+                    result.setErrorCode("AI_TIMEOUT");
+                    result.setErrorMessage("El proceso de IA excedió el tiempo límite de seguridad permitido (60 segundos). Proceso terminado forzosamente.");
+                    return result;
+                }
+
                 try {
                     stderrReaderThread.join(1000);
                 } catch (InterruptedException ignored) {}
@@ -384,6 +397,13 @@ public class AIService {
                 result.setErrorMessage("Error de ejecución del proceso de IA: " + ex.getMessage());
                 return result;
             } finally {
+                // Ensure process is terminated to prevent orphaned child processes
+                if (process != null && process.isAlive()) {
+                    try {
+                        process.destroyForcibly();
+                    } catch (Exception ignored) {}
+                }
+                // Ensure temporary JSON payload is wiped
                 if (tempConfigFile != null && tempConfigFile.exists()) {
                     try {
                         tempConfigFile.delete();

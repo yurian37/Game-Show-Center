@@ -17,6 +17,14 @@ export default function AdsterraBanner({
   label = "Sponsored Space"
 }) {
   const [adBlocked, setAdBlocked] = useState(false);
+  const [hasTrackingConsent, setHasTrackingConsent] = useState(() => {
+    try {
+      const consent = localStorage.getItem('gsc_cookie_consent');
+      return consent === 'accepted';
+    } catch {
+      return false;
+    }
+  });
   const iframeRef = useRef(null);
 
   // Read zone key from prop, Vite environment variables, or verified default key
@@ -35,8 +43,22 @@ export default function AdsterraBanner({
     effectiveZoneKey !== "YOUR_RIGHT_ZONE_KEY_HERE"
   );
 
+  // Listen for cookie consent updates in real time
   useEffect(() => {
-    if (!hasLiveKey || !iframeRef.current) return;
+    const handleConsentChange = () => {
+      try {
+        const consent = localStorage.getItem('gsc_cookie_consent');
+        setHasTrackingConsent(consent === 'accepted');
+      } catch {
+        setHasTrackingConsent(false);
+      }
+    };
+    window.addEventListener('gsc_cookie_consent_updated', handleConsentChange);
+    return () => window.removeEventListener('gsc_cookie_consent_updated', handleConsentChange);
+  }, []);
+
+  useEffect(() => {
+    if (!hasLiveKey || !hasTrackingConsent || !iframeRef.current) return;
 
     try {
       const iframe = iframeRef.current;
@@ -87,15 +109,18 @@ export default function AdsterraBanner({
     }
 
     const handleMessage = (event) => {
-      if (event.data === `adsterra_blocked_${position}`) {
-        console.warn(`[Adsterra] Banner (${position}) fue bloqueado (posible AdBlocker activo o dominio sin inventario en Adsterra). Mostrando respaldo.`);
-        setAdBlocked(true);
+      // Security Validation: Ensure message originates strictly from our sandboxed child iframe
+      if (iframeRef.current && event.source === iframeRef.current.contentWindow) {
+        if (event.data === `adsterra_blocked_${position}`) {
+          console.warn(`[Adsterra] Banner (${position}) fue bloqueado (posible AdBlocker activo o dominio sin inventario en Adsterra). Mostrando respaldo.`);
+          setAdBlocked(true);
+        }
       }
     };
 
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, [effectiveZoneKey, hasLiveKey, height, width, position]);
+  }, [effectiveZoneKey, hasLiveKey, hasTrackingConsent, height, width, position]);
 
   return (
     <div className="w-full bg-[#111625]/95 border border-slate-800/80 rounded-2xl p-3 my-2 shadow-xl text-center relative overflow-hidden flex flex-col items-center">
@@ -106,8 +131,8 @@ export default function AdsterraBanner({
         </span>
       </div>
 
-      {/* AD CONTAINER: REAL ADSTERRA IFRAME OR BRANDED FALLBACK */}
-      {hasLiveKey && !adBlocked ? (
+      {/* AD CONTAINER: REAL ADSTERRA IFRAME (SANDBOXED) OR BRANDED FALLBACK */}
+      {hasLiveKey && hasTrackingConsent && !adBlocked ? (
         <div
           className="flex justify-center items-center overflow-hidden rounded-xl bg-slate-900/60 border border-slate-800/60"
           style={{ width: `${width}px`, minHeight: `${height}px` }}
@@ -119,6 +144,7 @@ export default function AdsterraBanner({
             height={height}
             frameBorder="0"
             scrolling="no"
+            sandbox="allow-scripts allow-popups allow-forms allow-same-origin"
             className="border-0 overflow-hidden"
           />
         </div>

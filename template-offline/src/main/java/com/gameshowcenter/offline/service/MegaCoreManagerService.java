@@ -23,6 +23,11 @@ public class MegaCoreManagerService {
             "GeoLocation", "Guess Character", "Rapid Rhythm", "Snap Solve", "Topic Takedown"
     );
 
+    // Security & Anti-Zip Bomb Constraints (SOC 2 A1.1 / ISO 27001:2022 A.8.6)
+    public static final long MAX_TOTAL_UNCOMPRESSED_BYTES = 500 * 1024 * 1024L; // 500 MB
+    public static final int MAX_TOTAL_ENTRIES = 2_000;
+    public static final double MAX_COMPRESSION_RATIO = 100.0;
+
     public static MegaCoreManagerService getInstance() {
         return INSTANCE;
     }
@@ -307,16 +312,35 @@ public class MegaCoreManagerService {
         int detectedCoreNumber = 0;
         String detectedTitle = null;
         int assetsExtractedCount = 0;
+        long totalUncompressedBytes = 0;
+        int totalEntriesCount = 0;
 
         try (ZipInputStream zis = new ZipInputStream(new BufferedInputStream(new FileInputStream(packageFile)))) {
             ZipEntry entry;
             byte[] buffer = new byte[8192];
 
             while ((entry = zis.getNextEntry()) != null) {
+                totalEntriesCount++;
+                if (totalEntriesCount > MAX_TOTAL_ENTRIES) {
+                    System.err.println("Security Alert: Zip Bomb detected. File contains > " + MAX_TOTAL_ENTRIES + " entries.");
+                    return new InstallResult(false, 0, null, List.of(),
+                            "Security Alert: Bloqueo Anti-Zip Bomb. El paquete contiene más de " + MAX_TOTAL_ENTRIES + " entradas.");
+                }
+
                 String rawName = entry.getName();
                 if (rawName == null || rawName.isBlank()) {
                     zis.closeEntry();
                     continue;
+                }
+
+                // Check anomaly in compression ratio if reported
+                if (entry.getSize() > 0 && entry.getCompressedSize() > 0) {
+                    double ratio = (double) entry.getSize() / entry.getCompressedSize();
+                    if (ratio > MAX_COMPRESSION_RATIO) {
+                        System.err.println("Security Alert: Abnormal compression ratio (" + String.format(Locale.US, "%.1f", ratio) + ":1) on entry: " + rawName);
+                        return new InstallResult(false, 0, null, List.of(),
+                                "Security Alert: Bloqueo Anti-Zip Bomb. Ratio de compresión anómalo detectado en: " + rawName);
+                    }
                 }
 
                 // Standardize slashes
@@ -421,6 +445,12 @@ public class MegaCoreManagerService {
                     try (OutputStream fos = Files.newOutputStream(targetPath)) {
                         int len;
                         while ((len = zis.read(buffer)) > 0) {
+                            totalUncompressedBytes += len;
+                            if (totalUncompressedBytes > MAX_TOTAL_UNCOMPRESSED_BYTES) {
+                                System.err.println("Security Alert: Zip Bomb detected. Uncompressed payload > " + (MAX_TOTAL_UNCOMPRESSED_BYTES / (1024 * 1024)) + " MB.");
+                                return new InstallResult(false, 0, null, List.of(),
+                                        "Security Alert: Bloqueo Anti-Zip Bomb. El tamaño total extraído supera el límite de seguridad (500 MB).");
+                            }
                             fos.write(buffer, 0, len);
                         }
                     } catch (IOException ioe) {

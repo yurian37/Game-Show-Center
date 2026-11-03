@@ -7,6 +7,7 @@ import ArenaStage from './components/ArenaStage';
 import WinnerStage from './components/WinnerStage';
 import AdsterraBanner from './components/AdsterraBanner';
 import LegalModal from './components/LegalModal';
+import CookieConsentBanner from './components/CookieConsentBanner';
 import SvgEmoji from './components/SvgEmoji';
 
 import soundManager from './services/soundManager';
@@ -261,6 +262,9 @@ export default function App() {
         onClose={() => setIsLegalModalOpen(false)} 
         initialTab={legalInitialTab}
       />
+
+      {/* BANNER DE CONSENTIMIENTO DE PRIVACIDAD Y COOKIES (GDPR & ISO 27701) */}
+      <CookieConsentBanner onOpenPrivacyPolicy={() => handleOpenLegal('privacy')} />
     </div>
   );
 }

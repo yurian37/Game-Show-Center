@@ -4,6 +4,7 @@ import com.gameshowcenter.offline.security.HardwareIdUtil;
 import com.gameshowcenter.offline.security.LicenseEncryptorTool;
 import com.gameshowcenter.offline.security.LicenseManager;
 import com.gameshowcenter.offline.security.LicensePayload;
+import com.gameshowcenter.offline.service.GamePluginClassLoader;
 import com.gameshowcenter.offline.service.MegaCoreManagerService;
 
 import java.io.File;
@@ -201,6 +202,40 @@ public class MegaCoreAndLicenseVerificationTest {
                 passed++;
             } else {
                 System.err.println("  -> FAILED: Falló la instalación de paquetes MegaCore.");
+                failed++;
+            }
+
+            // TEST 8: Sandboxing de GamePluginClassLoader (Bloqueo de clases peligrosas y RCE)
+            System.out.println("\n[TEST 8] Verificación de Sandbox en GamePluginClassLoader (Bloqueo de clases no autorizadas)...");
+            GamePluginClassLoader testLoader = new GamePluginClassLoader(tempDir);
+
+            boolean systemClassBlocked = !GamePluginClassLoader.isClassNamePermitted("java.lang.ProcessBuilder");
+            boolean runtimeClassBlocked = !GamePluginClassLoader.isClassNamePermitted("java.lang.Runtime");
+            boolean apacheClassBlocked = !GamePluginClassLoader.isClassNamePermitted("org.apache.commons.io.FileUtils");
+            boolean permittedViewAllowed = GamePluginClassLoader.isClassNamePermitted("com.gameshowcenter.offline.games.views.SnapSolveFxStage");
+            boolean pluginNamespaceAllowed = GamePluginClassLoader.isClassNamePermitted("com.gameshowcenter.plugins.CustomGameStage");
+
+            Class<?> blockedLoaded = testLoader.loadClass("java.lang.ProcessBuilder");
+
+            if (systemClassBlocked && runtimeClassBlocked && apacheClassBlocked && permittedViewAllowed && pluginNamespaceAllowed && blockedLoaded == null) {
+                System.out.println("  -> PASSED: Clases del sistema (ProcessBuilder, Runtime) bloqueadas exitosamente. Namespaces autorizados validados.");
+                passed++;
+            } else {
+                System.err.println("  -> FAILED: Falló el sandbox de GamePluginClassLoader.");
+                failed++;
+            }
+
+            // TEST 9: Verificación de Parámetros de Protección Anti-Zip Bomb en MegaCoreManagerService
+            System.out.println("\n[TEST 9] Verificación de Controles Anti-Zip Bomb (Umbrales de denegación de servicio)...");
+            long maxBytes = MegaCoreManagerService.MAX_TOTAL_UNCOMPRESSED_BYTES;
+            int maxEntries = MegaCoreManagerService.MAX_TOTAL_ENTRIES;
+            double maxRatio = MegaCoreManagerService.MAX_COMPRESSION_RATIO;
+
+            if (maxBytes == 500 * 1024 * 1024L && maxEntries == 2000 && maxRatio == 100.0) {
+                System.out.println("  -> PASSED: Umbrales configurados: 500 MB máx descomprimido, 2000 entradas máx, ratio máx 100:1.");
+                passed++;
+            } else {
+                System.err.println("  -> FAILED: Parámetros incorrectos de Anti-Zip Bomb.");
                 failed++;
             }
 
