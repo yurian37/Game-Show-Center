@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="30 seconds">
+
+    <!-- Logging Properties -->
+    <property name="LOG_DIR" value="logs" />
+    <property name="LOG_FILE_NAME" value="backend-audit" />
+
+    <!-- Console Appender with Formatted Pattern and Correlation Tracking -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{36}) [%X{incidentId:-N/A}] - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- Rolling File Appender for Production Audit & Security Compliance (SOC 2 CC7.2 & ISO 27001:2022 A.8.15) -->
+    <appender name="FILE_AUDIT" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/${LOG_FILE_NAME}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- Daily rollover with index and gzip compression -->
+            <fileNamePattern>${LOG_DIR}/archived/${LOG_FILE_NAME}-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <!-- Max file size: 10MB per log part -->
+            <maxFileSize>10MB</maxFileSize>
+            <!-- Retain 30 days of audit logs for compliance -->
+            <maxHistory>30</maxHistory>
+            <!-- Total cap of 1GB for archived logs to prevent disk exhaustion -->
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} [%thread] %-5level %logger{40} [incidentId=%X{incidentId:-N/A}] %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- Specific Loggers -->
+    <logger name="com.gameshowcenter.backend" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE_AUDIT" />
+    </logger>
+
+    <logger name="org.springframework.security" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE_AUDIT" />
+    </logger>
+
+    <logger name="org.springframework.web" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE_AUDIT" />
+    </logger>
+
+    <!-- Root Logger -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE_AUDIT" />
+    </root>
+
+</configuration>

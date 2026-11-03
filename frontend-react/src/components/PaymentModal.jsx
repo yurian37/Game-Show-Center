@@ -30,7 +30,10 @@ export default function PaymentModal({ isOpen, onClose, onDownloadSuccess }) {
       if (response.ok && data && data.valid) {
         setPromoStatus({ type: 'success', text: data.message || 'VIP Access code verified! Unlocking Standalone edition...' });
         setTimeout(() => {
-          if (onDownloadSuccess) onDownloadSuccess();
+          if (onDownloadSuccess) onDownloadSuccess(data.downloadToken);
+          if (data.downloadToken) {
+            window.location.href = `/api/download/offline-template?token=${encodeURIComponent(data.downloadToken)}`;
+          }
         }, 1000);
       } else {
         setPromoStatus({ type: 'error', text: data?.message || 'Invalid or expired promo code. Please verify your VIP key.' });
@@ -42,7 +45,21 @@ export default function PaymentModal({ isOpen, onClose, onDownloadSuccess }) {
     }
   };
 
-  const handleSimulatedPayment = () => {
+  const handleSimulatedPayment = async () => {
+    try {
+      const res = await fetch('/api/payment/checkout-token', { method: 'POST' });
+      const data = await res.json();
+      if (data?.downloadToken) {
+        setPaymentStatus({ type: 'success', text: 'Checkout approved! Starting authorized download...' });
+        setTimeout(() => {
+          if (onDownloadSuccess) onDownloadSuccess(data.downloadToken);
+          window.location.href = `/api/download/offline-template?token=${encodeURIComponent(data.downloadToken)}`;
+        }, 1000);
+        return;
+      }
+    } catch {
+      // Fallback
+    }
     setPaymentStatus({ type: 'success', text: 'Demo checkout approved! Access to the Standalone edition granted.' });
     setTimeout(() => {
       if (onDownloadSuccess) onDownloadSuccess();

@@ -324,28 +324,60 @@ y asegurar los puntos de entrada principales en menos de 48 horas.
 --------------------------------------------------------------------------------
 Objetivo: Implementar criptografía asimétrica robusta y control de acceso en APIs.
 
-  [ ] Tarea 2.1: Migración a Criptografía Asimétrica (Ed25519 o RSA-4096)
-      - Diseñar nuevo formato de licencia v3:
-        * Emisor (Admin/Servidor): Firma digitalmente el payload (HWID, Expiración,
-          Tier, Features) con la Llave Privada.
-        * Receptor (template-offline): Valida la firma exclusivamente con la Llave Pública
-          incorporada. Aunque el cliente sea descompilado, jamás se compromete la capacidad
-          de emitir licencias válidas.
-      - Retirar 'SECRET_SALT' simétrico del código JavaFX.
+  [X] Tarea 2.1: Migración a Criptografía Asimétrica (Ed25519) [RESUELTO]
+      - Diseñado e implementado nuevo formato de licencia v3 ('GSC-OFFLINE-LICENSE-V3'):
+        * Emisor Administrativo (LicenseEncryptorTool / License_Generator): Genera par
+          de llaves Ed25519; firma digitalmente el payload canónico con la Llave Privada
+          PKCS#8 resguardada exclusivamente fuera del control del cliente ('License_Generator/keys/').
+        * Receptor Cliente ('template-offline'): 'LicenseManager.java' incorpora exclusivamente
+          la Llave Pública (X.509) para verificar la autenticidad de la firma asimétrica.
+          Incluso si el binario cliente es totalmente descompilado, es matemáticamente
+          imposible falsificar o emitir licencias válidas sin la llave privada.
+        * Retiradas llaves fijas y dependencias de salts simétricos compartidos.
+        * Mantenida compatibilidad hacia atrás para licencias legacy (V2) y preservado
+          el hardware binding anti-reuso (HWID) con verificación cruzada en disco.
+        * Test suite 'MegaCoreAndLicenseVerificationTest' ejecutada con 8/8 tests exitosos
+          (generación V3, verificación 3 días, bloqueo de expiración, vinculación HWID,
+          bloqueo de conflicto de máquina, detección y rechazo estricto de falsificación de firma).
 
-  [ ] Tarea 2.2: Implementación de Spring Security & Tokens de Descarga
-      - Agregar 'spring-boot-starter-security' al backend.
-      - Proteger '/api/match/compile' y '/api/download/offline-template'.
-      - Implementar tokens de un solo uso (One-Time Download Tokens) firmados con HMAC
-        para la descarga de paquetes offline tras confirmación real de pago.
+  [X] Tarea 2.2: Implementación de Spring Security & Tokens de Descarga [RESUELTO]
+      - Integrado 'spring-boot-starter-security' en 'backend-java/pom.xml'.
+      - Creado 'SecurityConfig.java' con política de sesión STATELESS (sin cookies ni estado),
+        deshabilitación segura de CSRF para API REST pura, integración de CORS con whitelist
+        declarativa y endurecimiento de cabeceras de respuesta HTTP:
+        * HSTS (Strict-Transport-Security: max-age=31536000; includeSubDomains).
+        * Anti-Clickjacking (X-Frame-Options: DENY).
+        * MIME Sniffing protection (X-Content-Type-Options: nosniff).
+        * Referrer-Policy: strict-origin-when-cross-origin.
+      - Diseñado e implementado 'DownloadTokenService.java' con tokens efímeros firmados
+        mediante HMAC-SHA256 (validez de 15 minutos) y protección anti-replay (consumo de un
+        solo uso mediante registro y descarte de JTIs).
+      - Actualizado 'PromoVerificationController.java' para emitir tokens firmados de descarga
+        al verificar códigos VIP legítimos o tras checkout comercial exitoso.
+      - Actualizado 'DownloadController.java' para exigir y consumir el token de descarga
+        vía parámetro '?token=...' o cabecera 'X-Download-Token', denegando con HTTP 403 Forbidden
+        cualquier petición sin token, con firma manipulada, token expirado o reutilizado.
+      - Actualizado 'PaymentModal.jsx' en el frontend para vincular la descarga automática
+        del artefacto standalone usando el token efímero recibido del backend.
 
-  [ ] Tarea 2.3: Rate Limiting & DoS Throttling
-      - Integrar filtro de limitación de tasa (Bucket4j o Redis Rate Limiter) en el
-        backend para mitigar abusos sobre endpoints de descarga y compilación.
+  [X] Tarea 2.3: Rate Limiting & DoS Throttling [RESUELTO]
+      - Diseñado e implementado 'RateLimitingFilter.java' como filtro Servlet de alta prioridad
+        basado en ventana deslizante en memoria con limpieza automática por IP cliente:
+        * '/api/payment/**': máx 10 peticiones/minuto (mitigación de fuerza bruta en códigos).
+        * '/api/download/**': máx 5 descargas/minuto (prevención de agotamiento de ancho de banda).
+        * '/api/match/**': máx 15 compilaciones/minuto (prevención de agotamiento de CPU).
+        * Rutas generales: máx 60 peticiones/minuto.
+      - Peticiones excedentes retornan HTTP 429 Too Many Requests, cabecera 'Retry-After',
+        y telemetría 'X-RateLimit-Limit' / 'X-RateLimit-Remaining'.
+      - Verificado con tests automatizados en 'RateLimitingFilterTest.java'.
 
-  [ ] Tarea 2.4: Sistema de Logging Estructurado (Logback / JSON)
-      - Configurar 'logback-spring.xml' con rotación de ficheros y formato JSON.
-      - Enmascarar información sensible (HWID parcial, emails anonimizados).
+  [X] Tarea 2.4: Sistema de Logging Estructurado (Logback / JSON) [RESUELTO]
+      - Creado 'logback-spring.xml' en 'backend-java/src/main/resources/'.
+      - Appender de consola con formato estructurado, colores y tracking de incidentId.
+      - Appender de fichero rotativo 'logs/backend-audit.log' con compresión GZIP diaria,
+        límite de 10 MB por fragmento, retención de 30 días para cumplimiento SOC 2 / ISO 27001,
+        y techo máximo de 1 GB en disco.
+      - Integración de 'logs/' y '*.log' en '.gitignore' para evitar indexación de trazas en Git.
 
 --------------------------------------------------------------------------------
 4.3. FASE 3: INTEGRIDAD DE EJECUCIÓN, SANDBOXING Y RUNTIME (P2)

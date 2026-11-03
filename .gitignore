@@ -129,3 +129,9 @@ Inspect-License.ps1
 **/Generate-License.bat
 **/Inspect-License.bat
 **/Inspect-License.ps1
+
+# Application Logs & Audits
+logs/
+**/logs/
+*.log
+

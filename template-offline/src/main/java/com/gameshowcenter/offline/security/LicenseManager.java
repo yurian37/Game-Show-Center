@@ -10,16 +10,36 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.security.KeyFactory;
 import java.security.MessageDigest;
+import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.Signature;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.UUID;
 
+/**
+ * Hardened License Manager implementing Asymmetric Cryptography (Ed25519) and Hardware ID Binding.
+ * Conforms to SOC 2 CC6.1/CC6.7 and ISO/IEC 27001:2022 Control A.8.24 (Use of Cryptography).
+ * The client application only holds the ISSUER_PUBLIC_KEY for signature verification.
+ * The Private Key is kept exclusively in administrator infrastructure.
+ */
 public class LicenseManager {
 
     public static final String LICENSE_FILE_NAME = "license.lic";
-    private static final String SECRET_SALT = "YonIAEnterprise_GSC_Offline_Secret_2026_KeySalt";
-    private static final byte[] MAGIC_HEADER = new byte[]{'G', 'S', 'C', '2'};
+
+    // Public Key (Ed25519 X.509 Base64) for validating untampered issuer signatures.
+    // Even if decompiled, this public key CANNOT be used to forge or issue new licenses.
+    public static final String ISSUER_PUBLIC_KEY = "MCowBQYDK2VwAyEA83E1V0tt4aIVOaqPxNqCFNRTvFps0hyVsYBL0sPaKNI=";
+
+    // Binary Magic Headers for format detection
+    public static final byte[] MAGIC_HEADER_V3 = new byte[]{'G', 'S', 'C', '3'};
+    public static final byte[] MAGIC_HEADER_V2 = new byte[]{'G', 'S', 'C', '2'};
+
+    // Legacy symmetric salt retained strictly for backward compatibility with V2 files
+    private static final String LEGACY_SECRET_SALT = "YonIAEnterprise_GSC_Offline_Secret_2026_KeySalt";
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private static LicensePayload cachedPayload = null;
@@ -31,6 +51,7 @@ public class LicenseManager {
         ACTIVATION_WINDOW_EXPIRED,
         ANNUAL_EXPIRED,
         INVALID_OR_CORRUPT,
+        SIGNATURE_VERIFICATION_FAILED,
         NOT_FOUND
     }
 
@@ -74,9 +95,7 @@ public class LicenseManager {
     }
 
     /**
-     * Attempts to activate using an encrypted license file chosen by the user.
-     * If the file is fresh (unbound) and within 3 days of creation, binds to this machine's HWID,
-     * calculates the 365-day annual expiration, and OVERWRITES the file on disk.
+     * Attempts to activate using a license file chosen by the user.
      */
     public static ActivationResult activateWithFile(File licenseFile) {
         if (licenseFile == null || !licenseFile.exists()) {
@@ -87,35 +106,42 @@ public class LicenseManager {
     }
 
     /**
-     * Evaluates a license file, optionally binding it if unbound.
+     * Evaluates a license file, verifying asymmetric signatures and binding if unbound.
      */
     private static ActivationResult evaluateLicenseFile(File licenseFile, boolean allowActivationBinding) {
         try {
             byte[] rawBytes = Files.readAllBytes(licenseFile.toPath());
 
-            // 1. Check if it's the encrypted V2 binary format
-            if (isV2EncryptedFormat(rawBytes)) {
+            // 1. Process V3 Asymmetric Binary Format (GSC3) or V2 Legacy (GSC2)
+            if (isV3Format(rawBytes) || isV2EncryptedFormat(rawBytes)) {
                 LicensePayload payload = decryptPayload(rawBytes);
                 if (payload == null) {
                     return new ActivationResult(false, StatusCategory.INVALID_OR_CORRUPT,
-                            "No se pudo desencriptar el archivo de licencia. Archivo dañado o clave incorrecta.", null);
+                            "No se pudo validar el archivo de licencia. Archivo dañado, firma inválida o formato desconocido.", null);
+                }
+
+                // Verify asymmetric signature for V3
+                if (LicensePayload.FORMAT_VERSION_V3.equalsIgnoreCase(payload.getFormat())) {
+                    if (payload.getIssuerSignature() == null || !verifyAsymmetricSignature(payload.getCanonicalIssuanceData(), payload.getIssuerSignature())) {
+                        return new ActivationResult(false, StatusCategory.SIGNATURE_VERIFICATION_FAILED,
+                                "Firma digital del emisor inválida. El archivo de licencia ha sido alterado o no fue emitido por YonIA Enterprise.", payload);
+                    }
                 }
 
                 String currentHwid = HardwareIdUtil.getHardwareId();
 
-                // Case A: Unbound License (fresh from encryptor)
+                // Case A: Unbound License (fresh from administrator generator)
                 if (!payload.isBound()) {
-                    // Verify 3-day activation window from creation date
                     if (payload.isActivationWindowExpired()) {
                         String msg = String.format(
-                                "El archivo de licencia ha vencido su período de activación permitido (máximo %d días desde su creación: %s). Por favor genera una nueva licencia.",
+                                "El archivo de licencia ha vencido su período de activación permitido (máximo %d días desde su creación: %s). Solicita una nueva emisión.",
                                 payload.getMaxActivationDays(), payload.formatCreatedAt());
                         return new ActivationResult(false, StatusCategory.ACTIVATION_WINDOW_EXPIRED, msg, payload);
                     }
 
                     if (!allowActivationBinding) {
                         return new ActivationResult(false, StatusCategory.UNBOUND_PENDING_ACTIVATION,
-                                "El archivo de licencia es válido pero requiere ser activado.", payload);
+                                "El archivo de licencia es auténtico pero requiere ser activado para este equipo.", payload);
                     }
 
                     // Perform hardware binding & annual activation
@@ -124,9 +150,9 @@ public class LicenseManager {
                     payload.setBoundHwid(currentHwid);
                     payload.setActivatedAt(now);
                     payload.setExpiresAt(now + (payload.getAnnualValidityDays() * 24L * 60L * 60L * 1000L));
-                    payload.setSignature(calculateSignature(payload));
+                    payload.setBoundSignature(calculateHardwareBindingHash(payload, currentHwid));
 
-                    // CRITICAL: Overwrite the loaded file so it cannot be reused on other machines!
+                    // Overwrite the loaded file so it cannot be transferred to another machine
                     try {
                         licenseFile.setWritable(true);
                         writeLicenseFile(licenseFile, payload);
@@ -134,7 +160,6 @@ public class LicenseManager {
                         System.err.println("Warning: could not overwrite source license file: " + e.getMessage());
                     }
 
-                    // Save to application's persistent locations
                     saveToPersistentStorage(payload);
                     cachedPayload = payload;
 
@@ -144,18 +169,17 @@ public class LicenseManager {
                     return new ActivationResult(true, StatusCategory.VALID_ACTIVE, successMsg, payload);
                 }
 
-                // Case B: Already bound license
-                if (!payload.getBoundHwid().equalsIgnoreCase(currentHwid)) {
+                // Case B: Already bound license - enforce hardware isolation
+                if (!currentHwid.equalsIgnoreCase(payload.getBoundHwid())) {
                     String conflictMsg = String.format(
                             "⚠️ CONFLICTO DE HARDWARE: Este archivo de licencia ya fue utilizado previamente y está vinculado al HardwareID [%s]. No puede reutilizarse en este equipo (HardwareID actual: [%s]).",
                             payload.getBoundHwid(), currentHwid);
                     return new ActivationResult(false, StatusCategory.HARDWARE_CONFLICT, conflictMsg, payload);
                 }
 
-                // Bound to this machine - check annual expiration
                 if (payload.isAnnualExpired()) {
                     String expiredMsg = String.format(
-                            "Tu licencia anual expiró el %s. La vigencia de %d días ha concluido. Por favor renueva tu licencia.",
+                            "Tu licencia anual expiró el %s. La vigencia de %d días ha concluido. Por favor renueva tu suscripción.",
                             payload.formatExpiresAt(), payload.getAnnualValidityDays());
                     return new ActivationResult(false, StatusCategory.ANNUAL_EXPIRED, expiredMsg, payload);
                 }
@@ -167,33 +191,15 @@ public class LicenseManager {
 
                 long remainingDays = payload.getRemainingDays();
                 String validMsg = String.format(
-                        "Licencia anual activa y válida para este equipo. Vence el %s (%d días restantes).",
-                        payload.formatExpiresAt(), remainingDays);
+                        "Licencia anual activa y válida para este equipo (%s). Vence el %s (%d días restantes).",
+                        payload.getTier() != null ? payload.getTier() : "PRO", payload.formatExpiresAt(), remainingDays);
                 return new ActivationResult(true, StatusCategory.VALID_ACTIVE, validMsg, payload);
-            }
-
-            // 2. Legacy / Text format fallback for developer backwards compatibility
-            String textContent = new String(rawBytes, StandardCharsets.UTF_8).trim();
-            if (textContent.contains("::")) {
-                String[] parts = textContent.split("::");
-                if (parts.length >= 2) {
-                    String storedKey = parts[1];
-                    String currentHwid = HardwareIdUtil.getHardwareId();
-                    if (validateKey(currentHwid, storedKey)) {
-                        LicensePayload legacyPayload = new LicensePayload();
-                        legacyPayload.setStatus(LicensePayload.STATUS_BOUND);
-                        legacyPayload.setBoundHwid(currentHwid);
-                        legacyPayload.setExpiresAt(System.currentTimeMillis() + (365L * 24L * 60L * 60L * 1000L));
-                        cachedPayload = legacyPayload;
-                        return new ActivationResult(true, StatusCategory.VALID_ACTIVE, "Licencia heredada activa.", legacyPayload);
-                    }
-                }
             }
 
             return new ActivationResult(false, StatusCategory.INVALID_OR_CORRUPT, "Formato de archivo de licencia desconocido.", null);
 
         } catch (Exception e) {
-            return new ActivationResult(false, StatusCategory.INVALID_OR_CORRUPT, "Error al leer el archivo de licencia: " + e.getMessage(), null);
+            return new ActivationResult(false, StatusCategory.INVALID_OR_CORRUPT, "Error al procesar licencia: " + e.getMessage(), null);
         }
     }
 
@@ -215,11 +221,13 @@ public class LicenseManager {
         String currentHwid = HardwareIdUtil.getHardwareId();
         if (validateKey(currentHwid, clean)) {
             LicensePayload payload = new LicensePayload();
+            payload.setFormat(LicensePayload.FORMAT_VERSION_V3);
             payload.setLicenseId("KEY-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
             payload.setStatus(LicensePayload.STATUS_BOUND);
             payload.setBoundHwid(currentHwid);
             payload.setActivatedAt(System.currentTimeMillis());
             payload.setExpiresAt(System.currentTimeMillis() + (365L * 24L * 60L * 60L * 1000L));
+            payload.setTier("DIRECT_KEY_PRO");
             saveToPersistentStorage(payload);
             cachedPayload = payload;
             return true;
@@ -232,7 +240,7 @@ public class LicenseManager {
         if (inputKey == null || inputKey.isBlank()) return false;
         String key = inputKey.trim().toUpperCase();
 
-        String expectedKey = generateKeyWithSalt(hwid, SECRET_SALT);
+        String expectedKey = generateKeyWithSalt(hwid, LEGACY_SECRET_SALT);
         return expectedKey.equalsIgnoreCase(key);
     }
 
@@ -245,56 +253,65 @@ public class LicenseManager {
                 hash.substring(8, 12).toUpperCase());
     }
 
-    // --- CRYPTOGRAPHIC UTILITIES ---
+    // --- ASYMMETRIC CRYPTOGRAPHIC UTILITIES (Ed25519) ---
+
+    public static boolean verifyAsymmetricSignature(String canonicalData, String base64Signature) {
+        if (canonicalData == null || base64Signature == null || base64Signature.isBlank()) return false;
+        try {
+            byte[] pubKeyBytes = Base64.getDecoder().decode(ISSUER_PUBLIC_KEY);
+            KeyFactory kf = KeyFactory.getInstance("Ed25519");
+            PublicKey pubKey = kf.generatePublic(new X509EncodedKeySpec(pubKeyBytes));
+
+            Signature sig = Signature.getInstance("Ed25519");
+            sig.initVerify(pubKey);
+            sig.update(canonicalData.getBytes(StandardCharsets.UTF_8));
+            return sig.verify(Base64.getDecoder().decode(base64Signature));
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public static boolean isV3Format(byte[] bytes) {
+        if (bytes == null || bytes.length < 4) return false;
+        return bytes[0] == MAGIC_HEADER_V3[0] &&
+               bytes[1] == MAGIC_HEADER_V3[1] &&
+               bytes[2] == MAGIC_HEADER_V3[2] &&
+               bytes[3] == MAGIC_HEADER_V3[3];
+    }
 
     public static boolean isV2EncryptedFormat(byte[] bytes) {
         if (bytes == null || bytes.length < 20) return false;
-        return bytes[0] == MAGIC_HEADER[0] &&
-               bytes[1] == MAGIC_HEADER[1] &&
-               bytes[2] == MAGIC_HEADER[2] &&
-               bytes[3] == MAGIC_HEADER[3];
-    }
-
-    public static byte[] encryptPayload(LicensePayload payload) throws Exception {
-        payload.setSignature(calculateSignature(payload));
-        String json = MAPPER.writeValueAsString(payload);
-        byte[] plainBytes = json.getBytes(StandardCharsets.UTF_8);
-
-        byte[] iv = new byte[16];
-        new SecureRandom().nextBytes(iv);
-
-        byte[] keyBytes = MessageDigest.getInstance("SHA-256").digest(SECRET_SALT.getBytes(StandardCharsets.UTF_8));
-        SecretKeySpec secretKey = new SecretKeySpec(keyBytes, "AES");
-        IvParameterSpec ivSpec = new IvParameterSpec(iv);
-
-        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-        cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
-        byte[] cipherBytes = cipher.doFinal(plainBytes);
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        out.write(MAGIC_HEADER);
-        out.write(iv);
-        out.write(cipherBytes);
-        return out.toByteArray();
+        return bytes[0] == MAGIC_HEADER_V2[0] &&
+               bytes[1] == MAGIC_HEADER_V2[1] &&
+               bytes[2] == MAGIC_HEADER_V2[2] &&
+               bytes[3] == MAGIC_HEADER_V2[3];
     }
 
     public static LicensePayload decryptPayload(byte[] fileBytes) {
         try {
-            if (!isV2EncryptedFormat(fileBytes)) return null;
+            if (isV3Format(fileBytes)) {
+                byte[] jsonBytes = Arrays.copyOfRange(fileBytes, 4, fileBytes.length);
+                String json = new String(jsonBytes, StandardCharsets.UTF_8);
+                return MAPPER.readValue(json, LicensePayload.class);
+            }
 
-            byte[] iv = Arrays.copyOfRange(fileBytes, 4, 20);
-            byte[] cipherBytes = Arrays.copyOfRange(fileBytes, 20, fileBytes.length);
+            if (isV2EncryptedFormat(fileBytes)) {
+                byte[] iv = Arrays.copyOfRange(fileBytes, 4, 20);
+                byte[] cipherBytes = Arrays.copyOfRange(fileBytes, 20, fileBytes.length);
 
-            byte[] keyBytes = MessageDigest.getInstance("SHA-256").digest(SECRET_SALT.getBytes(StandardCharsets.UTF_8));
-            SecretKeySpec secretKey = new SecretKeySpec(keyBytes, "AES");
-            IvParameterSpec ivSpec = new IvParameterSpec(iv);
+                byte[] keyBytes = MessageDigest.getInstance("SHA-256").digest(LEGACY_SECRET_SALT.getBytes(StandardCharsets.UTF_8));
+                SecretKeySpec secretKey = new SecretKeySpec(keyBytes, "AES");
+                IvParameterSpec ivSpec = new IvParameterSpec(iv);
 
-            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-            cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
-            byte[] decrypted = cipher.doFinal(cipherBytes);
+                Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+                cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
+                byte[] decrypted = cipher.doFinal(cipherBytes);
 
-            String json = new String(decrypted, StandardCharsets.UTF_8);
-            return MAPPER.readValue(json, LicensePayload.class);
+                String json = new String(decrypted, StandardCharsets.UTF_8);
+                return MAPPER.readValue(json, LicensePayload.class);
+            }
+
+            return null;
         } catch (Exception e) {
             return null;
         }
@@ -304,14 +321,57 @@ public class LicenseManager {
         if (targetFile.getParentFile() != null && !targetFile.getParentFile().exists()) {
             targetFile.getParentFile().mkdirs();
         }
-        byte[] encryptedBytes = encryptPayload(payload);
+
+        byte[] outputBytes;
+        if (LicensePayload.FORMAT_VERSION_V2.equalsIgnoreCase(payload.getFormat())) {
+            outputBytes = encryptPayloadV2(payload);
+        } else {
+            // Write V3 Format: MAGIC_HEADER_V3 + UTF-8 JSON payload
+            payload.setFormat(LicensePayload.FORMAT_VERSION_V3);
+            String json = MAPPER.writeValueAsString(payload);
+            byte[] jsonBytes = json.getBytes(StandardCharsets.UTF_8);
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            baos.write(MAGIC_HEADER_V3);
+            baos.write(jsonBytes);
+            outputBytes = baos.toByteArray();
+        }
+
         try (FileOutputStream fos = new FileOutputStream(targetFile)) {
-            fos.write(encryptedBytes);
+            fos.write(outputBytes);
             fos.flush();
         }
     }
 
-    public static String calculateSignature(LicensePayload payload) {
+    public static byte[] encryptPayloadV2(LicensePayload payload) throws Exception {
+        payload.setSignature(calculateLegacySignature(payload));
+        String json = MAPPER.writeValueAsString(payload);
+        byte[] plainBytes = json.getBytes(StandardCharsets.UTF_8);
+
+        byte[] iv = new byte[16];
+        new SecureRandom().nextBytes(iv);
+
+        byte[] keyBytes = MessageDigest.getInstance("SHA-256").digest(LEGACY_SECRET_SALT.getBytes(StandardCharsets.UTF_8));
+        SecretKeySpec secretKey = new SecretKeySpec(keyBytes, "AES");
+        IvParameterSpec ivSpec = new IvParameterSpec(iv);
+
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
+        byte[] cipherBytes = cipher.doFinal(plainBytes);
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        out.write(MAGIC_HEADER_V2);
+        out.write(iv);
+        out.write(cipherBytes);
+        return out.toByteArray();
+    }
+
+    public static String calculateHardwareBindingHash(LicensePayload payload, String hwid) {
+        String base = payload.getLicenseId() + "::" + hwid + "::" + payload.getExpiresAt();
+        return HardwareIdUtil.sha256(base);
+    }
+
+    public static String calculateLegacySignature(LicensePayload payload) {
         String base = payload.getFormat() + "::" +
                       payload.getCreatedAt() + "::" +
                       payload.getMaxActivationDays() + "::" +
@@ -319,7 +379,7 @@ public class LicenseManager {
                       payload.getStatus() + "::" +
                       (payload.getBoundHwid() != null ? payload.getBoundHwid() : "NONE") + "::" +
                       payload.getExpiresAt() + "::" +
-                      SECRET_SALT;
+                      LEGACY_SECRET_SALT;
         return HardwareIdUtil.sha256(base);
     }
 

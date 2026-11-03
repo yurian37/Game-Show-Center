@@ -1,19 +1,66 @@
 package com.gameshowcenter.backend.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gameshowcenter.backend.security.DownloadTokenService;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
-import java.nio.file.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+/**
+ * Hardened Download Controller protected by Ephemeral One-Time HMAC Download Tokens.
+ * Conforms to SOC 2 CC6.1 & ISO/IEC 27001:2022 A.8.24 (Cryptographic Download Integrity).
+ */
 @RestController
 @RequestMapping("/api/download")
 public class DownloadController {
 
+    private static final Logger log = LoggerFactory.getLogger(DownloadController.class);
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+
+    private final DownloadTokenService downloadTokenService;
+
+    public DownloadController(DownloadTokenService downloadTokenService) {
+        this.downloadTokenService = downloadTokenService;
+    }
+
     @GetMapping("/offline-template")
-    public void downloadOfflineTemplate(HttpServletResponse response) {
+    public void downloadOfflineTemplate(
+            @RequestParam(value = "token", required = false) String tokenParam,
+            @RequestHeader(value = "X-Download-Token", required = false) String tokenHeader,
+            HttpServletResponse response) throws IOException {
+
+        String token = (tokenParam != null && !tokenParam.isBlank()) ? tokenParam : tokenHeader;
+
+        // 1. Enforce Ephemeral HMAC-SHA256 Token Validation & Replay Consumption
+        DownloadTokenService.ValidationResult validationResult = downloadTokenService.validateAndConsumeToken(token);
+        if (!validationResult.isValid()) {
+            log.warn("Unauthorized download request blocked. Reason: {} ({})", validationResult.getMessage(), validationResult.getStatus());
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+
+            Map<String, Object> error = new HashMap<>();
+            error.put("status", HttpServletResponse.SC_FORBIDDEN);
+            error.put("error", "Forbidden");
+            error.put("code", validationResult.getStatus().name());
+            error.put("message", "Acceso denegado: " + validationResult.getMessage());
+
+            response.getWriter().write(MAPPER.writeValueAsString(error));
+            response.getWriter().flush();
+            return;
+        }
+
+        log.info("Authorized download granted for token [JTI: {}] with tier [{}].",
+                validationResult.getTokenId(), validationResult.getTier());
+
+        // 2. Stream Binary Package to Authorized Client
         File projectRoot = findProjectRoot();
         File templateOfflineDir = new File(projectRoot, "template-offline");
         File prebuiltZip = new File(templateOfflineDir, "release/GameShowCenter-Offline-v1.0.0.zip");
@@ -28,7 +75,7 @@ public class DownloadController {
                 os.flush();
                 return;
             } catch (Exception e) {
-                // fallback to dynamic packaging
+                log.warn("Could not stream prebuilt zip, falling back to dynamic bundle: {}", e.getMessage());
             }
         }
 
@@ -36,7 +83,7 @@ public class DownloadController {
         response.setHeader("Content-Disposition", "attachment; filename=\"GameShowCenter-Offline-Bundle.zip\"");
 
         try (ZipOutputStream zos = new ZipOutputStream(response.getOutputStream())) {
-            // 1. Add Instructions File
+            // Instructions
             String instructions = """
                 ====================================================
                 GAME SHOW CENTER - MODO OFFLINE (Developed by YonIA Enterprise)
@@ -59,7 +106,7 @@ public class DownloadController {
                 """;
             zipBytes(zos, "GameShowCenter-Offline/INSTRUCCIONES_DE_USO.txt", instructions.getBytes("UTF-8"));
 
-            // 2. Add Executable Standalone JAR
+            // Executable Standalone JAR
             File jarFile = new File(templateOfflineDir, "target/template-offline-1.0.0-standalone.jar");
             if (!jarFile.exists()) {
                 jarFile = new File(templateOfflineDir, "target/template-offline-1.0.0.jar");
@@ -68,13 +115,13 @@ public class DownloadController {
                 zipFile(zos, jarFile, "GameShowCenter-Offline/template-offline-1.0.0-standalone.jar");
             }
 
-            // 3. Add Games Folder (Contains the 5 basic minigames)
+            // Games Folder (Basic minigames)
             File gamesFolder = new File(templateOfflineDir, "games");
             if (gamesFolder.exists()) {
                 zipFolder(zos, gamesFolder, "GameShowCenter-Offline/games");
             }
 
-            // 4. Add Assets Folder
+            // Assets Folder
             File assetsFolder = new File(templateOfflineDir, "assets");
             if (assetsFolder.exists()) {
                 zipFolder(zos, assetsFolder, "GameShowCenter-Offline/assets");
@@ -82,6 +129,7 @@ public class DownloadController {
 
             zos.finish();
         } catch (Exception e) {
+            log.error("Failed to generate dynamic offline bundle: ", e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }

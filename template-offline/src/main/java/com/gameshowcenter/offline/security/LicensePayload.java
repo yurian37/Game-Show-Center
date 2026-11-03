@@ -11,7 +11,10 @@ import java.time.format.DateTimeFormatter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class LicensePayload {
 
-    public static final String FORMAT_VERSION = "GSC-OFFLINE-LICENSE-V2";
+    public static final String FORMAT_VERSION_V2 = "GSC-OFFLINE-LICENSE-V2";
+    public static final String FORMAT_VERSION_V3 = "GSC-OFFLINE-LICENSE-V3";
+    public static final String FORMAT_VERSION = FORMAT_VERSION_V3;
+
     public static final String STATUS_UNBOUND = "UNBOUND";
     public static final String STATUS_BOUND = "BOUND";
 
@@ -24,7 +27,11 @@ public class LicensePayload {
     private String boundHwid;
     private long activatedAt = 0;
     private long expiresAt = 0;
-    private String signature;
+    private String tier = "ENTERPRISE_PRO";
+    private String issuer = "YonIA Enterprise Security Authority";
+    private String signature; // Legacy V2 signature
+    private String issuerSignature; // Asymmetric Ed25519 signature of issuance metadata
+    private String boundSignature;  // Hardware bound cryptographic verification signature
 
     public LicensePayload() {
     }
@@ -80,6 +87,31 @@ public class LicensePayload {
         return formatter.format(Instant.ofEpochMilli(millis));
     }
 
+    /**
+     * Canonical string used for asymmetric Ed25519 issuance signature.
+     */
+    public String getCanonicalIssuanceData() {
+        return String.format("%s|%d|%d|%d|%s|%s",
+                licenseId != null ? licenseId.trim() : "",
+                createdAt,
+                maxActivationDays,
+                annualValidityDays,
+                tier != null ? tier.trim() : "ENTERPRISE_PRO",
+                issuer != null ? issuer.trim() : "YonIA Enterprise Security Authority");
+    }
+
+    /**
+     * Canonical string used for hardware-binding cryptographic verification.
+     */
+    public String getCanonicalBindingData() {
+        return String.format("%s|%s|%d|%d|%s",
+                licenseId != null ? licenseId.trim() : "",
+                boundHwid != null ? boundHwid.trim() : "",
+                activatedAt,
+                expiresAt,
+                status != null ? status.trim() : STATUS_BOUND);
+    }
+
     // Getters and Setters
     public String getFormat() { return format; }
     public void setFormat(String format) { this.format = format; }
@@ -108,6 +140,18 @@ public class LicensePayload {
     public long getExpiresAt() { return expiresAt; }
     public void setExpiresAt(long expiresAt) { this.expiresAt = expiresAt; }
 
+    public String getTier() { return tier; }
+    public void setTier(String tier) { this.tier = tier; }
+
+    public String getIssuer() { return issuer; }
+    public void setIssuer(String issuer) { this.issuer = issuer; }
+
     public String getSignature() { return signature; }
     public void setSignature(String signature) { this.signature = signature; }
+
+    public String getIssuerSignature() { return issuerSignature; }
+    public void setIssuerSignature(String issuerSignature) { this.issuerSignature = issuerSignature; }
+
+    public String getBoundSignature() { return boundSignature; }
+    public void setBoundSignature(String boundSignature) { this.boundSignature = boundSignature; }
 }

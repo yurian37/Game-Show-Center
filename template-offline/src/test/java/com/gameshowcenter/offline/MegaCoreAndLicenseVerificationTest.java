@@ -7,7 +7,9 @@ import com.gameshowcenter.offline.security.LicensePayload;
 import com.gameshowcenter.offline.service.MegaCoreManagerService;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Base64;
 import java.util.List;
 
 public class MegaCoreAndLicenseVerificationTest {
@@ -59,10 +61,15 @@ public class MegaCoreAndLicenseVerificationTest {
             File testExpiredLic = new File(tempDir, "test_expired_window.lic");
             long fourDaysAgo = System.currentTimeMillis() - (4L * 24L * 60L * 60L * 1000L);
             LicensePayload expiredPayload = new LicensePayload();
+            expiredPayload.setFormat(LicensePayload.FORMAT_VERSION_V3);
+            expiredPayload.setLicenseId("LIC-TEST-EXPIRED");
             expiredPayload.setCreatedAt(fourDaysAgo);
             expiredPayload.setMaxActivationDays(3);
             expiredPayload.setAnnualValidityDays(365);
             expiredPayload.setStatus(LicensePayload.STATUS_UNBOUND);
+            expiredPayload.setTier("ENTERPRISE_PRO");
+            expiredPayload.setIssuer("YonIA Enterprise Security Authority");
+            expiredPayload.setIssuerSignature(LicenseEncryptorTool.signDataWithEd25519(expiredPayload.getCanonicalIssuanceData(), LicenseEncryptorTool.ADMIN_PRIVATE_KEY_B64));
             LicenseManager.writeLicenseFile(testExpiredLic, expiredPayload);
 
             LicenseManager.ActivationResult expiredRes = LicenseManager.activateWithFile(testExpiredLic);
@@ -70,7 +77,7 @@ public class MegaCoreAndLicenseVerificationTest {
                 System.out.println("  -> PASSED: Bloqueo exitoso con ACTIVATION_WINDOW_EXPIRED: " + expiredRes.getMessage());
                 passed++;
             } else {
-                System.err.println("  -> FAILED: Se esperaba rechazo por ventana de 3 días vencida.");
+                System.err.println("  -> FAILED: Se esperaba rechazo por ventana de 3 días vencida. Status: " + expiredRes.getStatus());
                 failed++;
             }
 
@@ -103,10 +110,19 @@ public class MegaCoreAndLicenseVerificationTest {
             System.out.println("\n[TEST 5] Simulación de reuso en otra máquina (Conflicto de HardwareID)...");
             File foreignLic = new File(tempDir, "test_foreign_hwid.lic");
             LicensePayload foreignPayload = new LicensePayload();
+            foreignPayload.setFormat(LicensePayload.FORMAT_VERSION_V3);
+            foreignPayload.setLicenseId("LIC-TEST-FOREIGN");
+            foreignPayload.setCreatedAt(System.currentTimeMillis());
+            foreignPayload.setMaxActivationDays(3);
+            foreignPayload.setAnnualValidityDays(365);
+            foreignPayload.setTier("ENTERPRISE_PRO");
+            foreignPayload.setIssuer("YonIA Enterprise Security Authority");
+            foreignPayload.setIssuerSignature(LicenseEncryptorTool.signDataWithEd25519(foreignPayload.getCanonicalIssuanceData(), LicenseEncryptorTool.ADMIN_PRIVATE_KEY_B64));
             foreignPayload.setStatus(LicensePayload.STATUS_BOUND);
             foreignPayload.setBoundHwid("GSC-OTHER-MACHINE-9999");
             foreignPayload.setActivatedAt(System.currentTimeMillis());
             foreignPayload.setExpiresAt(System.currentTimeMillis() + (365L * 24L * 60L * 60L * 1000L));
+            foreignPayload.setBoundSignature(LicenseManager.calculateHardwareBindingHash(foreignPayload, "GSC-OTHER-MACHINE-9999"));
             LicenseManager.writeLicenseFile(foreignLic, foreignPayload);
 
             LicenseManager.ActivationResult conflictRes = LicenseManager.activateWithFile(foreignLic);
@@ -114,7 +130,32 @@ public class MegaCoreAndLicenseVerificationTest {
                 System.out.println("  -> PASSED: Conflicto detectado y reuso bloqueado exitosamente: " + conflictRes.getMessage());
                 passed++;
             } else {
-                System.err.println("  -> FAILED: No se detectó el conflicto de hardware.");
+                System.err.println("  -> FAILED: No se detectó el conflicto de hardware. Status: " + conflictRes.getStatus());
+                failed++;
+            }
+
+            // TEST 5.1: Tampering / Forgery rejection (Asymmetric Cryptography Test)
+            System.out.println("\n[TEST 5.1] Detección de adulteración y falsificación de firma Ed25519...");
+            File forgedLic = new File(tempDir, "test_forged.lic");
+            LicensePayload forgedPayload = new LicensePayload();
+            forgedPayload.setFormat(LicensePayload.FORMAT_VERSION_V3);
+            forgedPayload.setLicenseId("LIC-TEST-FORGED");
+            forgedPayload.setCreatedAt(System.currentTimeMillis());
+            forgedPayload.setMaxActivationDays(3);
+            forgedPayload.setAnnualValidityDays(365);
+            forgedPayload.setStatus(LicensePayload.STATUS_UNBOUND);
+            forgedPayload.setTier("ENTERPRISE_PRO");
+            forgedPayload.setIssuer("YonIA Enterprise Security Authority");
+            // Fake signature
+            forgedPayload.setIssuerSignature(Base64.getEncoder().encodeToString("FAKE-SIGNATURE-BYTES-123456789012345678901234567890123456789012345678901234567890".getBytes(StandardCharsets.UTF_8)));
+            LicenseManager.writeLicenseFile(forgedLic, forgedPayload);
+
+            LicenseManager.ActivationResult forgedRes = LicenseManager.activateWithFile(forgedLic);
+            if (!forgedRes.isSuccess() && forgedRes.getStatus() == LicenseManager.StatusCategory.SIGNATURE_VERIFICATION_FAILED) {
+                System.out.println("  -> PASSED: Falsificación detectada y rechazada exitosamente con SIGNATURE_VERIFICATION_FAILED: " + forgedRes.getMessage());
+                passed++;
+            } else {
+                System.err.println("  -> FAILED: No se detectó la firma falsificada. Status: " + forgedRes.getStatus());
                 failed++;
             }
 

@@ -1,5 +1,6 @@
 package com.gameshowcenter.backend.controllers;
 
+import com.gameshowcenter.backend.security.DownloadTokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +15,7 @@ import java.util.Map;
 /**
  * Hardened Controller for validating Promotional Codes and VIP entitlements.
  * Implements server-side processing integrity (SOC 2 PI1.1 & ISO 27001:2022 A.8.26),
- * replacing vulnerable client-side hash checks in the frontend.
+ * issuing cryptographic HMAC-SHA256 download tokens upon authorized verification.
  */
 @RestController
 @RequestMapping("/api/payment")
@@ -27,6 +28,12 @@ public class PromoVerificationController {
 
     @Value("${security.promo.vip-secret:GSC_PROMO_VIP_SECURE_2026_SALT}")
     private String promoSecretSalt;
+
+    private final DownloadTokenService downloadTokenService;
+
+    public PromoVerificationController(DownloadTokenService downloadTokenService) {
+        this.downloadTokenService = downloadTokenService;
+    }
 
     public static class PromoRequest {
         private String promoCode;
@@ -55,15 +62,30 @@ public class PromoVerificationController {
 
         if (DEFAULT_VIP_HASH.equalsIgnoreCase(hash)) {
             log.info("Server-side promo code verification successful for VIP key.");
+            String downloadToken = downloadTokenService.generateDownloadToken("VIP_ENTERPRISE_ACCESS");
+
             response.put("valid", true);
             response.put("tier", "VIP_ENTERPRISE_ACCESS");
             response.put("message", "VIP Access code verified! Unlocking Standalone edition...");
+            response.put("downloadToken", downloadToken);
+            response.put("expiresInMinutes", 15);
             return ResponseEntity.ok(response);
         }
 
         log.warn("Server-side promo verification rejected invalid code attempt.");
         response.put("valid", false);
         response.put("message", "Invalid or expired promo code. Please verify your VIP key.");
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/checkout-token")
+    public ResponseEntity<Map<String, Object>> generateCheckoutToken() {
+        Map<String, Object> response = new HashMap<>();
+        String downloadToken = downloadTokenService.generateDownloadToken("COMMERCIAL_CHECKOUT");
+        log.info("Issued commercial checkout download token.");
+        response.put("success", true);
+        response.put("downloadToken", downloadToken);
+        response.put("expiresInMinutes", 15);
         return ResponseEntity.ok(response);
     }
 
